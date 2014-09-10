@@ -46,7 +46,7 @@ public enum Json: Printable {
     case StringValue(String)
     case BooleanValue(Bool)
     case ArrayValue([Json])
-    case ObjectValue(Dictionary<String, Json>)
+    case ObjectValue([String:Json])
 
     public var boolValue: Bool {
         get {
@@ -317,7 +317,7 @@ public class JsonParser: SequenceType {
         assert(source[index] == "{", "points \"{\"")
         index++
 
-        var o = Dictionary<String, Json>()
+        var o = [String:Json]()
 
         LOOP: while index != source.endIndex && !expect("}") {
             // key
