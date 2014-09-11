@@ -22,11 +22,11 @@ class JsonletTests: XCTestCase {
 
 
     func testArray() {
-        let x = JsonParser.parse("[\"foo bar\", true, false]")
+        let x = JsonParser.parse("[true, false, true]")
 
         switch x {
         case .Success(let json, _):
-            XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
+            XCTAssertEqual(json.description, "[true,false,true]")
         case .Error(let error, let parser):
             XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
         }
@@ -54,12 +54,23 @@ class JsonletTests: XCTestCase {
         }
     }
 
-    func testNumber() {
-        let x = JsonParser.parse("[10, 3.14]")
+    func testNumberOfInt() {
+        let x = JsonParser.parse("[10]")
 
         switch x {
         case .Success(let json, _):
-            XCTAssertEqual(json.description, "[10,3.14]")
+            XCTAssertEqual(json.description, "[10]")
+        case .Error(let error, let parser):
+            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        }
+    }
+
+    func testNumberOfFloat() {
+        let x = JsonParser.parse("[3.14]")
+
+        switch x {
+        case .Success(let json, _):
+            XCTAssertEqual(json.description, "[3.14]")
         case .Error(let error, let parser):
             XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
         }
@@ -99,7 +110,7 @@ class JsonletTests: XCTestCase {
         let jsonSource = complexJsonExample()
 
         self.measureBlock {
-            switch JsonParser(jsonSource).parse() {
+            switch JsonParser.parse(jsonSource) {
             case .Success(let json, _):
                 XCTAssertTrue(true)
             case .Error(let error, let parser):
@@ -109,10 +120,10 @@ class JsonletTests: XCTestCase {
     }
 
     func testPerformanceExampleInJSONSerialization() {
-        let jsonSource = complexJsonExample().dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+        let jsonSource = complexJsonExample()
         self.measureBlock {
             var error: NSError? = nil
-            let dict: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonSource!, options: .MutableContainers, error: &error)
+            let dict: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonSource, options: .MutableContainers, error: &error)
 
             switch error {
             case .None:
@@ -123,9 +134,9 @@ class JsonletTests: XCTestCase {
         }
     }
 
-    func complexJsonExample() -> String {
+    func complexJsonExample() -> NSData {
         let bundle = NSBundle(forClass: JsonletTests.self)
         let path = bundle.pathForResource("tweets", ofType: "json")!
-        return NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: nil)
+        return NSData(contentsOfFile: path)
     }
 }
