@@ -54,6 +54,18 @@ class JsonletTests: XCTestCase {
         }
     }
 
+    func testStringWithMyltiBytes() {
+        let x = JsonParser.parse("[\"こんにちは\"]")
+
+        switch x {
+        case .Success(let json, _):
+            XCTAssertEqual(json[0].stringValue, "こんにちは")
+            XCTAssertEqual(json.description, "[\"こんにちは\"]")
+        case .Error(let error, let parser):
+            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        }
+    }
+
     func testNumberOfInt() {
         let x = JsonParser.parse("[10]")
 

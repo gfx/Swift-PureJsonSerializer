@@ -191,14 +191,13 @@ public enum Json: Printable {
     }
 }
 
-func c2byte(s: StaticString) -> Byte {
-    return s.start.memory
+private func byte2cchar(b: Byte) -> CChar {
+    if b < 0x80 {
+        return CChar(b)
+    } else {
+        return -0x80 + CChar(b & ~Byte(0x80))
+    }
 }
-
-func byte2c(b: Byte) -> UnicodeScalar {
-    return UnicodeScalar(b)
-}
-
 
 public class JsonParser {
 
@@ -212,10 +211,6 @@ public class JsonParser {
         let begin = source.start
         let end = begin.advancedBy(Int(source.byteSize))
         return JsonParser(source.stringValue, begin, end).parse()
-    }
-
-    func f(p: UnsafePointer<CChar>) -> UnsafePointer<CChar> {
-        return p
     }
 
     public class func parse(begin: UnsafePointer<Byte>, end: UnsafePointer<Byte>) -> Result {
@@ -252,20 +247,20 @@ public class JsonParser {
             return error(InsufficientTokenError("empty string"))
         }
 
-        switch byte2c(cur.memory) {
-        case "n":
+        switch cur.memory {
+        case Byte("n"):
             return parseSymbol("null", Json.NullValue)
-        case "t":
+        case Byte("t"):
             return parseSymbol("true", Json.BooleanValue(true))
-        case "f":
+        case Byte("f"):
             return parseSymbol("false", Json.BooleanValue(false))
-        case "-", "0" ... "9":
+        case Byte("-"), Byte("0") ... Byte("9"):
             return parseNumber()
-        case "\"":
+        case Byte("\""):
             return parseString()
-        case "{":
+        case Byte("{"):
             return parseObject()
-        case "[":
+        case Byte("["):
             return parseArray()
         case (let c):
             return error(UnexpectedTokenError("unexpected token: \(c)"))
@@ -273,7 +268,7 @@ public class JsonParser {
     }
 
     var currentSymbol: Character {
-        get { return Character(byte2c(cur.memory)) }
+        get { return Character(UnicodeScalar(cur.memory)) }
     }
 
     func parseSymbol(target: StaticString, _ iftrue: @autoclosure () -> Json) -> Result {
@@ -285,31 +280,38 @@ public class JsonParser {
     }
 
     func parseString() -> Result {
-        assert(byte2c(cur.memory) == "\"", "points a double quote")
+        assert(cur.memory == Byte("\""), "points a double quote")
         cur++
 
-        var s = ""
+        var buffer = [CChar]()
+
         LOOP: for ; cur != end; cur++ {
-            let c = byte2c(cur.memory)
-            switch c {
-            case "\\":
+            switch cur.memory {
+            case Byte("\\"):
                 cur++
-                s.append(parseEscapedChar(byte2c(cur.memory)))
+                if (cur == end) {
+                    return error(InsufficientTokenError("unexpected end of a string literal"))
+                }
+                for u in parseEscapedChar(UnicodeScalar(cur.memory)).utf8 {
+                    buffer.append(byte2cchar(u))
+                }
                 break
-            case "\"": // end of the string literal
+            case Byte("\""): // end of the string literal
                 cur++
                 break LOOP
             default:
-                s.append(c)
+                buffer.append(byte2cchar(cur.memory))
             }
         }
+        buffer.append(0) // trailing nul
 
+        let s = String.fromCString(buffer)!
         return Result.Success(json: .StringValue(s), parser: self)
     }
 
-    func parseEscapedChar(c: UnicodeScalar) -> UnicodeScalar {
+    func parseEscapedChar(c: UnicodeScalar) -> String {
         // TODO: unicode escape sequence
-        return unescapeMapping[c] ?? c
+        return String(Character(unescapeMapping[c] ?? c))
     }
 
     func parseNumber() -> Result {
@@ -320,11 +322,9 @@ public class JsonParser {
 
         // integer
         LOOP: for ; cur != end; cur++ {
-            let c = byte2c(cur.memory)
-
-            switch c {
-            case "0" ... "9":
-                let d = String(c).toInt()!
+            switch cur.memory {
+            case Byte("0") ... Byte("9"):
+                let d = String(UnicodeScalar(cur.memory)).toInt()!
                 n = (n * 10.0) + Double(d)
             default:
                 break LOOP
@@ -336,10 +336,9 @@ public class JsonParser {
             var factor = 0.1
 
             LOOP: for ; cur != end; cur++ {
-                let c = byte2c(cur.memory)
-                switch c {
-                case "0" ... "9":
-                    let d = String(c).toInt()!
+                switch cur.memory {
+                case Byte("0") ... Byte("9"):
+                    let d = String(UnicodeScalar(cur.memory)).toInt()!
                     n += (Double(d) * factor)
                     factor /= 10
                 default:
@@ -352,7 +351,7 @@ public class JsonParser {
     }
 
     func parseObject() -> Result {
-        assert(byte2c(cur.memory) == "{", "points \"{\"")
+        assert(cur.memory == Byte("{"), "points \"{\"")
         cur++
 
         var o = [String:Json]()
@@ -396,7 +395,7 @@ public class JsonParser {
     }
 
     func parseArray() -> Result {
-        assert(byte2c(cur.memory) == "[", "points \"[\"")
+        assert(cur.memory == Byte("["), "points \"[\"")
         cur++
 
         var a = Array<Json>()
@@ -457,8 +456,8 @@ public class JsonParser {
 
     // only "true", "false", "null" are identifiers
     func isIdentifier(c: Byte) -> Bool {
-        switch byte2c(c) {
-        case "a" ... "z":
+        switch c {
+        case Byte("a") ... Byte("z"):
             return true
         default:
             return false
@@ -467,8 +466,8 @@ public class JsonParser {
 
     func skipWhitespaces() {
         LOOP: for ; cur != end; cur++ {
-            switch byte2c(cur.memory) {
-            case " ", "\t", "\r", "\n":
+            switch cur.memory {
+            case Byte(" "), Byte("\t"), Byte("\r"), Byte("\n"):
                 break
             default:
                 return
