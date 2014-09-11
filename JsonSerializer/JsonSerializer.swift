@@ -8,6 +8,7 @@
 //
 
 import Darwin
+import Foundation
 
 public class ParseError {
     let reason: String
@@ -27,7 +28,7 @@ public class NonStringKeyError: ParseError {}
 
 
 
-let unescapeMapping: [Character: Character] = [
+let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
     "t": "\t",
     "r": "\r",
     "n": "\n",
@@ -190,24 +191,53 @@ public enum Json: Printable {
     }
 }
 
-public class JsonParser: SequenceType {
-    public class func parse(source: String) -> Result {
-        return JsonParser(source).parse()
+func c2byte(s: StaticString) -> Byte {
+    return s.start.memory
+}
+
+func byte2c(b: Byte) -> UnicodeScalar {
+    return UnicodeScalar(b)
+}
+
+
+public class JsonParser {
+
+    public class func parse(source: NSData) -> Result {
+        let begin = unsafeBitCast(source.bytes, UnsafePointer<Byte>.self)
+        let end = begin.advancedBy(source.length)
+        return JsonParser(source, begin, end).parse()
     }
 
-    let source: String
-    var index: String.Index
+    public class func parse(source: StaticString) -> Result {
+        let begin = source.start
+        let end = begin.advancedBy(Int(source.byteSize))
+        return JsonParser(source.stringValue, begin, end).parse()
+    }
+
+    func f(p: UnsafePointer<CChar>) -> UnsafePointer<CChar> {
+        return p
+    }
+
+    public class func parse(begin: UnsafePointer<Byte>, end: UnsafePointer<Byte>) -> Result {
+        return JsonParser(nil, begin, end).parse()
+    }
+
+    typealias Iterator = UnsafePointer<Byte>
+
+
+    let originalSource: AnyObject?
+    let beg: Iterator
+    let end: Iterator
+    var cur: Iterator
 
     var lineNumber = 1
     var columnNumber = 1
 
-    public init(_ source: String, _ index: String.Index) {
-        self.source = source
-        self.index = index
-    }
-
-    public convenience init(_ source: String) {
-        self.init(source, source.startIndex)
+    public init(_ source: AnyObject?, _ begin: UnsafePointer<Byte>, _ end: UnsafePointer<Byte>) {
+        self.originalSource = source
+        self.beg = begin
+        self.end = end
+        self.cur = begin
     }
 
     public enum Result {
@@ -218,11 +248,11 @@ public class JsonParser: SequenceType {
     func parse() -> Result {
         skipWhitespaces()
 
-        if index == source.endIndex {
+        if cur == end {
             return error(InsufficientTokenError("empty string"))
         }
 
-        switch source[index] {
+        switch byte2c(cur.memory) {
         case "n":
             return parseSymbol("null", Json.NullValue)
         case "t":
@@ -242,25 +272,32 @@ public class JsonParser: SequenceType {
         }
     }
 
-    func parseSymbol(target: String, _ iftrue: @autoclosure () -> Json) -> Result {
+    var currentSymbol: Character {
+        get { return Character(byte2c(cur.memory)) }
+    }
+
+    func parseSymbol(target: StaticString, _ iftrue: @autoclosure () -> Json) -> Result {
         if expect(target) {
             return Result.Success(json: iftrue(), parser: self)
         } else {
-            return error(UnexpectedTokenError("expected \"\(target)\" but \(source[index])"))
+            return error(UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)"))
         }
     }
 
     func parseString() -> Result {
-        assert(source[index] == "\"", "points a double quote")
-        index++
+        assert(byte2c(cur.memory) == "\"", "points a double quote")
+        cur++
 
         var s = ""
-        LOOP: for c in self {
+        LOOP: for ; cur != end; cur++ {
+            let c = byte2c(cur.memory)
             switch c {
             case "\\":
-                s.append(parseEscapedChar(source[index++]))
+                cur++
+                s.append(parseEscapedChar(byte2c(cur.memory)))
                 break
-            case "\"":
+            case "\"": // end of the string literal
+                cur++
                 break LOOP
             default:
                 s.append(c)
@@ -270,7 +307,7 @@ public class JsonParser: SequenceType {
         return Result.Success(json: .StringValue(s), parser: self)
     }
 
-    func parseEscapedChar(c: Character) -> Character {
+    func parseEscapedChar(c: UnicodeScalar) -> UnicodeScalar {
         // TODO: unicode escape sequence
         return unescapeMapping[c] ?? c
     }
@@ -282,13 +319,14 @@ public class JsonParser: SequenceType {
         var n = Double()
 
         // integer
-        LOOP: for c in self {
+        LOOP: for ; cur != end; cur++ {
+            let c = byte2c(cur.memory)
+
             switch c {
             case "0" ... "9":
                 let d = String(c).toInt()!
                 n = (n * 10.0) + Double(d)
             default:
-                index--
                 break LOOP
             }
         }
@@ -297,14 +335,14 @@ public class JsonParser: SequenceType {
         if expect(".") {
             var factor = 0.1
 
-            LOOP: for c in self {
+            LOOP: for ; cur != end; cur++ {
+                let c = byte2c(cur.memory)
                 switch c {
                 case "0" ... "9":
                     let d = String(c).toInt()!
                     n += (Double(d) * factor)
                     factor /= 10
                 default:
-                    index--
                     break LOOP
                 }
             }
@@ -314,45 +352,40 @@ public class JsonParser: SequenceType {
     }
 
     func parseObject() -> Result {
-        assert(source[index] == "{", "points \"{\"")
-        index++
+        assert(byte2c(cur.memory) == "{", "points \"{\"")
+        cur++
 
         var o = [String:Json]()
 
-        LOOP: while index != source.endIndex && !expect("}") {
+        LOOP: for ;cur != end && !expect("}"); cur++ {
             // key
             switch parse() {
             case .Success(let keyValue, _):
-                var key : String
                 switch keyValue {
-                case .StringValue(let _key):
-                    key = _key
-                    break
+                case .StringValue(let key):
+                    if !expect(":") {
+                        return error(UnexpectedTokenError("missing colon (:)"))
+                    }
+
+                    // value
+                    switch parse() {
+                    case .Success(let value, _):
+                        o[key] = value
+                        break
+                    case (let error):
+                        return error
+                    }
+
+                    skipWhitespaces()
+                    if expect(",") {
+                        break
+                    } else if expect("}") {
+                        break LOOP
+                    } else {
+                        return error(UnexpectedTokenError("missing comma (,)"))
+                    }
                 default:
                     return error(NonStringKeyError("unexpected value for object key"))
-                }
-
-                skipWhitespaces()
-                if !expect(":") {
-                    return error(UnexpectedTokenError("missing colon (:)"))
-                }
-
-                // value
-                switch parse() {
-                case .Success(let value, _):
-                    o[key] = value
-                    break
-                case (let error):
-                    return error
-                }
-
-                skipWhitespaces()
-                if expect(",") {
-                    break
-                } else if expect("}") {
-                    break LOOP
-                } else {
-                    return error(UnexpectedTokenError("missing comma (,)"))
                 }
             case (let error):
                 return error
@@ -363,23 +396,22 @@ public class JsonParser: SequenceType {
     }
 
     func parseArray() -> Result {
-        assert(source[index] == "[", "points \"[\"")
-        index++
+        assert(byte2c(cur.memory) == "[", "points \"[\"")
+        cur++
 
         var a = Array<Json>()
 
-        LOOP: while index != source.endIndex && !expect("]") {
+        LOOP: for ;cur != end && !expect("]"); cur++ {
             switch parse() {
             case .Success(let json, _):
                 a.append(json)
 
-                skipWhitespaces()
                 if expect(",") {
                     break
                 } else if expect("]") {
                     break LOOP
                 } else {
-                    return error(UnexpectedTokenError("missing comma (,)"))
+                    return error(UnexpectedTokenError("missing comma (,) (token: \(currentSymbol))"))
                 }
             case (let error):
                 return error
@@ -391,37 +423,41 @@ public class JsonParser: SequenceType {
     }
 
 
-    func expect(target: String) -> Bool {
+    func expect(target: StaticString) -> Bool {
         skipWhitespaces()
 
-        let start = index
-        if token() == target {
-            return true
-        } else {
-            index = start
-            return false
-        }
-    }
-
-    func token() -> String {
-        let start = index
-
-        if !isIdentifier(source[index]) {
-            return String(source[index++])
-        }
-
-        for c in self {
-            if !isIdentifier(c) {
-                index--
-                break
+        if !isIdentifier(target.start.memory) {
+            // when single character
+            if target.start.memory == cur.memory {
+                cur++
+                return true
+            } else {
+                return false
             }
         }
-        return source[start ..< index]
+
+        let start = cur
+
+        var p = target.start
+        let endp = p.advancedBy(Int(target.byteSize))
+
+        LOOP: for ; p != endp; p++, cur++ {
+            if !isIdentifier(cur.memory) {
+                break
+            }
+
+            if p.memory != cur.memory {
+                cur = start // unread
+                return false
+            }
+        }
+
+        return true
     }
 
     // only "true", "false", "null" are identifiers
-    func isIdentifier(c: Character) -> Bool {
-        switch c {
+    func isIdentifier(c: Byte) -> Bool {
+        switch byte2c(c) {
         case "a" ... "z":
             return true
         default:
@@ -430,12 +466,11 @@ public class JsonParser: SequenceType {
     }
 
     func skipWhitespaces() {
-        for c in self {
-            switch c {
+        LOOP: for ; cur != end; cur++ {
+            switch byte2c(cur.memory) {
             case " ", "\t", "\r", "\n":
                 break
             default:
-                index--
                 return
             }
         }
@@ -443,24 +478,5 @@ public class JsonParser: SequenceType {
 
     func error(error: ParseError) -> Result {
         return .Error(error: error, parser: self)
-    }
-
-    public func generate() -> GeneratorOf<Character> {
-        return GeneratorOf<Character> {
-            if self.index != self.source.endIndex {
-                let c = self.source[self.index++]
-                
-                if c == "\n" {
-                    self.lineNumber++
-                    self.columnNumber = 1
-                } else {
-                    self.columnNumber++
-                }
-                
-                return c
-            } else {
-                return .None
-            }
-        }
     }
 }
