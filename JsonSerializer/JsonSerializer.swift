@@ -14,23 +14,18 @@ protocol Parser {
     var columnNumber: Int { get }
 }
 
-struct SourceLocation {
-    let lineNumber: Int
-    let columnNumber: Int
-}
-
-public class ParseError {
-    let reason: String
+public class ParseError: Printable {
+    public let reason: String
     let parser: Parser
 
-    var lineNumber: Int {
+    public var lineNumber: Int {
         get { return parser.lineNumber }
     }
-    var columnNumber: Int {
+    public var columnNumber: Int {
         get { return parser.columnNumber }
     }
 
-    var description: String {
+    public var description: String {
         get {
             return "\(reflect(self).summary)[\(lineNumber):\(columnNumber)]: \(reason)"
         }
@@ -258,11 +253,26 @@ public final class JsonParser: Parser {
         case Error(ParseError)
     }
 
+
     func parse() -> Result {
+        switch parseValue() {
+        case .Success(let json):
+            skipWhitespaces()
+            if (cur == end) {
+                return .Success(json)
+            } else {
+                return .Error(ExtraTokenError("extra tokens found", self))
+            }
+        case .Error(let error):
+            return .Error(error)
+        }
+    }
+
+    func parseValue() -> Result {
         skipWhitespaces()
 
         if cur == end {
-            return .Error(InsufficientTokenError("empty string", self))
+            return .Error(InsufficientTokenError("unexpected end of tokens", self))
         }
 
         switch cur.memory {
@@ -299,14 +309,14 @@ public final class JsonParser: Parser {
 
     func parseString() -> Result {
         assert(cur.memory == Byte("\""), "points a double quote")
-        cur++
+        nextChar()
 
         var buffer = [CChar]()
 
-        LOOP: for ; cur != end; cur++ {
+        LOOP: for ; cur != end; nextChar() {
             switch cur.memory {
             case Byte("\\"):
-                cur++
+                nextChar()
                 if (cur == end) {
                     return .Error(InsufficientTokenError("unexpected end of a string literal", self))
                 }
@@ -315,7 +325,7 @@ public final class JsonParser: Parser {
                 }
                 break
             case Byte("\""): // end of the string literal
-                cur++
+                nextChar()
                 break LOOP
             default:
                 buffer.append(byte2cchar(cur.memory))
@@ -339,7 +349,7 @@ public final class JsonParser: Parser {
         var n = Double()
 
         // integer
-        LOOP: for ; cur != end; cur++ {
+        LOOP: for ; cur != end; nextChar() {
             switch cur.memory {
             case Byte("0") ... Byte("9"):
                 let d = String(UnicodeScalar(cur.memory)).toInt()!
@@ -353,7 +363,7 @@ public final class JsonParser: Parser {
         if expect(".") {
             var factor = 0.1
 
-            LOOP: for ; cur != end; cur++ {
+            LOOP: for ; cur != end; nextChar() {
                 switch cur.memory {
                 case Byte("0") ... Byte("9"):
                     let d = String(UnicodeScalar(cur.memory)).toInt()!
@@ -370,13 +380,13 @@ public final class JsonParser: Parser {
 
     func parseObject() -> Result {
         assert(cur.memory == Byte("{"), "points \"{\"")
-        cur++
+        nextChar()
 
         var o = [String:Json]()
 
-        LOOP: for ;cur != end && !expect("}"); cur++ {
+        LOOP: for ;cur != end && !expect("}"); nextChar() {
             // key
-            switch parse() {
+            switch parseValue() {
             case .Success(let keyValue):
                 switch keyValue {
                 case .StringValue(let key):
@@ -385,7 +395,7 @@ public final class JsonParser: Parser {
                     }
 
                     // value
-                    switch parse() {
+                    switch parseValue() {
                     case .Success(let value):
                         o[key] = value
                         break
@@ -414,12 +424,12 @@ public final class JsonParser: Parser {
 
     func parseArray() -> Result {
         assert(cur.memory == Byte("["), "points \"[\"")
-        cur++
+        nextChar()
 
         var a = Array<Json>()
 
-        LOOP: for ;cur != end && !expect("]"); cur++ {
-            switch parse() {
+        LOOP: for ;cur != end && !expect("]"); nextChar() {
+            switch parseValue() {
             case .Success(let json):
                 a.append(json)
 
@@ -446,7 +456,7 @@ public final class JsonParser: Parser {
         if !isIdentifier(target.start.memory) {
             // when single character
             if target.start.memory == cur.memory {
-                cur++
+                nextChar()
                 return true
             } else {
                 return false
@@ -454,17 +464,21 @@ public final class JsonParser: Parser {
         }
 
         let start = cur
+        let l = lineNumber
+        let c = columnNumber
 
         var p = target.start
         let endp = p.advancedBy(Int(target.byteSize))
 
-        LOOP: for ; p != endp; p++, cur++ {
+        LOOP: for ; p != endp; p++, nextChar() {
             if !isIdentifier(cur.memory) {
                 break
             }
 
             if p.memory != cur.memory {
                 cur = start // unread
+                lineNumber = l
+                columnNumber = c
                 return false
             }
         }
@@ -482,8 +496,20 @@ public final class JsonParser: Parser {
         }
     }
 
+    func nextChar() {
+        cur++
+
+        switch cur.memory {
+        case Byte("\n"):
+            lineNumber++
+            columnNumber = 1
+        default:
+            columnNumber++
+        }
+    }
+
     func skipWhitespaces() {
-        LOOP: for ; cur != end; cur++ {
+        LOOP: for ; cur != end; nextChar() {
             switch cur.memory {
             case Byte(" "), Byte("\t"), Byte("\r"), Byte("\n"):
                 break
@@ -502,6 +528,6 @@ extension JsonParser {
     public class func parse(source: NSData) -> Result {
         let begin = unsafeBitCast(source.bytes, UnsafePointer<Byte>.self)
         let end = begin.advancedBy(source.length)
-        return JsonParser(source, begin, end).parse()
+        return JsonParser(source, begin, end).parseValue()
     }
 }
