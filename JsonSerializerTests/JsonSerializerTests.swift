@@ -7,7 +7,7 @@
 
 import XCTest
 
-class JsonletTests: XCTestCase {
+class JsonSerializerTests: XCTestCase {
 
     func testEmptyArray() {
         let x = JsonParser.parse(" [ ] ")
@@ -112,8 +112,7 @@ class JsonletTests: XCTestCase {
             XCTAssertEqual(json[2].boolValue, false)
 
             XCTAssertEqual(json[3].stringValue, "", "out of range")
-
-            XCTAssertEqual(json["no"]["suck"]["value"].stringValue, "", "no such properties")
+            XCTAssertEqual(json["no"]["such"]["value"].stringValue, "", "no such properties")
         case .Error(let error):
             XCTFail(error.description)
         }
@@ -159,7 +158,7 @@ class JsonletTests: XCTestCase {
     }
 
     func complexJsonExample() -> NSData {
-        let bundle = NSBundle(forClass: JsonletTests.self)
+        let bundle = NSBundle(forClass: self.dynamicType)
         let path = bundle.pathForResource("tweets", ofType: "json")!
         return NSData(contentsOfFile: path)
     }

@@ -218,7 +218,7 @@ private func byte2cchar(b: Byte) -> CChar {
     }
 }
 
-public final class JsonParser: Parser {
+public class JsonParser: Parser {
 
     public class func parse(source: StaticString) -> Result {
         let begin = source.start
