@@ -21,6 +21,10 @@ case .Error(let error):
 
 This is an alpha software. Any API will change.
 
+# KNOWN ISSUES
+
+* This library doesn't work with optimization flags (`swiftc -O`)
+
 # AUTHOR
 
 Fuji, Goro (gfx) gfuji@cpan.org
