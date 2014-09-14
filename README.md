@@ -4,7 +4,18 @@ A pure-Swift JSON serializer and deserializer
 
 # SYNOPSIS
 
-TBD
+```
+import JsonSerializer
+
+let data: NSData
+
+switch JsonParser.parse(data) {
+case .Success(let json):
+  println(json["foo"]["bar"].stringValue)
+case .Error(let error):
+  println(error)
+}
+```
 
 # DESCRIPTION
 
