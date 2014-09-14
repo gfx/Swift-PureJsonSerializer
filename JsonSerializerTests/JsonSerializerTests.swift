@@ -112,7 +112,9 @@ class JsonSerializerTests: XCTestCase {
             XCTAssertEqual(json[2].boolValue, false)
 
             XCTAssertEqual(json[3].stringValue, "", "out of range")
-            XCTAssertEqual(json["no"]["such"]["value"].stringValue, "", "no such properties")
+            XCTAssertEqual(json[3][0].stringValue, "", "no such item")
+            XCTAssertEqual(json["no such property"].stringValue, "", "no such property")
+            XCTAssertEqual(json["no"]["such"]["property"].stringValue, "", "no such properties")
         case .Error(let error):
             XCTFail(error.description)
         }
