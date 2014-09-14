@@ -7,16 +7,41 @@
 //  License: The MIT License
 //
 
-import Darwin
-import Foundation
+// MARK: pure Swift
+
+protocol Parser {
+    var lineNumber: Int { get }
+    var columnNumber: Int { get }
+}
+
+struct SourceLocation {
+    let lineNumber: Int
+    let columnNumber: Int
+}
 
 public class ParseError {
     let reason: String
+    let parser: Parser
 
-    init(_ reason: String) {
+    var lineNumber: Int {
+        get { return parser.lineNumber }
+    }
+    var columnNumber: Int {
+        get { return parser.columnNumber }
+    }
+
+    var description: String {
+        get {
+            return "\(reflect(self).summary)[\(lineNumber):\(columnNumber)]: \(reason)"
+        }
+    }
+
+    init(_ reason: String, _ parser: Parser) {
         self.reason = reason
+        self.parser = parser
     }
 }
+
 
 public class UnexpectedTokenError: ParseError { }
 
@@ -25,7 +50,6 @@ public class InsufficientTokenError: ParseError { }
 public class ExtraTokenError: ParseError { }
 
 public class NonStringKeyError: ParseError {}
-
 
 
 let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
@@ -199,13 +223,7 @@ private func byte2cchar(b: Byte) -> CChar {
     }
 }
 
-public class JsonParser {
-
-    public class func parse(source: NSData) -> Result {
-        let begin = unsafeBitCast(source.bytes, UnsafePointer<Byte>.self)
-        let end = begin.advancedBy(source.length)
-        return JsonParser(source, begin, end).parse()
-    }
+public final class JsonParser: Parser {
 
     public class func parse(source: StaticString) -> Result {
         let begin = source.start
@@ -225,8 +243,8 @@ public class JsonParser {
     let end: Iterator
     var cur: Iterator
 
-    var lineNumber = 1
-    var columnNumber = 1
+    public var lineNumber = 1
+    public var columnNumber = 1
 
     public init(_ source: AnyObject?, _ begin: UnsafePointer<Byte>, _ end: UnsafePointer<Byte>) {
         self.originalSource = source
@@ -236,15 +254,15 @@ public class JsonParser {
     }
 
     public enum Result {
-        case Success(json: Json, parser: JsonParser)
-        case Error(error: ParseError, parser: JsonParser)
+        case Success(Json)
+        case Error(ParseError)
     }
 
     func parse() -> Result {
         skipWhitespaces()
 
         if cur == end {
-            return error(InsufficientTokenError("empty string"))
+            return .Error(InsufficientTokenError("empty string", self))
         }
 
         switch cur.memory {
@@ -263,7 +281,7 @@ public class JsonParser {
         case Byte("["):
             return parseArray()
         case (let c):
-            return error(UnexpectedTokenError("unexpected token: \(c)"))
+            return .Error(UnexpectedTokenError("unexpected token: \(c)", self))
         }
     }
 
@@ -273,9 +291,9 @@ public class JsonParser {
 
     func parseSymbol(target: StaticString, _ iftrue: @autoclosure () -> Json) -> Result {
         if expect(target) {
-            return Result.Success(json: iftrue(), parser: self)
+            return .Success(iftrue())
         } else {
-            return error(UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)"))
+            return .Error(UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self))
         }
     }
 
@@ -290,7 +308,7 @@ public class JsonParser {
             case Byte("\\"):
                 cur++
                 if (cur == end) {
-                    return error(InsufficientTokenError("unexpected end of a string literal"))
+                    return .Error(InsufficientTokenError("unexpected end of a string literal", self))
                 }
                 for u in parseEscapedChar(UnicodeScalar(cur.memory)).utf8 {
                     buffer.append(byte2cchar(u))
@@ -306,7 +324,7 @@ public class JsonParser {
         buffer.append(0) // trailing nul
 
         let s = String.fromCString(buffer)!
-        return Result.Success(json: .StringValue(s), parser: self)
+        return .Success(.StringValue(s))
     }
 
     func parseEscapedChar(c: UnicodeScalar) -> String {
@@ -347,7 +365,7 @@ public class JsonParser {
             }
         }
 
-        return Result.Success(json: .NumberValue(sign * n), parser: self)
+        return .Success(.NumberValue(sign * n))
     }
 
     func parseObject() -> Result {
@@ -359,16 +377,16 @@ public class JsonParser {
         LOOP: for ;cur != end && !expect("}"); cur++ {
             // key
             switch parse() {
-            case .Success(let keyValue, _):
+            case .Success(let keyValue):
                 switch keyValue {
                 case .StringValue(let key):
                     if !expect(":") {
-                        return error(UnexpectedTokenError("missing colon (:)"))
+                        return .Error(UnexpectedTokenError("missing colon (:)", self))
                     }
 
                     // value
                     switch parse() {
-                    case .Success(let value, _):
+                    case .Success(let value):
                         o[key] = value
                         break
                     case (let error):
@@ -381,17 +399,17 @@ public class JsonParser {
                     } else if expect("}") {
                         break LOOP
                     } else {
-                        return error(UnexpectedTokenError("missing comma (,)"))
+                        return .Error(UnexpectedTokenError("missing comma (,)", self))
                     }
                 default:
-                    return error(NonStringKeyError("unexpected value for object key"))
+                    return .Error(NonStringKeyError("unexpected value for object key", self))
                 }
             case (let error):
                 return error
             }
         }
 
-        return Result.Success(json: .ObjectValue(o), parser: self)
+        return .Success(.ObjectValue(o))
     }
 
     func parseArray() -> Result {
@@ -402,7 +420,7 @@ public class JsonParser {
 
         LOOP: for ;cur != end && !expect("]"); cur++ {
             switch parse() {
-            case .Success(let json, _):
+            case .Success(let json):
                 a.append(json)
 
                 if expect(",") {
@@ -410,7 +428,7 @@ public class JsonParser {
                 } else if expect("]") {
                     break LOOP
                 } else {
-                    return error(UnexpectedTokenError("missing comma (,) (token: \(currentSymbol))"))
+                    return .Error(UnexpectedTokenError("missing comma (,) (token: \(currentSymbol))", self))
                 }
             case (let error):
                 return error
@@ -418,7 +436,7 @@ public class JsonParser {
 
         }
 
-        return Result.Success(json: .ArrayValue(a), parser: self)
+        return .Success(.ArrayValue(a))
     }
 
 
@@ -474,8 +492,16 @@ public class JsonParser {
             }
         }
     }
+}
 
-    func error(error: ParseError) -> Result {
-        return .Error(error: error, parser: self)
+// MARK: +Foundation
+
+import Foundation
+
+extension JsonParser {
+    public class func parse(source: NSData) -> Result {
+        let begin = unsafeBitCast(source.bytes, UnsafePointer<Byte>.self)
+        let end = begin.advancedBy(source.length)
+        return JsonParser(source, begin, end).parse()
     }
 }

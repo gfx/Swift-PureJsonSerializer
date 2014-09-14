@@ -12,6 +12,7 @@
 		FA06006519C10C6600B4A852 /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA06006419C10C6600B4A852 /* JsonSerializer.swift */; };
 		FA06006619C10C6600B4A852 /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA06006419C10C6600B4A852 /* JsonSerializer.swift */; };
 		FA06006819C10CBC00B4A852 /* tweets.json in Resources */ = {isa = PBXBuildFile; fileRef = FA06006719C10CBC00B4A852 /* tweets.json */; };
+		FA06006A19C1EC0900B4A852 /* ParseErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA06006919C1EC0900B4A852 /* ParseErrorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		FA06005A19C10B7900B4A852 /* JsonSerializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonSerializerTests.swift; sourceTree = "<group>"; };
 		FA06006419C10C6600B4A852 /* JsonSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonSerializer.swift; sourceTree = "<group>"; };
 		FA06006719C10CBC00B4A852 /* tweets.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = tweets.json; sourceTree = "<group>"; };
+		FA06006919C1EC0900B4A852 /* ParseErrorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseErrorTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 			children = (
 				FA06006719C10CBC00B4A852 /* tweets.json */,
 				FA06005A19C10B7900B4A852 /* JsonSerializerTests.swift */,
+				FA06006919C1EC0900B4A852 /* ParseErrorTests.swift */,
 				FA06005819C10B7900B4A852 /* Supporting Files */,
 			);
 			path = JsonSerializerTests;
@@ -212,6 +215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA06006A19C1EC0900B4A852 /* ParseErrorTests.swift in Sources */,
 				FA06005B19C10B7900B4A852 /* JsonSerializerTests.swift in Sources */,
 				FA06006619C10C6600B4A852 /* JsonSerializer.swift in Sources */,
 			);
@@ -387,6 +391,7 @@
 				FA06006019C10B7900B4A852 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FA06006119C10B7900B4A852 /* Build configuration list for PBXNativeTarget "JsonSerializerTests" */ = {
 			isa = XCConfigurationList;
@@ -395,6 +400,7 @@
 				FA06006319C10B7900B4A852 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

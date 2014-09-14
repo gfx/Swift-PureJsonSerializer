@@ -13,10 +13,10 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse(" [ ] ")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "[]")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -25,10 +25,10 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse("[true, false, true]")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "[true,false,true]")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -36,10 +36,10 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse(" { } ")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "{}")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -47,10 +47,10 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse("[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -58,11 +58,23 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse("[\"こんにちは\"]")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json[0].stringValue, "こんにちは")
             XCTAssertEqual(json.description, "[\"こんにちは\"]")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testStringWithMyltiUnicodeScalars() {
+        let x = JsonParser.parse("[\"江戸前🍣\"]")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json[0].stringValue, "江戸前🍣")
+            XCTAssertEqual(json.description, "[\"江戸前🍣\"]")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -70,10 +82,10 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse("[10]")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "[10]")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -81,10 +93,10 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse("[3.14]")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "[3.14]")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -92,7 +104,7 @@ class JsonletTests: XCTestCase {
         let x = JsonParser.parse("[\"foo bar\", true, false]")
 
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
 
             XCTAssertEqual(json[0].stringValue, "foo bar")
@@ -102,19 +114,19 @@ class JsonletTests: XCTestCase {
             XCTAssertEqual(json[3].stringValue, "", "out of range")
 
             XCTAssertEqual(json["no"]["suck"]["value"].stringValue, "", "no such properties")
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
     func testComplexJson() {
         let x = JsonParser.parse(complexJsonExample())
         switch x {
-        case .Success(let json, _):
+        case .Success(let json):
             XCTAssertEqual(json["statuses"][0]["id_str"].stringValue, "250075927172759552")
 
-        case .Error(let error, let parser):
-            XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+        case .Error(let error):
+            XCTFail(error.description)
         }
     }
 
@@ -123,10 +135,10 @@ class JsonletTests: XCTestCase {
 
         self.measureBlock {
             switch JsonParser.parse(jsonSource) {
-            case .Success(let json, _):
+            case .Success(let json):
                 XCTAssertTrue(true)
-            case .Error(let error, let parser):
-                XCTFail("\(error.reason) at line \(parser.lineNumber) column \(parser.columnNumber)")
+            case .Error(let error):
+                XCTFail(error.description)
             }
         }
     }
