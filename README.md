@@ -25,6 +25,10 @@ This is an alpha software. Any API will change.
 
 * This library doesn't work with optimization flags (`swiftc -O`)
 
+# SEE ALSO
+
+* [RFC 7159  The JavaScript Object Notation (JSON) Data Interchange Format](http://tools.ietf.org/html/rfc7159)
+
 # AUTHOR
 
 Fuji, Goro (gfx) gfuji@cpan.org
@@ -32,5 +36,3 @@ Fuji, Goro (gfx) gfuji@cpan.org
 # LICENSE
 
 The Apache 2.0 License
-
-
