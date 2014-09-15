@@ -9,6 +9,28 @@
 import XCTest
 
 class JsonTests: XCTestCase {
+
+    func testConvenienceConvertions() {
+        let x = JsonParser.parse("[\"foo bar\", true, false]")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
+
+            XCTAssertEqual(json[0].stringValue, "foo bar")
+            XCTAssertEqual(json[1].boolValue, true)
+            XCTAssertEqual(json[2].boolValue, false)
+
+            XCTAssertEqual(json[3].stringValue, "", "out of range")
+            XCTAssertEqual(json[3][0].stringValue, "", "no such item")
+            XCTAssertEqual(json["no such property"].stringValue, "", "no such property")
+            XCTAssertEqual(json["no"]["such"]["property"].stringValue, "", "no such properties")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+
     func testConvertFromNilLiteral() {
         let value: Json = nil
         XCTAssertEqual(value, Json.NullValue)

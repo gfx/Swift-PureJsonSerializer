@@ -20,24 +20,14 @@ let escapeMapping: [Character: String] = [
     "\r": "\\r",
     "\n": "\\n",
     "\t": "\\t",
+    "\\": "\\\\",
+    "\"": "\\\"",
 
-    // XXX: Swift's issue? countElements("\r\n") is 1
+    "\u{2028}": "\\u2028", // LINE SEPARATOR
+    "\u{2029}": "\\u2029", // PARAGRAPH SEPARATOR
+
+    // XXX: countElements("\r\n") is 1 in Swift 1.0
     "\r\n": "\\r\\n",
-
-    // for security reasons
-    // cf. https://metacpan.org/source/KAZEBURO/JavaScript-Value-Escape-0.06/lib/JavaScript/Value/Escape.pm
-    "\\": "\\u005c",
-    "\"": "\\u0022",
-    "\'": "\\u0027",
-    "<": "\\u003c",
-    ">": "\\u003e",
-    "&": "\\u0026",
-    "=": "\\u003d",
-    "-": "\\u002d",
-    ";": "\\u003b",
-    "+": "\\u002b",
-    "\u{2028}": "\\u2028",
-    "\u{2029}": "\\u2029",
 ]
 
 // TODO: consider Unicode escape sequence

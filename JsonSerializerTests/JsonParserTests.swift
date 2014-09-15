@@ -49,7 +49,7 @@ class JsonParserTests: XCTestCase {
 
         switch x {
         case .Success(let json):
-            XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\u005c] bar\"]")
+            XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
         case .Error(let error):
             XCTFail(error.description)
         }
@@ -101,21 +101,13 @@ class JsonParserTests: XCTestCase {
         }
     }
 
-    func testJsonValue() {
-        let x = JsonParser.parse("[\"foo bar\", true, false]")
+    func testUnicodeEscapeSequences() {
+        return // TODO
+        let x = JsonParser.parse("[\"\\u003c \\u003e\"]")
 
         switch x {
         case .Success(let json):
-            XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
-
-            XCTAssertEqual(json[0].stringValue, "foo bar")
-            XCTAssertEqual(json[1].boolValue, true)
-            XCTAssertEqual(json[2].boolValue, false)
-
-            XCTAssertEqual(json[3].stringValue, "", "out of range")
-            XCTAssertEqual(json[3][0].stringValue, "", "no such item")
-            XCTAssertEqual(json["no such property"].stringValue, "", "no such property")
-            XCTAssertEqual(json["no"]["such"]["property"].stringValue, "", "no such properties")
+            XCTAssertEqual(json[0].stringValue, "< >")
         case .Error(let error):
             XCTFail(error.description)
         }
