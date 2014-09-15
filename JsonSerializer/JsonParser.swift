@@ -120,8 +120,13 @@ public class JsonParser: Parser {
                 if (cur == end) {
                     return .Error(InsufficientTokenError("unexpected end of a string literal", self))
                 }
-                for u in parseEscapedChar(UnicodeScalar(cur.memory)).utf8 {
-                    buffer.append(byte2cchar(u))
+
+                if let c = parseEscapedChar() {
+                    for u in String(c).utf8 {
+                        buffer.append(byte2cchar(u))
+                    }
+                } else {
+                    return .Error(InvalidEscapeSequence("invalid escape sequence", self))
                 }
                 break
             case Byte("\""): // end of the string literal
@@ -137,9 +142,52 @@ public class JsonParser: Parser {
         return .Success(.StringValue(s))
     }
 
-    func parseEscapedChar(c: UnicodeScalar) -> String {
-        // TODO: unicode escape sequence
-        return String(Character(unescapeMapping[c] ?? c))
+    func parseEscapedChar() -> UnicodeScalar? {
+        let c = UnicodeScalar(cur.memory)
+        if c == "u" { // Unicode escape sequence
+            var length = 0 // 2...8
+            var value: UInt32 = 0
+            while let d = hex2d((cur+1).memory) {
+                nextChar()
+                length++
+
+                if length > 8 {
+                    break
+                }
+
+                value = (value << 4) | d
+            }
+            if length < 2 {
+                return nil
+            }
+            return UnicodeScalar(value)
+        } else {
+            let c = UnicodeScalar(cur.memory)
+            return unescapeMapping[c] ?? c
+        }
+    }
+
+    func hex2d(b: Byte) -> UInt32? {
+        switch b {
+        case Byte("0"): return 0x0
+        case Byte("1"): return 0x1
+        case Byte("2"): return 0x2
+        case Byte("3"): return 0x3
+        case Byte("4"): return 0x4
+        case Byte("5"): return 0x5
+        case Byte("6"): return 0x6
+        case Byte("7"): return 0x7
+        case Byte("8"): return 0x8
+        case Byte("9"): return 0x9
+        case Byte("a"), Byte("A"): return 0xA
+        case Byte("b"), Byte("B"): return 0xB
+        case Byte("c"), Byte("C"): return 0xC
+        case Byte("d"), Byte("D"): return 0xD
+        case Byte("e"), Byte("E"): return 0xE
+        case Byte("f"), Byte("F"): return 0xF
+        default:
+            return nil
+        }
     }
 
     func parseNumber() -> Result {

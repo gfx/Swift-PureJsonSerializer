@@ -102,12 +102,22 @@ class JsonParserTests: XCTestCase {
     }
 
     func testUnicodeEscapeSequences() {
-        return // TODO
         let x = JsonParser.parse("[\"\\u003c \\u003e\"]")
 
         switch x {
         case .Success(let json):
             XCTAssertEqual(json[0].stringValue, "< >")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testUnicodeEscapeSequencesWith32bitsUnicodeScalar() {
+        let x = JsonParser.parse("[\"\\u0001F363\"]")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json[0].stringValue, "\u{0001F363}")
         case .Error(let error):
             XCTFail(error.description)
         }
