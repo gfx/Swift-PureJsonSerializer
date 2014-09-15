@@ -49,7 +49,7 @@ class JsonParserTests: XCTestCase {
 
         switch x {
         case .Success(let json):
-            XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
+            XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\u005c] bar\"]")
         case .Error(let error):
             XCTFail(error.description)
         }
