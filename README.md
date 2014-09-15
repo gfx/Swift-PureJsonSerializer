@@ -15,6 +15,12 @@ case .Success(let json):
 case .Error(let error):
   println(error)
 }
+
+let profile: Json = [
+  "name": "Swift",
+  "started": 2014,
+  "keywords": ["OOP", "functional programming", "static types", "iOS"],
+]
 ```
 
 # DESCRIPTION
