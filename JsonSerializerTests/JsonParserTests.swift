@@ -23,11 +23,11 @@ class JsonParserTests: XCTestCase {
 
 
     func testArray() {
-        let x = JsonParser.parse("[true, false, true]")
+        let x = JsonParser.parse("[true, false, null]")
 
         switch x {
         case .Success(let json):
-            XCTAssertEqual(json.description, "[true,false,true]")
+            XCTAssertEqual(json.description, "[true,false,null]")
         case .Error(let error):
             XCTFail(error.description)
         }
