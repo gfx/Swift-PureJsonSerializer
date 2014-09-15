@@ -1,5 +1,6 @@
 //
-//  JsonSerializer/JsonSerializerTests.swift
+//  JsonParserTests.swift
+//  JsonSerializer
 //
 //  Created by Fuji Goro on 2014/09/08.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -7,7 +8,7 @@
 
 import XCTest
 
-class JsonSerializerTests: XCTestCase {
+class JsonParserTests: XCTestCase {
 
     func testEmptyArray() {
         let x = JsonParser.parse(" [ ] ")

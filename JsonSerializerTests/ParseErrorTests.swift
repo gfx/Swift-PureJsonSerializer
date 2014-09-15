@@ -3,7 +3,7 @@
 //  JsonSerializer
 //
 //  Created by Fuji Goro on 2014/09/11.
-//  Copyright (c) 2014年 Fuji Goro. All rights reserved.
+//  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
 import XCTest
