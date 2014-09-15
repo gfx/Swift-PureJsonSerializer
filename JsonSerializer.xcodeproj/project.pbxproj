@@ -22,6 +22,7 @@
 		FAF14E8119C6814E0070F09F /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E8019C6814E0070F09F /* StringUtils.swift */; };
 		FAF14E8219C6814E0070F09F /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E8019C6814E0070F09F /* StringUtils.swift */; };
 		FAF14E8419C6834A0070F09F /* StringUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E8319C6834A0070F09F /* StringUtilsTests.swift */; };
+		FAF14E8619C696BD0070F09F /* JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E8519C696BD0070F09F /* JsonTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		FAF14E7D19C680F90070F09F /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
 		FAF14E8019C6814E0070F09F /* StringUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringUtils.swift; sourceTree = "<group>"; };
 		FAF14E8319C6834A0070F09F /* StringUtilsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringUtilsTests.swift; sourceTree = "<group>"; };
+		FAF14E8519C696BD0070F09F /* JsonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 			children = (
 				FA06005819C10B7900B4A852 /* Supporting Files */,
 				FA06005A19C10B7900B4A852 /* JsonParserTests.swift */,
+				FAF14E8519C696BD0070F09F /* JsonTests.swift */,
 				FA06006919C1EC0900B4A852 /* ParseErrorTests.swift */,
 				FAF14E8319C6834A0070F09F /* StringUtilsTests.swift */,
 			);
@@ -240,6 +243,7 @@
 			files = (
 				FAF14E7919C680330070F09F /* JsonParser+Foundation.swift in Sources */,
 				FAF14E8219C6814E0070F09F /* StringUtils.swift in Sources */,
+				FAF14E8619C696BD0070F09F /* JsonTests.swift in Sources */,
 				FA06006A19C1EC0900B4A852 /* ParseErrorTests.swift in Sources */,
 				FA06005B19C10B7900B4A852 /* JsonParserTests.swift in Sources */,
 				FAF14E8419C6834A0070F09F /* StringUtilsTests.swift in Sources */,

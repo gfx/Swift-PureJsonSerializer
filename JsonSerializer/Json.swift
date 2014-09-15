@@ -8,7 +8,7 @@
 
 import Darwin
 
-public enum Json: Printable {
+public enum Json: Printable, Equatable {
     case NullValue
     case NumberValue(Double)
     case StringValue(String)
@@ -136,6 +136,105 @@ public enum Json: Printable {
         }
         
         return s + "}"
+    }
+}
+
+
+public func ==(lhs: Json, rhs: Json) -> Bool {
+    switch lhs {
+    case .NullValue:
+        switch rhs {
+        case .NullValue:
+            return true
+        default:
+            return false
+        }
+    case .BooleanValue(let lhsValue):
+        switch rhs {
+        case .BooleanValue(let rhsValue):
+            return lhsValue == rhsValue
+        default:
+            return false
+        }
+    case .StringValue(let lhsValue):
+        switch rhs {
+        case .StringValue(let rhsValue):
+            return lhsValue == rhsValue
+        default:
+            return false
+        }
+    case .NumberValue(let lhsValue):
+        switch rhs {
+        case .NumberValue(let rhsValue):
+            return lhsValue == rhsValue
+        default:
+            return false
+        }
+    case .ArrayValue(let lhsValue):
+        switch rhs {
+        case .ArrayValue(let rhsValue):
+            return lhsValue == rhsValue
+        default:
+            return false
+        }
+    case .ObjectValue(let lhsValue):
+        switch rhs {
+        case .ObjectValue(let rhsValue):
+            return lhsValue == rhsValue
+        default:
+            return false
+        }
+    }
+}
+
+
+extension Json: NilLiteralConvertible {
+    public static func convertFromNilLiteral() -> Json {
+        return .NullValue
+    }
+}
+
+extension Json: BooleanLiteralConvertible {
+    public static func convertFromBooleanLiteral(value: BooleanLiteralType) -> Json {
+        return .BooleanValue(value)
+    }
+}
+
+extension Json: IntegerLiteralConvertible {
+    public static func convertFromIntegerLiteral(value: IntegerLiteralType) -> Json {
+        return .NumberValue(Double(value))
+    }
+}
+
+extension Json: FloatLiteralConvertible {
+    public static func convertFromFloatLiteral(value: FloatLiteralType) -> Json {
+        return .NumberValue(Double(value))
+    }
+}
+
+extension Json: StringLiteralConvertible {
+    public static func convertFromExtendedGraphemeClusterLiteral(value: ExtendedGraphemeClusterType) -> Json {
+        return .StringValue(value)
+    }
+
+    public static func convertFromStringLiteral(value: StringLiteralType) -> Json {
+        return .StringValue(value)
+    }
+}
+
+extension Json: ArrayLiteralConvertible {
+    public static func convertFromArrayLiteral(elements: Json...) -> Json {
+        return .ArrayValue(elements)
+    }
+}
+
+extension Json: DictionaryLiteralConvertible {
+    public static func convertFromDictionaryLiteral(elements: (String, Json)...) -> Json {
+        var dictionary = [String:Json](minimumCapacity: elements.count)
+        for pair in elements {
+            dictionary[pair.0] = pair.1
+        }
+        return .ObjectValue(dictionary)
     }
 }
 
