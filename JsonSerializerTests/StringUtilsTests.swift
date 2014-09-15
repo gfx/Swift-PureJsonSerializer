@@ -9,5 +9,23 @@
 import XCTest
 
 class StringUtilsTests: XCTestCase {
+    func testEscapedN() {
+        XCTAssertEqual(escapeAsJsonString("\n \n"), "\"\\n \\n\"", "for \\n")
+    }
 
+    func testEscapedT() {
+        XCTAssertEqual(escapeAsJsonString("\t \t"), "\"\\t \\t\"", "for \\t")
+    }
+
+    func testEscapedR() {
+        XCTAssertEqual(escapeAsJsonString("\r \r"), "\"\\r \\r\"", "for \\r")
+    }
+
+    func testEscapedBackslash() {
+        XCTAssertEqual(escapeAsJsonString("\\ \\"), "\"\\\\ \\\\\"", "for \\")
+    }
+
+    func testEscapedDoublequote() {
+        XCTAssertEqual(escapeAsJsonString("\" \""), "\"\\\" \\\"\"", "for \"")
+    }
 }

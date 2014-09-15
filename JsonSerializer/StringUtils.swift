@@ -20,6 +20,7 @@ let escapeMapping: [Character: Character] = [
     "\r": "r",
     "\n": "n",
     "\\": "\\",
+    "\"": "\"",
 ]
 
 // TODO: consider Unicode escape sequence
@@ -27,13 +28,11 @@ public func escapeAsJsonString(source : String) -> String {
     var s = "\""
 
     for c in source {
-        switch c {
-        case "\\", "\r", "\n", "\t":
-            s += "\\" + escapeMapping[c]!
-            break
-        default:
+        if let escapedSymbol = escapeMapping[c] {
+            s.append(Character("\\"))
+            s.append(escapedSymbol)
+        } else {
             s.append(c)
-            break
         }
     }
 
