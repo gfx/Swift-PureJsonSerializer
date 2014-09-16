@@ -147,7 +147,7 @@ public class JsonParser: Parser {
         if c == "u" { // Unicode escape sequence
             var length = 0 // 2...8
             var value: UInt32 = 0
-            while let d = hex2d((cur+1).memory) {
+            while let d = hexToDigit((cur+1).memory) {
                 nextChar()
                 length++
 
@@ -164,29 +164,6 @@ public class JsonParser: Parser {
         } else {
             let c = UnicodeScalar(cur.memory)
             return unescapeMapping[c] ?? c
-        }
-    }
-
-    func hex2d(b: Byte) -> UInt32? {
-        switch b {
-        case Byte("0"): return 0x0
-        case Byte("1"): return 0x1
-        case Byte("2"): return 0x2
-        case Byte("3"): return 0x3
-        case Byte("4"): return 0x4
-        case Byte("5"): return 0x5
-        case Byte("6"): return 0x6
-        case Byte("7"): return 0x7
-        case Byte("8"): return 0x8
-        case Byte("9"): return 0x9
-        case Byte("a"), Byte("A"): return 0xA
-        case Byte("b"), Byte("B"): return 0xB
-        case Byte("c"), Byte("C"): return 0xC
-        case Byte("d"), Byte("D"): return 0xD
-        case Byte("e"), Byte("E"): return 0xE
-        case Byte("f"), Byte("F"): return 0xF
-        default:
-            return nil
         }
     }
 

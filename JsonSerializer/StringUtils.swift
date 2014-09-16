@@ -30,7 +30,25 @@ let escapeMapping: [Character: String] = [
     "\r\n": "\\r\\n",
 ]
 
-// TODO: consider Unicode escape sequence
+let hexMapping: [Byte:UInt32] = [
+    Byte("0"): 0x0,
+    Byte("1"): 0x1,
+    Byte("2"): 0x2,
+    Byte("3"): 0x3,
+    Byte("4"): 0x4,
+    Byte("5"): 0x5,
+    Byte("6"): 0x6,
+    Byte("7"): 0x7,
+    Byte("8"): 0x8,
+    Byte("9"): 0x9,
+    Byte("a"): 0xA, Byte("A"): 0xA,
+    Byte("b"): 0xB, Byte("B"): 0xB,
+    Byte("c"): 0xC, Byte("C"): 0xC,
+    Byte("d"): 0xD, Byte("D"): 0xD,
+    Byte("e"): 0xE, Byte("E"): 0xE,
+    Byte("f"): 0xF, Byte("F"): 0xF,
+]
+
 public func escapeAsJsonString(source : String) -> String {
     var s = "\""
     s.reserveCapacity(source.utf16Count * 2)
@@ -44,5 +62,10 @@ public func escapeAsJsonString(source : String) -> String {
     }
     s.extend("\"")
     return s
+}
+
+
+func hexToDigit(b: Byte) -> UInt32? {
+    return hexMapping[b]
 }
 
