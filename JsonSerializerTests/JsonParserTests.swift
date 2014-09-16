@@ -80,22 +80,35 @@ class JsonParserTests: XCTestCase {
     }
 
     func testNumberOfInt() {
-        let x = JsonParser.parse("[10]")
+        let x = JsonParser.parse("[0, 10, 234]")
 
         switch x {
         case .Success(let json):
-            XCTAssertEqual(json.description, "[10]")
+            XCTAssertEqual(json.description, "[0,10,234]")
         case .Error(let error):
             XCTFail(error.description)
         }
     }
 
     func testNumberOfFloat() {
-        let x = JsonParser.parse("[3.14]")
+        let x = JsonParser.parse("[3.14, 0.035]")
 
         switch x {
         case .Success(let json):
-            XCTAssertEqual(json.description, "[3.14]")
+            XCTAssertEqual(json.description, "[3.14,0.035]")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testNumberOfExponent() {
+        let x = JsonParser.parse("[1e2, 1e-2, 3.14e+01]")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json[0].stringValue, "100")
+            XCTAssertEqual(json[1].stringValue, "0.01")
+            XCTAssertEqual(json[2].stringValue, "31.4")
         case .Error(let error):
             XCTFail(error.description)
         }

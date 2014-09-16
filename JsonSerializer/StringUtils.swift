@@ -49,6 +49,19 @@ let hexMapping: [Byte:UInt32] = [
     Byte("f"): 0xF, Byte("F"): 0xF,
 ]
 
+let digitMapping: [Byte:Int] = [
+    Byte("0"): 0,
+    Byte("1"): 1,
+    Byte("2"): 2,
+    Byte("3"): 3,
+    Byte("4"): 4,
+    Byte("5"): 5,
+    Byte("6"): 6,
+    Byte("7"): 7,
+    Byte("8"): 8,
+    Byte("9"): 9,
+]
+
 public func escapeAsJsonString(source : String) -> String {
     var s = "\""
     s.reserveCapacity(source.utf16Count * 2)
@@ -64,6 +77,9 @@ public func escapeAsJsonString(source : String) -> String {
     return s
 }
 
+func digitToInt(b: Byte) -> Int? {
+    return digitMapping[b]
+}
 
 func hexToDigit(b: Byte) -> UInt32? {
     return hexMapping[b]

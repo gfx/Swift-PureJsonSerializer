@@ -126,7 +126,7 @@ public class JsonParser: Parser {
                         buffer.append(byte2cchar(u))
                     }
                 } else {
-                    return .Error(InvalidEscapeSequence("invalid escape sequence", self))
+                    return .Error(InvalidEscapeSequenceError("invalid escape sequence", self))
                 }
                 break
             case Byte("\""): // end of the string literal
@@ -167,40 +167,80 @@ public class JsonParser: Parser {
         }
     }
 
+    // number = [ minus ] int [ frac ] [ exp ]
     func parseNumber() -> Result {
         let sign = expect("-") ? -1.0 : 1.0
 
-        let start = index
-        var n = Double()
-
-        // integer
-        LOOP: for ; cur != end; nextChar() {
-            switch cur.memory {
-            case Byte("0") ... Byte("9"):
-                let d = String(UnicodeScalar(cur.memory)).toInt()!
-                n = (n * 10.0) + Double(d)
-            default:
-                break LOOP
-            }
-        }
-
-        // fraction
-        if expect(".") {
-            var factor = 0.1
-
-            LOOP: for ; cur != end; nextChar() {
-                switch cur.memory {
-                case Byte("0") ... Byte("9"):
-                    let d = String(UnicodeScalar(cur.memory)).toInt()!
-                    n += (Double(d) * factor)
-                    factor /= 10
-                default:
-                    break LOOP
+        var integer: Int64 = 0
+        switch cur.memory {
+        case Byte("0"):
+            nextChar()
+        case Byte("1") ... Byte("9"):
+            for ; cur != end; nextChar() {
+                if let value = digitToInt(cur.memory) {
+                    integer = (integer * 10) + Int64(value)
+                } else {
+                    break
                 }
             }
+        default:
+            return .Error(InvalidNumberError("invalid token in number", self))
         }
 
-        return .Success(.NumberValue(sign * n))
+        if integer != Int64(Double(integer)) {
+            // TODO
+            //return .Error(InvalidNumberError("too much integer part in number", self))
+        }
+
+        var fraction: Double = 0.0
+        if expect(".") {
+            var factor = 0.1
+            var fractionLength = 0
+
+            for ; cur != end; nextChar() {
+                if let value = digitToInt(cur.memory) {
+                    fraction += (Double(value) * factor)
+                    factor /= 10
+                    fractionLength++
+                } else {
+                    break
+                }
+            }
+
+            if fractionLength == 0 {
+                return .Error(InvalidNumberError("insufficient fraction part in number", self))
+            }
+        }
+
+        var exponent: Int64 = 0
+        if expect("e") || expect("E") {
+            var expSign: Int64 = 1
+            if expect("-") {
+                expSign = -1
+            } else if expect("+") {
+                // do nothing
+            }
+
+            exponent = 0
+
+            var exponentLength = 0
+            for ; cur != end; nextChar() {
+                if let value = digitToInt(cur.memory) {
+                    exponent = (exponent * 10) + Int64(value)
+                    exponentLength++
+                } else {
+                    break
+                }
+            }
+            if exponentLength == 0 {
+                return .Error(InvalidNumberError("insufficient exponent part in number", self))
+            }
+
+            exponent *= expSign
+        }
+
+        //println("nuber: \(sign) * (\(integer) + \(fraction)) * pow(10, \(exponent))")
+        return .Success(.NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent))))
     }
 
     func parseObject() -> Result {
@@ -296,10 +336,6 @@ public class JsonParser: Parser {
         let endp = p.advancedBy(Int(target.byteSize))
 
         LOOP: for ; p != endp; p++, nextChar() {
-            if !isIdentifier(cur.memory) {
-                break
-            }
-
             if p.memory != cur.memory {
                 cur = start // unread
                 lineNumber = l
