@@ -1,12 +1,13 @@
 # Swift-JsonSerializer
 
-A pure-Swift JSON serializer and deserializer
+A pure-Swift JSON parser and serializer
 
 # SYNOPSIS
 
 ```
 import JsonSerializer
 
+// parse a JSON data
 let data: NSData
 
 switch JsonParser.parse(data) {
@@ -16,20 +17,26 @@ case .Error(let error):
   println(error)
 }
 
+// build a JSON structure
 let profile: Json = [
   "name": "Swift",
   "started": 2014,
   "keywords": ["OOP", "functional programming", "static types", "iOS"],
 ]
+println(profile.description)      // packed JSON string
+println(profile.debugDescription) // pretty JSON string
 ```
 
 # DESCRIPTION
 
-This is an alpha software. Any API will change.
+Swift-JsonSerializer is a JSON parser and serializer which is implemented in pure Swift and adds nothing
+to built-in / standard classes in Swift.
+
+(TBD)
 
 # KNOWN ISSUES
 
-* This library doesn't work with optimization flags (`swiftc -O`)
+* This library doesn't work with optimization flags (`swiftc -O`) as of Xcode 6 GM / Swift version 1.0 (swift-600.0.51.3).
 
 # SEE ALSO
 
