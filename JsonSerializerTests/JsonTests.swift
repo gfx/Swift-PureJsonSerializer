@@ -93,6 +93,17 @@ class JsonTests: XCTestCase {
         XCTAssertEqual(x.debugDescription, "true", "DebugPrintable#debugDescription")
     }
 
+    func testPrlettySerializer() {
+        let x = Json.from([true, [ "foo": 1, "bar": 2 ], false])
+        XCTAssertEqual(x.debugDescription,
+            "[\n" +
+            "  true,\n" +
+            "  {\n" +
+            "    \"bar\": 2,\n" +
+            "    \"foo\": 1 },\n" +
+            "  false ]",
+            "PrettyJsonSerializer")
+    }
 
     let e: Json = nil
     let b0: Json = false

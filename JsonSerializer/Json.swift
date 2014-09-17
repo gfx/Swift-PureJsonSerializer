@@ -134,61 +134,15 @@ public enum Json: Printable, DebugPrintable, Equatable {
     }
 
     public var description: String {
-        get { return serialize(pretty: false) }
+        get { return serialize(DefaultJsonSerializer()) }
     }
 
     public var debugDescription: String {
-        get { return serialize(pretty: true) }
+        get { return serialize(PrettyJsonSerializer()) }
     }
 
-
-    public func serialize(pretty: Bool = false) -> String {
-        switch self {
-        case .NullValue:
-            return "null"
-        case .BooleanValue(let b):
-            return b ? "true" : "false"
-        case .NumberValue(let n):
-            return stringify(n)
-        case .StringValue(let s):
-            return escapeAsJsonString(s)
-        case .ArrayValue(let a):
-            return stringify(a)
-        case .ObjectValue(let o):
-            return stringify(o)
-        }
-    }
-
-    func stringify(n: Double) -> String {
-        if n == Double(Int32(n)) {
-            return Int32(n).description
-        } else {
-            return n.description
-        }
-    }
-
-    func stringify(a: [Json]) -> String {
-        var s = "["
-        for var i = 0; i < a.count; i++ {
-            s += a[i].description
-            if i != (a.count - 1) {
-                s += ","
-            }
-        }
-        return s + "]"
-    }
-
-    func stringify(o: [String: Json]) -> String {
-        var s = "{"
-        var i = 0
-        for entry in o {
-            s += "\(escapeAsJsonString(entry.0)):\(entry.1.description)"
-            if i++ != (o.count - 1) {
-                s += ","
-            }
-        }
-        
-        return s + "}"
+    public func serialize(serializer: JsonSerializer) -> String {
+        return serializer.serialize(self)
     }
 }
 
