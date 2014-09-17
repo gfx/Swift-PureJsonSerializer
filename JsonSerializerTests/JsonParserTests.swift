@@ -11,6 +11,17 @@ import XCTest
 class JsonParserTests: XCTestCase {
 
     func testEmptyArray() {
+        let x = JsonParser.parse("[]")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json.description, "[]")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testEmptyArrayWithSpaces() {
         let x = JsonParser.parse(" [ ] ")
 
         switch x {
@@ -21,8 +32,18 @@ class JsonParserTests: XCTestCase {
         }
     }
 
-
     func testArray() {
+        let x = JsonParser.parse("[true,false,null]")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json.description, "[true,false,null]")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testArrayWithSpaces() {
         let x = JsonParser.parse("[true, false, null]")
 
         switch x {
@@ -34,11 +55,33 @@ class JsonParserTests: XCTestCase {
     }
 
     func testEmptyObject() {
+        let x = JsonParser.parse("{}")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json.description, "{}")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testEmptyObjectWithSpace() {
         let x = JsonParser.parse(" { } ")
 
         switch x {
         case .Success(let json):
             XCTAssertEqual(json.description, "{}")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+    func testObject() {
+        let x = JsonParser.parse("{\"foo\":[\"bar\",\"baz\"]}")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
         case .Error(let error):
             XCTFail(error.description)
         }

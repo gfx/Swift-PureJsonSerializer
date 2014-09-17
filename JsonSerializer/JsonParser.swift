@@ -249,7 +249,7 @@ public class JsonParser: Parser {
 
         var o = [String:Json]()
 
-        LOOP: for ;cur != end && !expect("}"); nextChar() {
+        LOOP: while cur != end && !expect("}") {
             // key
             switch parseValue() {
             case .Success(let keyValue):
@@ -293,7 +293,7 @@ public class JsonParser: Parser {
 
         var a = Array<Json>()
 
-        LOOP: for ;cur != end && !expect("]"); nextChar() {
+        LOOP: while cur != end && !expect("]") {
             switch parseValue() {
             case .Success(let json):
                 a.append(json)

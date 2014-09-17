@@ -65,6 +65,19 @@ public enum Json: Printable, Equatable {
         }
     }
 
+    public var arrayValue: [Json] {
+        get {
+            switch self {
+            case .NullValue:
+                return []
+            case .ArrayValue(let array):
+                return array
+            default:
+                return [self]
+            }
+        }
+    }
+
     public subscript(index: Int) -> Json {
         get {
             switch self {
