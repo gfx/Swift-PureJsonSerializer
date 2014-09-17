@@ -7,34 +7,59 @@
 //
 
 import UIKit
+import JsonSerializer
 
 class MasterViewController: UITableViewController {
 
-    var objects = NSMutableArray()
+    let url = "http://api.stackexchange.com/2.2/tags/swift/faq?site=stackoverflow.com"
 
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
+    var entries: [Json] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
-        self.navigationItem.rightBarButtonItem = addButton
+
+        getEntries { result in
+            switch result {
+            case .Success(let json):
+                NSLog("quota max: %@", json["quota_max"].stringValue)
+                self.entries = json["items"].arrayValue
+                self.tableView.reloadData()
+            case .Error(let error):
+                NSLog("Error: %@", error)
+            }
+        }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+
+    enum Result {
+        case Success(Json)
+        case Error(NSError)
     }
 
-    func insertNewObject(sender: AnyObject) {
-        objects.insertObject(NSDate.date(), atIndex: 0)
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+    func getEntries(completion: (Result) -> Void) {
+        let request = NSMutableURLRequest(URL: NSURL(string: url));
+        request.HTTPMethod = "GET"
+
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { (data, request, error) -> Void in
+            if (error != nil) {
+                completion(.Error(error))
+                return
+            }
+
+            switch JsonParser.parse(data) {
+            case .Success(let json):
+                completion(.Success(json))
+            case .Error(let error):
+                NSLog("json: %@", NSString(data: data, encoding: NSUTF8StringEncoding));
+                NSLog("json parse error: %@", error.description)
+                completion(.Error(NSError(domain: "SwiftFeed.JsonParseError",
+                    code: 100,
+                    userInfo: ["parseError": error])))
+            }
+        }
+        task.resume()
     }
 
     // MARK: - Segues
@@ -42,8 +67,8 @@ class MasterViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
-                let object = objects[indexPath.row] as NSDate
-            (segue.destinationViewController as DetailViewController).detailItem = object
+                let object = entries[indexPath.row]
+            //(segue.destinationViewController as DetailViewController).detailItem = object
             }
         }
     }
@@ -55,31 +80,17 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        NSLog("count: %d", entries.count)
+        return entries.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as UITableViewCell
 
-        let object = objects[indexPath.row] as NSDate
-        cell.textLabel?.text = object.description
+        let object = entries[indexPath.row]
+        cell.textLabel!.text = object["title"].stringValue
         return cell
     }
-
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            objects.removeObjectAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-        }
-    }
-
 
 }
 
