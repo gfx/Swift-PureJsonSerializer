@@ -8,13 +8,33 @@
 
 import Darwin
 
-public enum Json: Printable, Equatable {
+public enum Json: Printable, DebugPrintable, Equatable {
     case NullValue
+    case BooleanValue(Bool)
     case NumberValue(Double)
     case StringValue(String)
-    case BooleanValue(Bool)
     case ArrayValue([Json])
     case ObjectValue([String:Json])
+
+    static func from(value: Bool) -> Json {
+        return .BooleanValue(value)
+    }
+
+    static func from(value: Double) -> Json {
+        return .NumberValue(value)
+    }
+
+    static func from(value: String) -> Json {
+        return .StringValue(value)
+    }
+
+    static func from(value: [Json]) -> Json {
+        return .ArrayValue(value)
+    }
+
+    static func from(value: [String:Json]) -> Json {
+        return .ObjectValue(value)
+    }
 
     public var boolValue: Bool {
         get {
@@ -73,7 +93,20 @@ public enum Json: Printable, Equatable {
             case .ArrayValue(let array):
                 return array
             default:
-                return [self]
+                return []
+            }
+        }
+    }
+
+    public var dictionaryValue: [String:Json] {
+        get {
+            switch self {
+            case .NullValue:
+                return [:]
+            case .ObjectValue(let dictionary):
+                return dictionary
+            default:
+                return [:]
             }
         }
     }
@@ -101,21 +134,28 @@ public enum Json: Printable, Equatable {
     }
 
     public var description: String {
-        get {
-            switch self {
-            case .NullValue:
-                return "null"
-            case .BooleanValue(let b):
-                return b ? "true" : "false"
-            case .NumberValue(let n):
-                return stringify(n)
-            case .StringValue(let s):
-                return escapeAsJsonString(s)
-            case .ArrayValue(let a):
-                return stringify(a)
-            case .ObjectValue(let o):
-                return stringify(o)
-            }
+        get { return serialize(pretty: false) }
+    }
+
+    public var debugDescription: String {
+        get { return serialize(pretty: true) }
+    }
+
+
+    public func serialize(pretty: Bool = false) -> String {
+        switch self {
+        case .NullValue:
+            return "null"
+        case .BooleanValue(let b):
+            return b ? "true" : "false"
+        case .NumberValue(let n):
+            return stringify(n)
+        case .StringValue(let s):
+            return escapeAsJsonString(s)
+        case .ArrayValue(let a):
+            return stringify(a)
+        case .ObjectValue(let o):
+            return stringify(o)
         }
     }
 

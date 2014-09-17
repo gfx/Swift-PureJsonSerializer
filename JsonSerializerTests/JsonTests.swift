@@ -38,25 +38,25 @@ class JsonTests: XCTestCase {
 
     func testConvertFromBooleanLiteral() {
         let a: Json = true
-        XCTAssertEqual(a, Json.BooleanValue(true))
+        XCTAssertEqual(a, Json.from(true))
 
         let b: Json = false
-        XCTAssertEqual(b, Json.BooleanValue(false))
+        XCTAssertEqual(b, Json.from(false))
     }
 
     func testConvertFromIntegerLiteral() {
         let a: Json = 42
-        XCTAssertEqual(a, Json.NumberValue(42))
+        XCTAssertEqual(a, Json.from(42))
     }
 
     func testConvertFromFloatLiteral() {
         let a: Json = 3.14
-        XCTAssertEqual(a, Json.NumberValue(3.14))
+        XCTAssertEqual(a, Json.from(3.14))
     }
 
     func testConvertFromStringLiteral() {
         let a: Json = "foo"
-        XCTAssertEqual(a, Json.StringValue("foo"))
+        XCTAssertEqual(a, Json.from("foo"))
     }
 
     func testConvertFromArrayLiteral() {
@@ -80,6 +80,19 @@ class JsonTests: XCTestCase {
             XCTFail(error.description)
         }
     }
+
+    func testPrintable() {
+        let x: Printable = Json.from(true)
+
+        XCTAssertEqual(x.description, "true", "Printable#description")
+    }
+
+    func testDebugPrintable() {
+        let x: DebugPrintable = Json.from(true)
+
+        XCTAssertEqual(x.debugDescription, "true", "DebugPrintable#debugDescription")
+    }
+
 
     let e: Json = nil
     let b0: Json = false
