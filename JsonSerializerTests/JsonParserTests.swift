@@ -136,8 +136,8 @@ class JsonParserTests: XCTestCase {
         }
     }
 
-    func testComplexJson() {
-        let x = JsonParser.parse(complexJsonExample())
+    func testTwitterJson() {
+        let x = JsonParser.parse(complexJsonExample("tweets"))
         switch x {
         case .Success(let json):
             XCTAssertEqual(json["statuses"][0]["id_str"].stringValue, "250075927172759552")
@@ -147,8 +147,20 @@ class JsonParserTests: XCTestCase {
         }
     }
 
+    func testStackexchangeJson() {
+        let x = JsonParser.parse(complexJsonExample("stackoverflow-items"))
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json["items"][0]["view_count"].stringValue, "18711")
+
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
+
     func testPerformanceExample() {
-        let jsonSource = complexJsonExample()
+        let jsonSource = complexJsonExample("tweets")
 
         self.measureBlock {
             switch JsonParser.parse(jsonSource) {
@@ -161,7 +173,7 @@ class JsonParserTests: XCTestCase {
     }
 
     func testPerformanceExampleInJSONSerialization() {
-        let jsonSource = complexJsonExample()
+        let jsonSource = complexJsonExample("tweets")
         self.measureBlock {
             var error: NSError? = nil
             let dict: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonSource, options: .MutableContainers, error: &error)
@@ -175,9 +187,9 @@ class JsonParserTests: XCTestCase {
         }
     }
 
-    func complexJsonExample() -> NSData {
+    func complexJsonExample(name: String) -> NSData {
         let bundle = NSBundle(forClass: self.dynamicType)
-        let path = bundle.pathForResource("tweets", ofType: "json")!
+        let path = bundle.pathForResource(name, ofType: "json")!
         return NSData(contentsOfFile: path)
     }
 }

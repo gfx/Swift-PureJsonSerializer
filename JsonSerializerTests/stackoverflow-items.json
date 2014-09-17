@@ -1,0 +1,780 @@
+{
+   "quota_remaining" : 276,
+   "quota_max" : 300,
+   "has_more" : true,
+   "items" : [
+      {
+         "owner" : {
+            "accept_rate" : 74,
+            "display_name" : "David Mulder",
+            "reputation" : 6290,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/5070419219d8d19bfdd2cbc0db761c87?s=128&d=identicon&r=PG",
+            "link" : "http://stackoverflow.com/users/1266242/david-mulder",
+            "user_id" : 1266242
+         },
+         "accepted_answer_id" : 24005242,
+         "score" : 108,
+         "is_answered" : true,
+         "tags" : [
+            "objective-c",
+            "swift"
+         ],
+         "question_id" : 24002369,
+         "link" : "http://stackoverflow.com/questions/24002369/how-to-call-objective-c-code-from-swift",
+         "last_activity_date" : 1407887767,
+         "answer_count" : 5,
+         "creation_date" : 1401739542,
+         "title" : "How to call Objective C code from Swift",
+         "view_count" : 18711,
+         "last_edit_date" : 1405693956
+      },
+      {
+         "creation_date" : 1401737157,
+         "answer_count" : 13,
+         "link" : "http://stackoverflow.com/questions/24001778/do-swift-based-applications-work-on-os-x-10-9-ios-7-and-lower",
+         "last_activity_date" : 1407029241,
+         "question_id" : 24001778,
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "osx",
+            "swift"
+         ],
+         "score" : 286,
+         "accepted_answer_id" : 24002461,
+         "owner" : {
+            "display_name" : "MeIr",
+            "accept_rate" : 87,
+            "reputation" : 1937,
+            "user_type" : "registered",
+            "profile_image" : "http://i.stack.imgur.com/xDQHx.jpg?s=128&g=1",
+            "link" : "http://stackoverflow.com/users/635610/meir",
+            "user_id" : 635610
+         },
+         "last_edit_date" : 1405194444,
+         "view_count" : 43818,
+         "protected_date" : 1410130480,
+         "title" : "Do Swift-based applications work on OS X 10.9/iOS 7 and lower?"
+      },
+      {
+         "title" : "What is an optional value in Swift?",
+         "last_edit_date" : 1401940641,
+         "view_count" : 7330,
+         "score" : 24,
+         "accepted_answer_id" : 24026093,
+         "owner" : {
+            "user_id" : 1223781,
+            "link" : "http://stackoverflow.com/users/1223781/timvermeulen",
+            "profile_image" : "https://www.gravatar.com/avatar/886f7902c986a59d5cc184425d513c36?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "display_name" : "timvermeulen",
+            "accept_rate" : 94,
+            "reputation" : 1030
+         },
+         "creation_date" : 1401744749,
+         "answer_count" : 6,
+         "link" : "http://stackoverflow.com/questions/24003642/what-is-an-optional-value-in-swift",
+         "last_activity_date" : 1405157336,
+         "question_id" : 24003642,
+         "is_answered" : true,
+         "tags" : [
+            "cocoa",
+            "swift"
+         ]
+      },
+      {
+         "score" : 80,
+         "accepted_answer_id" : 24007718,
+         "owner" : {
+            "display_name" : "Arbitur",
+            "accept_rate" : 74,
+            "reputation" : 2088,
+            "profile_image" : "http://i.stack.imgur.com/66k9L.png?s=128&g=1",
+            "user_type" : "registered",
+            "link" : "http://stackoverflow.com/users/1296280/arbitur",
+            "user_id" : 1296280
+         },
+         "creation_date" : 1401772903,
+         "answer_count" : 11,
+         "link" : "http://stackoverflow.com/questions/24007650/selector-in-swift",
+         "question_id" : 24007650,
+         "last_activity_date" : 1407425345,
+         "is_answered" : true,
+         "tags" : [
+            "swift"
+         ],
+         "title" : "@selector() in Swift?",
+         "last_edit_date" : 1405677146,
+         "view_count" : 16371
+      },
+      {
+         "last_activity_date" : 1406238601,
+         "link" : "http://stackoverflow.com/questions/24018327/what-does-an-exclamation-mark-mean-in-the-swift-language",
+         "question_id" : 24018327,
+         "answer_count" : 8,
+         "creation_date" : 1401807146,
+         "is_answered" : true,
+         "tags" : [
+            "swift"
+         ],
+         "score" : 67,
+         "owner" : {
+            "link" : "http://stackoverflow.com/users/1354350/troy",
+            "user_id" : 1354350,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/b8ae7541deaa2882e97ade27eb9934a4?s=128&d=identicon&r=PG",
+            "reputation" : 1332,
+            "display_name" : "Troy",
+            "accept_rate" : 68
+         },
+         "accepted_answer_id" : 24020951,
+         "last_edit_date" : 1401899980,
+         "view_count" : 7319,
+         "title" : "What does an exclamation mark mean in the Swift language?"
+      },
+      {
+         "score" : 31,
+         "accepted_answer_id" : 24055762,
+         "owner" : {
+            "reputation" : 163,
+            "display_name" : "user3524868",
+            "user_id" : 3524868,
+            "link" : "http://stackoverflow.com/users/3524868/user3524868",
+            "user_type" : "registered",
+            "profile_image" : "http://graph.facebook.com/513116096/picture?type=large"
+         },
+         "creation_date" : 1401940038,
+         "answer_count" : 9,
+         "link" : "http://stackoverflow.com/questions/24051314/precision-string-format-specifier-in-swift",
+         "question_id" : 24051314,
+         "last_activity_date" : 1409539916,
+         "is_answered" : true,
+         "tags" : [
+            "swift"
+         ],
+         "title" : "Precision String Format Specifier In Swift",
+         "last_edit_date" : 1403206972,
+         "view_count" : 8279
+      },
+      {
+         "owner" : {
+            "display_name" : "David",
+            "reputation" : 6859,
+            "user_id" : 3203487,
+            "link" : "http://stackoverflow.com/users/3203487/david",
+            "profile_image" : "https://www.gravatar.com/avatar/642430374fe647174b3e8bc33cdfc049?s=128&d=identicon&r=PG&f=1",
+            "user_type" : "registered"
+         },
+         "accepted_answer_id" : 24073016,
+         "score" : 135,
+         "tags" : [
+            "swift"
+         ],
+         "is_answered" : true,
+         "link" : "http://stackoverflow.com/questions/24024549/dispatch-once-singleton-model-in-swift",
+         "question_id" : 24024549,
+         "last_activity_date" : 1410054642,
+         "creation_date" : 1401828072,
+         "answer_count" : 13,
+         "protected_date" : 1405980112,
+         "title" : "dispatch_once singleton model in swift",
+         "view_count" : 18328,
+         "last_edit_date" : 1410054642
+      },
+      {
+         "owner" : {
+            "reputation" : 1445,
+            "display_name" : "Tony",
+            "accept_rate" : 38,
+            "link" : "http://stackoverflow.com/users/953628/tony",
+            "user_id" : 953628,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/d9436250503d5a9eb5b2a118d274aa70?s=128&d=identicon&r=PG"
+         },
+         "score" : 83,
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "xcode",
+            "swift"
+         ],
+         "answer_count" : 22,
+         "creation_date" : 1401762574,
+         "link" : "http://stackoverflow.com/questions/24006206/sourcekitservice-terminated",
+         "question_id" : 24006206,
+         "last_activity_date" : 1410744471,
+         "protected_date" : 1402190168,
+         "title" : "SourceKitService Terminated",
+         "view_count" : 10792,
+         "last_edit_date" : 1402705580
+      },
+      {
+         "last_edit_date" : 1403207137,
+         "view_count" : 15197,
+         "title" : "Does Swift have access modifiers?",
+         "creation_date" : 1401745967,
+         "answer_count" : 13,
+         "question_id" : 24003918,
+         "link" : "http://stackoverflow.com/questions/24003918/does-swift-have-access-modifiers",
+         "last_activity_date" : 1409741563,
+         "tags" : [
+            "access-modifiers",
+            "swift"
+         ],
+         "is_answered" : true,
+         "score" : 123,
+         "accepted_answer_id" : 24012515,
+         "owner" : {
+            "accept_rate" : 100,
+            "display_name" : "Gergo Erdosi",
+            "reputation" : 8794,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/f9246128ad0f92d9f09c5ecd114acdb8?s=128&d=identicon&r=PG",
+            "link" : "http://stackoverflow.com/users/775443/gergo-erdosi",
+            "user_id" : 775443
+         }
+      },
+      {
+         "view_count" : 8809,
+         "last_edit_date" : 1401835434,
+         "title" : "How do I print the type or class of a variable in Swift?",
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "swift"
+         ],
+         "creation_date" : 1401762282,
+         "answer_count" : 11,
+         "link" : "http://stackoverflow.com/questions/24006165/how-do-i-print-the-type-or-class-of-a-variable-in-swift",
+         "question_id" : 24006165,
+         "last_activity_date" : 1410831085,
+         "accepted_answer_id" : 24079729,
+         "owner" : {
+            "display_name" : "Matt Bridges",
+            "reputation" : 14771,
+            "accept_rate" : 91,
+            "link" : "http://stackoverflow.com/users/125871/matt-bridges",
+            "user_id" : 125871,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/a7e5d665b12e355e717e8de7f2627ec5?s=128&d=identicon&r=PG"
+         },
+         "score" : 26
+      },
+      {
+         "title" : "Swift: Class does not implement its superclass&#39;s required members",
+         "view_count" : 5180,
+         "last_edit_date" : 1407181428,
+         "accepted_answer_id" : 25128815,
+         "owner" : {
+            "display_name" : "gfrs",
+            "reputation" : 1504,
+            "accept_rate" : 100,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/1d560c523dea22722fe39a89c903c33d?s=128&d=identicon&r=PG",
+            "link" : "http://stackoverflow.com/users/2158465/gfrs",
+            "user_id" : 2158465
+         },
+         "score" : 63,
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "swift",
+            "sprite-kit"
+         ],
+         "creation_date" : 1407181302,
+         "answer_count" : 3,
+         "question_id" : 25126295,
+         "link" : "http://stackoverflow.com/questions/25126295/swift-class-does-not-implement-its-superclasss-required-members",
+         "last_activity_date" : 1407506258
+      },
+      {
+         "owner" : {
+            "display_name" : "hemantchittora",
+            "reputation" : 756,
+            "user_id" : 2469421,
+            "link" : "http://stackoverflow.com/users/2469421/hemantchittora",
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/fa6512c51f72864da88f030f2d3e4710?s=128&d=identicon&r=PG&f=1"
+         },
+         "accepted_answer_id" : 24042126,
+         "score" : 40,
+         "tags" : [
+            "ios",
+            "xcode",
+            "swift",
+            "ios8"
+         ],
+         "is_answered" : true,
+         "link" : "http://stackoverflow.com/questions/24033417/unable-to-run-app-in-simulator-xcode-beta-6-ios-8",
+         "question_id" : 24033417,
+         "last_activity_date" : 1409087830,
+         "creation_date" : 1401873204,
+         "answer_count" : 11,
+         "title" : "Unable to run app in Simulator : Xcode beta 6 iOS 8",
+         "view_count" : 16728,
+         "last_edit_date" : 1401881123
+      },
+      {
+         "last_edit_date" : 1402214120,
+         "view_count" : 3161,
+         "title" : "How can I extend typed Arrays in Swift?",
+         "answer_count" : 1,
+         "creation_date" : 1401841574,
+         "question_id" : 24027116,
+         "link" : "http://stackoverflow.com/questions/24027116/how-can-i-extend-typed-arrays-in-swift",
+         "last_activity_date" : 1405361353,
+         "is_answered" : true,
+         "tags" : [
+            "swift"
+         ],
+         "score" : 32,
+         "accepted_answer_id" : 24028208,
+         "owner" : {
+            "link" : "http://stackoverflow.com/users/85785/mythz",
+            "user_id" : 85785,
+            "profile_image" : "https://www.gravatar.com/avatar/1257196ff88132651f94ac85f662c038?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "reputation" : 57680,
+            "display_name" : "mythz",
+            "accept_rate" : 83
+         }
+      },
+      {
+         "view_count" : 1554,
+         "last_edit_date" : 1402092007,
+         "title" : "Passing an array to a function with variable number of args in Swift",
+         "is_answered" : true,
+         "tags" : [
+            "swift",
+            "varargs"
+         ],
+         "last_activity_date" : 1402802880,
+         "link" : "http://stackoverflow.com/questions/24024376/passing-an-array-to-a-function-with-variable-number-of-args-in-swift",
+         "question_id" : 24024376,
+         "creation_date" : 1401827357,
+         "answer_count" : 4,
+         "owner" : {
+            "reputation" : 87599,
+            "display_name" : "Ole Begemann",
+            "accept_rate" : 89,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/d0efc09d023fa0569a2479c9dcfd4620?s=128&d=identicon&r=PG",
+            "link" : "http://stackoverflow.com/users/116862/ole-begemann",
+            "user_id" : 116862
+         },
+         "accepted_answer_id" : 24024724,
+         "score" : 19
+      },
+      {
+         "view_count" : 3763,
+         "last_edit_date" : 1402570911,
+         "title" : "Does Swift support reflection?",
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "reflection",
+            "swift"
+         ],
+         "answer_count" : 4,
+         "creation_date" : 1401972496,
+         "link" : "http://stackoverflow.com/questions/24060667/does-swift-support-reflection",
+         "question_id" : 24060667,
+         "last_activity_date" : 1409915965,
+         "accepted_answer_id" : 24069875,
+         "owner" : {
+            "user_id" : 1572953,
+            "link" : "http://stackoverflow.com/users/1572953/khanh-nguyen",
+            "profile_image" : "https://www.gravatar.com/avatar/b708557dd71da57025ad0e68fe385e71?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "reputation" : 2027,
+            "display_name" : "Khanh Nguyen",
+            "accept_rate" : 83
+         },
+         "score" : 33
+      },
+      {
+         "title" : "Why create &quot;Implicitly Unwrapped Optionals&quot;?",
+         "view_count" : 3512,
+         "owner" : {
+            "user_id" : 974407,
+            "link" : "http://stackoverflow.com/users/974407/johnston",
+            "profile_image" : "https://www.gravatar.com/avatar/19c57d25aa8932f3c41257ab756b69eb?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "display_name" : "Johnston",
+            "reputation" : 1306,
+            "accept_rate" : 84
+         },
+         "accepted_answer_id" : 24007032,
+         "score" : 56,
+         "tags" : [
+            "swift"
+         ],
+         "is_answered" : true,
+         "link" : "http://stackoverflow.com/questions/24006975/why-create-implicitly-unwrapped-optionals",
+         "question_id" : 24006975,
+         "last_activity_date" : 1409943604,
+         "creation_date" : 1401768573,
+         "answer_count" : 7
+      },
+      {
+         "score" : 14,
+         "accepted_answer_id" : 24013852,
+         "owner" : {
+            "display_name" : "kmithi",
+            "accept_rate" : 100,
+            "reputation" : 283,
+            "profile_image" : "https://www.gravatar.com/avatar/26bc8b9f0ddb16b527184034697c8bbe?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "user_id" : 1974462,
+            "link" : "http://stackoverflow.com/users/1974462/kmithi"
+         },
+         "answer_count" : 5,
+         "creation_date" : 1401793094,
+         "question_id" : 24013410,
+         "link" : "http://stackoverflow.com/questions/24013410/how-to-parse-a-json-file-in-swift",
+         "last_activity_date" : 1409287892,
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "swift"
+         ],
+         "title" : "How to parse a JSON file in swift?",
+         "last_edit_date" : 1401813062,
+         "view_count" : 11025
+      },
+      {
+         "view_count" : 2767,
+         "last_edit_date" : 1404232795,
+         "title" : "Input from the keyboard in command line application",
+         "is_answered" : true,
+         "tags" : [
+            "osx",
+            "cocoa",
+            "swift"
+         ],
+         "creation_date" : 1401750952,
+         "answer_count" : 5,
+         "question_id" : 24004776,
+         "link" : "http://stackoverflow.com/questions/24004776/input-from-the-keyboard-in-command-line-application",
+         "last_activity_date" : 1410241782,
+         "accepted_answer_id" : 24021467,
+         "owner" : {
+            "profile_image" : "https://www.gravatar.com/avatar/0333c8c993f63d263c9bc59ad2c35a9b?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "user_id" : 155417,
+            "link" : "http://stackoverflow.com/users/155417/chalkers",
+            "display_name" : "Chalkers",
+            "reputation" : 531
+         },
+         "score" : 17
+      },
+      {
+         "creation_date" : 1408393893,
+         "answer_count" : 1,
+         "question_id" : 25371556,
+         "link" : "http://stackoverflow.com/questions/25371556/swift-beta-6-confusing-linker-error-message",
+         "last_activity_date" : 1409247367,
+         "tags" : [
+            "swift",
+            "xcode6"
+         ],
+         "is_answered" : true,
+         "score" : 46,
+         "accepted_answer_id" : 25376271,
+         "owner" : {
+            "display_name" : "DrScott",
+            "reputation" : 238,
+            "link" : "http://stackoverflow.com/users/3730849/drscott",
+            "user_id" : 3730849,
+            "profile_image" : "https://www.gravatar.com/avatar/1bed9f5df224d16142a3aeccd89933c0?s=128&d=identicon&r=PG&f=1",
+            "user_type" : "registered"
+         },
+         "view_count" : 2497,
+         "title" : "Swift beta 6 - Confusing linker error message"
+      },
+      {
+         "view_count" : 2729,
+         "last_edit_date" : 1403661278,
+         "title" : "Swift UIColor initializer - compiler Error only when targeting iPhone5s",
+         "is_answered" : true,
+         "tags" : [
+            "ios",
+            "swift"
+         ],
+         "answer_count" : 2,
+         "creation_date" : 1402624017,
+         "last_activity_date" : 1403661278,
+         "link" : "http://stackoverflow.com/questions/24196528/swift-uicolor-initializer-compiler-error-only-when-targeting-iphone5s",
+         "question_id" : 24196528,
+         "accepted_answer_id" : 24196575,
+         "owner" : {
+            "display_name" : "Joe",
+            "reputation" : 1230,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/829b1016785383a7c796653df77e8c2f?s=128&d=identicon&r=PG",
+            "link" : "http://stackoverflow.com/users/2397883/joe",
+            "user_id" : 2397883
+         },
+         "score" : 10
+      },
+      {
+         "view_count" : 965,
+         "last_edit_date" : 1403205914,
+         "title" : "Crash when casting the result of arc4random() to Int",
+         "is_answered" : true,
+         "tags" : [
+            "random",
+            "swift"
+         ],
+         "last_activity_date" : 1408791281,
+         "link" : "http://stackoverflow.com/questions/24087518/crash-when-casting-the-result-of-arc4random-to-int",
+         "question_id" : 24087518,
+         "answer_count" : 3,
+         "creation_date" : 1402075705,
+         "owner" : {
+            "profile_image" : "https://www.gravatar.com/avatar/cbf2646af29b9514dc8c1d1db658595c?s=128&d=identicon&r=PG",
+            "user_type" : "registered",
+            "user_id" : 145965,
+            "link" : "http://stackoverflow.com/users/145965/shaun-inman",
+            "display_name" : "Shaun Inman",
+            "reputation" : 743,
+            "accept_rate" : 93
+         },
+         "accepted_answer_id" : 24088457,
+         "score" : 4
+      },
+      {
+         "owner" : {
+            "display_name" : "SiLo",
+            "reputation" : 3205,
+            "accept_rate" : 70,
+            "link" : "http://stackoverflow.com/users/1970765/silo",
+            "user_id" : 1970765,
+            "profile_image" : "https://www.gravatar.com/avatar/fa2c11cb91eee337ba91d354f8c38592?s=128&d=identicon&r=PG",
+            "user_type" : "registered"
+         },
+         "accepted_answer_id" : 24050187,
+         "score" : 18,
+         "tags" : [
+            "introspection",
+            "swift"
+         ],
+         "is_answered" : true,
+         "link" : "http://stackoverflow.com/questions/24049673/swift-class-introspection-generics",
+         "last_activity_date" : 1402626623,
+         "question_id" : 24049673,
+         "answer_count" : 4,
+         "creation_date" : 1401927324,
+         "title" : "Swift class introspection &amp; generics",
+         "view_count" : 4384
+      },
+      {
+         "score" : 15,
+         "accepted_answer_id" : 24102130,
+         "owner" : {
+            "accept_rate" : 97,
+            "display_name" : "Jiaaro",
+            "reputation" : 15510,
+            "user_id" : 2908,
+            "link" : "http://stackoverflow.com/users/2908/jiaaro",
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/30e3f436d5fb8e941126a0c2c2868f84?s=128&d=identicon&r=PG"
+         },
+         "answer_count" : 2,
+         "creation_date" : 1402173983,
+         "question_id" : 24101450,
+         "link" : "http://stackoverflow.com/questions/24101450/how-do-you-find-out-the-type-of-an-object-in-swift",
+         "last_activity_date" : 1408354745,
+         "tags" : [
+            "swift"
+         ],
+         "is_answered" : true,
+         "title" : "How do you find out the type of an object (in Swift)?",
+         "last_edit_date" : 1405959536,
+         "view_count" : 5659
+      },
+      {
+         "is_answered" : true,
+         "tags" : [
+            "swift"
+         ],
+         "creation_date" : 1402324605,
+         "answer_count" : 1,
+         "last_activity_date" : 1403614959,
+         "link" : "http://stackoverflow.com/questions/24122601/swift-variable-decorations-with-and",
+         "question_id" : 24122601,
+         "accepted_answer_id" : 24122706,
+         "owner" : {
+            "user_id" : 1414028,
+            "link" : "http://stackoverflow.com/users/1414028/jay-morgan",
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/6c8ef36f633ab7e8d0043cb280bcc215?s=128&d=identicon&r=PG",
+            "display_name" : "Jay Morgan",
+            "reputation" : 750,
+            "accept_rate" : 93
+         },
+         "score" : 13,
+         "view_count" : 497,
+         "title" : "Swift variable decorations with &quot;?&quot; and &quot;!&quot;"
+      },
+      {
+         "question_id" : 24002092,
+         "link" : "http://stackoverflow.com/questions/24002092/what-is-the-difference-between-let-and-var-in-swift",
+         "last_activity_date" : 1407732542,
+         "answer_count" : 13,
+         "creation_date" : 1401738371,
+         "tags" : [
+            "swift"
+         ],
+         "is_answered" : true,
+         "score" : 11,
+         "owner" : {
+            "reputation" : 582,
+            "display_name" : "Edward",
+            "user_id" : 2440343,
+            "link" : "http://stackoverflow.com/users/2440343/edward",
+            "profile_image" : "https://www.gravatar.com/avatar/a9b6c953f88ac18c06b90073fbdb3329?s=128&d=identicon&r=PG",
+            "user_type" : "registered"
+         },
+         "accepted_answer_id" : 24002209,
+         "last_edit_date" : 1401888913,
+         "view_count" : 5739,
+         "title" : "What is the difference between `let` and `var` in swift?"
+      },
+      {
+         "last_edit_date" : 1401819138,
+         "view_count" : 4494,
+         "title" : "Can&#39;t unwrap &#39;Optional.None&#39;",
+         "answer_count" : 3,
+         "creation_date" : 1401763186,
+         "question_id" : 24006287,
+         "link" : "http://stackoverflow.com/questions/24006287/cant-unwrap-optional-none",
+         "last_activity_date" : 1407915572,
+         "tags" : [
+            "ios",
+            "swift"
+         ],
+         "is_answered" : true,
+         "score" : 5,
+         "owner" : {
+            "display_name" : "Tony",
+            "accept_rate" : 38,
+            "reputation" : 1445,
+            "user_id" : 953628,
+            "link" : "http://stackoverflow.com/users/953628/tony",
+            "profile_image" : "https://www.gravatar.com/avatar/d9436250503d5a9eb5b2a118d274aa70?s=128&d=identicon&r=PG",
+            "user_type" : "registered"
+         }
+      },
+      {
+         "question_id" : 24057525,
+         "link" : "http://stackoverflow.com/questions/24057525/swift-native-base-class-or-nsobject",
+         "last_activity_date" : 1409315199,
+         "answer_count" : 5,
+         "creation_date" : 1401963547,
+         "is_answered" : true,
+         "tags" : [
+            "objective-c",
+            "swift",
+            "objective-c-runtime"
+         ],
+         "score" : 11,
+         "owner" : {
+            "user_id" : 404201,
+            "link" : "http://stackoverflow.com/users/404201/jasper-blues",
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/c0cded6278df1ec9d9e15586340e3036?s=128&d=identicon&r=PG",
+            "reputation" : 7742,
+            "display_name" : "Jasper Blues",
+            "accept_rate" : 92
+         },
+         "accepted_answer_id" : 24067969,
+         "last_edit_date" : 1402363962,
+         "view_count" : 2827,
+         "title" : "Swift native base class or NSObject"
+      },
+      {
+         "tags" : [
+            "ios",
+            "osx",
+            "swift"
+         ],
+         "is_answered" : true,
+         "last_activity_date" : 1403374387,
+         "link" : "http://stackoverflow.com/questions/24003291/ifdef-replacement-in-swift-language",
+         "question_id" : 24003291,
+         "answer_count" : 4,
+         "creation_date" : 1401743197,
+         "owner" : {
+            "display_name" : "mxg",
+            "reputation" : 4683,
+            "accept_rate" : 90,
+            "link" : "http://stackoverflow.com/users/193718/mxg",
+            "user_id" : 193718,
+            "profile_image" : "https://www.gravatar.com/avatar/a335f855072e3eb74aaa3bf9de0f8560?s=128&d=identicon&r=PG",
+            "user_type" : "registered"
+         },
+         "score" : 20,
+         "view_count" : 3519,
+         "last_edit_date" : 1401940672,
+         "title" : "#ifdef replacement in swift language"
+      },
+      {
+         "answer_count" : 2,
+         "creation_date" : 1401822725,
+         "last_activity_date" : 1402343111,
+         "link" : "http://stackoverflow.com/questions/24023112/try-catch-exceptions-in-swift",
+         "question_id" : 24023112,
+         "is_answered" : true,
+         "tags" : [
+            "exception",
+            "try-catch",
+            "swift"
+         ],
+         "score" : 4,
+         "accepted_answer_id" : 24023248,
+         "owner" : {
+            "accept_rate" : 94,
+            "display_name" : "modocache",
+            "reputation" : 2132,
+            "link" : "http://stackoverflow.com/users/679254/modocache",
+            "user_id" : 679254,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/f921fa5d507b31ef6984fd3d77ae710c?s=128&d=identicon&r=PG"
+         },
+         "closed_reason" : "duplicate",
+         "last_edit_date" : 1402343111,
+         "view_count" : 4748,
+         "title" : "try-catch exceptions in Swift",
+         "closed_date" : 1401823964
+      },
+      {
+         "score" : 5,
+         "closed_reason" : "duplicate",
+         "owner" : {
+            "display_name" : "zbrox",
+            "accept_rate" : 67,
+            "reputation" : 428,
+            "link" : "http://stackoverflow.com/users/240448/zbrox",
+            "user_id" : 240448,
+            "user_type" : "registered",
+            "profile_image" : "https://www.gravatar.com/avatar/7f5eb8b92235249863df32ba699aaec5?s=128&d=identicon&r=PG"
+         },
+         "accepted_answer_id" : 24047452,
+         "link" : "http://stackoverflow.com/questions/24047374/string-formatting-of-a-double",
+         "last_activity_date" : 1401915557,
+         "question_id" : 24047374,
+         "creation_date" : 1401915210,
+         "answer_count" : 2,
+         "is_answered" : true,
+         "tags" : [
+            "string-formatting",
+            "swift"
+         ],
+         "closed_date" : 1405133639,
+         "title" : "String formatting of a Double",
+         "view_count" : 3010
+      }
+   ]
+}
