@@ -25,6 +25,8 @@
 		FA3AF23619C9CEA500F9B28A /* TemplateIcon2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3AF23419C9CEA500F9B28A /* TemplateIcon2x.png */; };
 		FA3AF23819CA4B4E00F9B28A /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF23719CA4B4E00F9B28A /* JsonSerializer.swift */; };
 		FA3AF23919CA4B4E00F9B28A /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF23719CA4B4E00F9B28A /* JsonSerializer.swift */; };
+		FA3AF2A019CBA53300F9B28A /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */; };
+		FA3AF2A119CBA53400F9B28A /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */; };
 		FAF14E7819C680330070F09F /* JsonParser+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E7719C680330070F09F /* JsonParser+Foundation.swift */; };
 		FAF14E7919C680330070F09F /* JsonParser+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E7719C680330070F09F /* JsonParser+Foundation.swift */; };
 		FAF14E7B19C680B60070F09F /* ParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E7A19C680B60070F09F /* ParseError.swift */; };
@@ -71,6 +73,7 @@
 		FA3AF23319C9CEA500F9B28A /* stackoverflow-items.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "stackoverflow-items.json"; sourceTree = "<group>"; };
 		FA3AF23419C9CEA500F9B28A /* TemplateIcon2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TemplateIcon2x.png; sourceTree = "<group>"; };
 		FA3AF23719CA4B4E00F9B28A /* JsonSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonSerializer.swift; sourceTree = "<group>"; };
+		FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
 		FAF14E7719C680330070F09F /* JsonParser+Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JsonParser+Foundation.swift"; sourceTree = "<group>"; };
 		FAF14E7A19C680B60070F09F /* ParseError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseError.swift; sourceTree = "<group>"; };
 		FAF14E7D19C680F90070F09F /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
@@ -117,8 +120,6 @@
 			children = (
 				FA06004D19C10B7900B4A852 /* JsonSerializer */,
 				FA06005719C10B7900B4A852 /* JsonSerializerTests */,
-				FA3AF20A19C9CA5C00F9B28A /* SwiftFeed */,
-				FA3AF22219C9CA5C00F9B28A /* SwiftFeedTests */,
 				FA06004C19C10B7900B4A852 /* Products */,
 				FA3AF20419C9CA3A00F9B28A /* Example */,
 			);
@@ -184,6 +185,8 @@
 		FA3AF20419C9CA3A00F9B28A /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				FA3AF20A19C9CA5C00F9B28A /* SwiftFeed */,
+				FA3AF22219C9CA5C00F9B28A /* SwiftFeedTests */,
 			);
 			name = Example;
 			sourceTree = "<group>";
@@ -198,6 +201,7 @@
 				FA3AF21619C9CA5C00F9B28A /* Images.xcassets */,
 				FA3AF21819C9CA5C00F9B28A /* LaunchScreen.xib */,
 				FA3AF20B19C9CA5C00F9B28A /* Supporting Files */,
+				FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */,
 			);
 			path = SwiftFeed;
 			sourceTree = "<group>";
@@ -431,6 +435,7 @@
 				FA3AF21219C9CA5C00F9B28A /* DetailViewController.swift in Sources */,
 				FA3AF21019C9CA5C00F9B28A /* MasterViewController.swift in Sources */,
 				FA3AF20E19C9CA5C00F9B28A /* AppDelegate.swift in Sources */,
+				FA3AF2A019CBA53300F9B28A /* ApiClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +444,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA3AF22619C9CA5C00F9B28A /* SwiftFeedTests.swift in Sources */,
+				FA3AF2A119CBA53400F9B28A /* ApiClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

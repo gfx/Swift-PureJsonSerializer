@@ -18,8 +18,7 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
-        getEntries { result in
+        ApiClient().get(NSURL(string: url)) { result in
             switch result {
             case .Success(let json):
                 NSLog("quota max: %@", json["quota_max"].stringValue)
@@ -31,44 +30,13 @@ class MasterViewController: UITableViewController {
         }
     }
 
-
-    enum Result {
-        case Success(Json)
-        case Error(NSError)
-    }
-
-    func getEntries(completion: (Result) -> Void) {
-        let request = NSMutableURLRequest(URL: NSURL(string: url));
-        request.HTTPMethod = "GET"
-
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { (data, request, error) -> Void in
-            if (error != nil) {
-                completion(.Error(error))
-                return
-            }
-
-            switch JsonParser.parse(data) {
-            case .Success(let json):
-                completion(.Success(json))
-            case .Error(let error):
-                NSLog("json: %@", NSString(data: data, encoding: NSUTF8StringEncoding));
-                NSLog("json parse error: %@", error.description)
-                completion(.Error(NSError(domain: "SwiftFeed.JsonParseError",
-                    code: 100,
-                    userInfo: ["parseError": error])))
-            }
-        }
-        task.resume()
-    }
-
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow() {
                 let object = entries[indexPath.row]
-            //(segue.destinationViewController as DetailViewController).detailItem = object
+                (segue.destinationViewController as DetailViewController).detailItem = object
             }
         }
     }
@@ -80,7 +48,6 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        NSLog("count: %d", entries.count)
         return entries.count
     }
 
