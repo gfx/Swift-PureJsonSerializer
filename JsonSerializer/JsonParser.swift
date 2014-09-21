@@ -108,7 +108,7 @@ public class JsonParser: Parser {
             case Byte("\\"):
                 nextChar()
                 if (cur == end) {
-                    return .Error(InsufficientTokenError("unexpected end of a string literal", self))
+                    return .Error(InvalidStringError("unexpected end of a string literal", self))
                 }
 
                 if let c = parseEscapedChar() {
@@ -116,16 +116,20 @@ public class JsonParser: Parser {
                         buffer.append(byte2cchar(u))
                     }
                 } else {
-                    return .Error(InvalidEscapeSequenceError("invalid escape sequence", self))
+                    return .Error(InvalidStringError("invalid escape sequence", self))
                 }
                 break
             case Byte("\""): // end of the string literal
-                nextChar()
                 break LOOP
             default:
                 buffer.append(byte2cchar(cur.memory))
             }
         }
+
+        if !expect("\"") {
+            return .Error(InvalidStringError("missing double quote", self))
+        }
+
         buffer.append(0) // trailing nul
 
         let s = String.fromCString(buffer)!

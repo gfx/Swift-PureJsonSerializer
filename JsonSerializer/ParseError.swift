@@ -43,6 +43,6 @@ public class ExtraTokenError: ParseError { }
 
 public class NonStringKeyError: ParseError { }
 
-public class InvalidEscapeSequenceError: ParseError { }
+public class InvalidStringError: ParseError { }
 
 public class InvalidNumberError: ParseError { }

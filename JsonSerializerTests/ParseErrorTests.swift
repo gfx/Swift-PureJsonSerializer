@@ -63,4 +63,56 @@ class ParseErrorTests: XCTestCase {
         }
 
     }
+
+    func testInvalidNumber() {
+        let x = JsonParser.parse("[ 10. ]")
+        switch x {
+        case .Success(_):
+            XCTFail("not reached")
+        case .Error(let error):
+            XCTAssert(error is InvalidNumberError, error.description)
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 6, "columnNumbeer")
+        }
+    }
+
+
+    func testMissingDoubleQuote() {
+        let x = JsonParser.parse("[ \"foo, null ]")
+        switch x {
+        case .Success(_):
+            XCTFail("not reached")
+        case .Error(let error):
+            XCTAssert(error is InvalidStringError, error.description)
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 15, "columnNumbeer")
+        }
+    }
+
+    func testMissingEscapedChar() {
+        let x = JsonParser.parse("[ \"foo \\")
+        switch x {
+        case .Success(_):
+            XCTFail("not reached")
+        case .Error(let error):
+            XCTAssert(error is InvalidStringError, error.description)
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 9, "columnNumbeer")
+        }
+    }
+
+    func testInvalidEscapeSequence() {
+        return // TODO
+
+        let x = JsonParser.parse("[\"\\uFFFFFFFFFFFFFFFF\"]")
+
+        switch x {
+        case .Success(let json):
+            XCTFail("not reached: \(json)")
+        case .Error(let error):
+            XCTAssert(error is InvalidNumberError, error.description)
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 9, "columnNumbeer")
+        }
+    }
 }
