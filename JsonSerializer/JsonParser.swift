@@ -20,32 +20,22 @@ func byte2cchar(b: Byte) -> CChar {
 
 public class JsonParser: Parser {
 
-    public class func parse(source: StaticString) -> Result {
-        let begin = source.start
-        let end = begin.advancedBy(Int(source.byteSize))
-        return JsonParser(source.stringValue, begin, end).parse()
-    }
-
     public class func parse(begin: UnsafePointer<Byte>, end: UnsafePointer<Byte>) -> Result {
-        return JsonParser(nil, begin, end).parse()
+        return JsonParser(begin, end).parse()
     }
 
     typealias Iterator = UnsafePointer<Byte>
 
 
-    let originalSource: AnyObject?
-    let beg: Iterator
-    let end: Iterator
     var cur: Iterator
+    let end: Iterator
 
     public var lineNumber = 1
     public var columnNumber = 1
 
-    public init(_ source: AnyObject?, _ begin: UnsafePointer<Byte>, _ end: UnsafePointer<Byte>) {
-        self.originalSource = source
-        self.beg = begin
-        self.end = end
+    public init(_ begin: UnsafePointer<Byte>, _ end: UnsafePointer<Byte>) {
         self.cur = begin
+        self.end = end
     }
 
     public enum Result {
