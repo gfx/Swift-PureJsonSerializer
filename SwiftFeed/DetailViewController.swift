@@ -18,10 +18,12 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.configureView()
+        configureView()
     }
 
     func configureView() {
+        title = detailItem["title"].stringValue
+
         let detail = self.detailItem
         let label = self.detailDescriptionLabel
         label.text = detail.debugDescription

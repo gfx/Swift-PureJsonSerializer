@@ -18,7 +18,12 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+
+        let indicator = OverlayIndicator()
+
         ApiClient().get(NSURL(string: url)) { result in
+            indicator
+
             switch result {
             case .Success(let json):
                 NSLog("quota max: %@", json["quota_max"].stringValue)
@@ -56,8 +61,13 @@ class MasterViewController: UITableViewController {
 
         let object = entries[indexPath.row]
         cell.textLabel!.text = object["title"].stringValue
+
+        let lastActivityDate = NSDate(timeIntervalSince1970: object["last_activity_date"].doubleValue)
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.timeZone = NSTimeZone.localTimeZone()
+        dateFormatter.dateFormat = "yyyy/M/d HH:mm:dd"
+        cell.detailTextLabel!.text = dateFormatter.stringFromDate(lastActivityDate)
         return cell
     }
-
 }
 

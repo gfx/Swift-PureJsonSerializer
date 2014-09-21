@@ -27,6 +27,7 @@
 		FA3AF23919CA4B4E00F9B28A /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF23719CA4B4E00F9B28A /* JsonSerializer.swift */; };
 		FA3AF2A019CBA53300F9B28A /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */; };
 		FA3AF2A119CBA53400F9B28A /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */; };
+		FA5A20E419CE58B8003CEF99 /* OverlayIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5A20E319CE58B8003CEF99 /* OverlayIndicator.swift */; };
 		FAF14E7819C680330070F09F /* JsonParser+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E7719C680330070F09F /* JsonParser+Foundation.swift */; };
 		FAF14E7919C680330070F09F /* JsonParser+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E7719C680330070F09F /* JsonParser+Foundation.swift */; };
 		FAF14E7B19C680B60070F09F /* ParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF14E7A19C680B60070F09F /* ParseError.swift */; };
@@ -74,6 +75,7 @@
 		FA3AF23419C9CEA500F9B28A /* TemplateIcon2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TemplateIcon2x.png; sourceTree = "<group>"; };
 		FA3AF23719CA4B4E00F9B28A /* JsonSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonSerializer.swift; sourceTree = "<group>"; };
 		FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
+		FA5A20E319CE58B8003CEF99 /* OverlayIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayIndicator.swift; sourceTree = "<group>"; };
 		FAF14E7719C680330070F09F /* JsonParser+Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JsonParser+Foundation.swift"; sourceTree = "<group>"; };
 		FAF14E7A19C680B60070F09F /* ParseError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseError.swift; sourceTree = "<group>"; };
 		FAF14E7D19C680F90070F09F /* Json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Json.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 				FA3AF21819C9CA5C00F9B28A /* LaunchScreen.xib */,
 				FA3AF20B19C9CA5C00F9B28A /* Supporting Files */,
 				FA3AF29D19CBA4AB00F9B28A /* ApiClient.swift */,
+				FA5A20E319CE58B8003CEF99 /* OverlayIndicator.swift */,
 			);
 			path = SwiftFeed;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA5A20E419CE58B8003CEF99 /* OverlayIndicator.swift in Sources */,
 				FA3AF21219C9CA5C00F9B28A /* DetailViewController.swift in Sources */,
 				FA3AF21019C9CA5C00F9B28A /* MasterViewController.swift in Sources */,
 				FA3AF20E19C9CA5C00F9B28A /* AppDelegate.swift in Sources */,
