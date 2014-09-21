@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="rS3-R9-Ivy">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Master-->
@@ -81,19 +80,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="etm-PO-1D1">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="etm-PO-1D1">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="600" id="fOR-ho-kn9"/>
-                                    <constraint firstAttribute="width" constant="600" id="nm5-lD-Kki"/>
+                                    <constraint firstAttribute="width" constant="320" id="JBu-7D-4ST"/>
                                 </constraints>
                             </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="etm-PO-1D1" firstAttribute="leading" secondItem="MMQ-IT-qOo" secondAttribute="leadingMargin" id="Kzf-vp-SkE"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="etm-PO-1D1" secondAttribute="trailing" id="lud-6U-6wa"/>
+                            <constraint firstItem="a0L-h9-sNL" firstAttribute="top" secondItem="etm-PO-1D1" secondAttribute="bottom" id="Fva-7G-uP2"/>
+                            <constraint firstItem="etm-PO-1D1" firstAttribute="leading" secondItem="cIm-e0-J51" secondAttribute="leading" id="Mv4-Si-1Ow"/>
+                            <constraint firstItem="etm-PO-1D1" firstAttribute="top" secondItem="MMQ-IT-qOo" secondAttribute="top" id="wmO-Rd-OH5"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Detail" id="cra-N8-TIN"/>
