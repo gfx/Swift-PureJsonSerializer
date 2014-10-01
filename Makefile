@@ -1,4 +1,5 @@
 
+default: build
 
 test:
 	xcodebuild -sdk iphonesimulator -scheme JsonSerializerTests test
@@ -6,4 +7,4 @@ test:
 build:
 	xcodebuild -sdk iphonesimulator -scheme JsonSerializer build
 
-.PHONY: build test
+.PHONY: build test default
