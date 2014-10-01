@@ -1,4 +1,9 @@
 
-test:
-	xcodebuild -sdk iphonesimulator -target JsonSerializer build
-	#xcodebuild -sdk iphonesimulator -scheme JsonSerializerTests test
+
+test: build
+	xcodebuild -sdk iphonesimulator -scheme JsonSerializerTests test
+
+build:
+	xcodebuild -sdk iphonesimulator -scheme JsonSerializer build
+
+.PHONY: build test
