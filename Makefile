@@ -1,6 +1,6 @@
 
 
-test: build
+test:
 	xcodebuild -sdk iphonesimulator -scheme JsonSerializerTests test
 
 build:
