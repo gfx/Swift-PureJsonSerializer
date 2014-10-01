@@ -7,4 +7,7 @@ test:
 build:
 	xcodebuild -sdk iphonesimulator -scheme JsonSerializer build
 
-.PHONY: build test default
+clean:
+	xcodebuild -sdk iphonesimulator clean
+
+.PHONY: build test clean default
