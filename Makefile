@@ -2,7 +2,7 @@
 default: build
 
 build:
-	xcodebuild -sdk iphonesimulator -trget JsonSerializer build
+	xcodebuild -sdk iphonesimulator -target JsonSerializer build
 
 test:
 	xcodebuild -sdk iphonesimulator -scheme JsonSerializerTests test
