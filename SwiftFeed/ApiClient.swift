@@ -35,7 +35,7 @@ class ApiClient {
                     case .Success(let json):
                         completion(.Success(json))
                     case .Error(let error):
-                        NSLog("json: %@", NSString(data: data, encoding: NSUTF8StringEncoding));
+                        NSLog("json: %@", NSString(data: data, encoding: NSUTF8StringEncoding)!);
                         NSLog("json parse error: %@", error.description)
                         completion(.Error(NSError(domain: "SwiftFeed.JsonParseError",
                             code: 100,

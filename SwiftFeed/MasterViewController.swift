@@ -21,7 +21,7 @@ class MasterViewController: UITableViewController {
 
         let indicator = OverlayIndicator()
 
-        ApiClient().get(NSURL(string: url)) { result in
+        ApiClient().get(NSURL(string: url)!) { result in
             indicator
 
             switch result {

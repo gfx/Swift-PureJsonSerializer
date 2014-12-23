@@ -12,7 +12,7 @@ public class OverlayIndicator {
     let overlay: UIActivityIndicatorView
 
     public init() {
-        let  window = UIApplication.sharedApplication().keyWindow
+        let  window = UIApplication.sharedApplication().keyWindow!
 
         overlay = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
         overlay.frame = window.frame

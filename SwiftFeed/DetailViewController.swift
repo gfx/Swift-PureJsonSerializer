@@ -24,7 +24,7 @@ class DetailViewController: UIViewController, UIWebViewDelegate {
     func configureView() {
         title = detailItem["title"].stringValue
 
-        let url = NSURL(string: detailItem["link"].stringValue)
+        let url = NSURL(string: detailItem["link"].stringValue)!
         let request = NSURLRequest(URL: url)
 
         webView.loadRequest(request)
