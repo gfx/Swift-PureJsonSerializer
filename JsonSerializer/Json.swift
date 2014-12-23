@@ -196,52 +196,58 @@ public func ==(lhs: Json, rhs: Json) -> Bool {
 
 
 extension Json: NilLiteralConvertible {
-    public static func convertFromNilLiteral() -> Json {
-        return .NullValue
+    public init(nilLiteral value: Void) {
+        self = .NullValue
     }
 }
 
 extension Json: BooleanLiteralConvertible {
-    public static func convertFromBooleanLiteral(value: BooleanLiteralType) -> Json {
-        return .BooleanValue(value)
+    public init(booleanLiteral value: BooleanLiteralType) {
+        self = .BooleanValue(value)
     }
 }
 
 extension Json: IntegerLiteralConvertible {
-    public static func convertFromIntegerLiteral(value: IntegerLiteralType) -> Json {
-        return .NumberValue(Double(value))
+    public init(integerLiteral value: IntegerLiteralType) {
+        self = .NumberValue(Double(value))
     }
 }
 
 extension Json: FloatLiteralConvertible {
-    public static func convertFromFloatLiteral(value: FloatLiteralType) -> Json {
-        return .NumberValue(Double(value))
+    public init(floatLiteral value: FloatLiteralType) {
+        self = .NumberValue(Double(value))
     }
 }
 
 extension Json: StringLiteralConvertible {
-    public static func convertFromExtendedGraphemeClusterLiteral(value: ExtendedGraphemeClusterType) -> Json {
-        return .StringValue(value)
+    public typealias UnicodeScalarLiteralType = String
+    public init(unicodeScalarLiteral value: UnicodeScalarLiteralType) {
+        self = .StringValue(value)
     }
 
-    public static func convertFromStringLiteral(value: StringLiteralType) -> Json {
-        return .StringValue(value)
+    public typealias ExtendedGraphemeClusterLiteralType = String
+    public init(extendedGraphemeClusterLiteral value: ExtendedGraphemeClusterType) {
+        self = .StringValue(value)
+    }
+
+    public init(stringLiteral value: StringLiteralType) {
+        self = .StringValue(value)
     }
 }
 
 extension Json: ArrayLiteralConvertible {
-    public static func convertFromArrayLiteral(elements: Json...) -> Json {
-        return .ArrayValue(elements)
+    public init(arrayLiteral elements: Json...) {
+        self = .ArrayValue(elements)
     }
 }
 
 extension Json: DictionaryLiteralConvertible {
-    public static func convertFromDictionaryLiteral(elements: (String, Json)...) -> Json {
+    public init(dictionaryLiteral elements: (String, Json)...) {
         var dictionary = [String:Json](minimumCapacity: elements.count)
         for pair in elements {
             dictionary[pair.0] = pair.1
         }
-        return .ObjectValue(dictionary)
+        self = .ObjectValue(dictionary)
     }
 }
 

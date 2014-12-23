@@ -6,9 +6,6 @@
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
-import Foundation
-
-
 let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
     "t": "\t",
     "r": "\r",
@@ -30,41 +27,40 @@ let escapeMapping: [Character: String] = [
     "\r\n": "\\r\\n",
 ]
 
-let hexMapping: [Byte:UInt32] = [
-    Byte("0"): 0x0,
-    Byte("1"): 0x1,
-    Byte("2"): 0x2,
-    Byte("3"): 0x3,
-    Byte("4"): 0x4,
-    Byte("5"): 0x5,
-    Byte("6"): 0x6,
-    Byte("7"): 0x7,
-    Byte("8"): 0x8,
-    Byte("9"): 0x9,
-    Byte("a"): 0xA, Byte("A"): 0xA,
-    Byte("b"): 0xB, Byte("B"): 0xB,
-    Byte("c"): 0xC, Byte("C"): 0xC,
-    Byte("d"): 0xD, Byte("D"): 0xD,
-    Byte("e"): 0xE, Byte("E"): 0xE,
-    Byte("f"): 0xF, Byte("F"): 0xF,
+let hexMapping: [UnicodeScalar: UInt32] = [
+    "0": 0x0,
+    "1": 0x1,
+    "2": 0x2,
+    "3": 0x3,
+    "4": 0x4,
+    "5": 0x5,
+    "6": 0x6,
+    "7": 0x7,
+    "8": 0x8,
+    "9": 0x9,
+    "a": 0xA, "A": 0xA,
+    "b": 0xB, "B": 0xB,
+    "c": 0xC, "C": 0xC,
+    "d": 0xD, "D": 0xD,
+    "e": 0xE, "E": 0xE,
+    "f": 0xF, "F": 0xF,
 ]
 
-let digitMapping: [Byte:Int] = [
-    Byte("0"): 0,
-    Byte("1"): 1,
-    Byte("2"): 2,
-    Byte("3"): 3,
-    Byte("4"): 4,
-    Byte("5"): 5,
-    Byte("6"): 6,
-    Byte("7"): 7,
-    Byte("8"): 8,
-    Byte("9"): 9,
+let digitMapping: [UnicodeScalar:Int] = [
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
 ]
 
 public func escapeAsJsonString(source : String) -> String {
     var s = "\""
-    s.reserveCapacity(source.utf16Count * 2)
 
     for c in source {
         if let escapedSymbol = escapeMapping[c] {
@@ -77,11 +73,11 @@ public func escapeAsJsonString(source : String) -> String {
     return s
 }
 
-func digitToInt(b: Byte) -> Int? {
-    return digitMapping[b]
+func digitToInt(b: UInt8) -> Int? {
+    return digitMapping[UnicodeScalar(b)]
 }
 
-func hexToDigit(b: Byte) -> UInt32? {
-    return hexMapping[b]
+func hexToDigit(b: UInt8) -> UInt32? {
+    return hexMapping[UnicodeScalar(b)]
 }
 
