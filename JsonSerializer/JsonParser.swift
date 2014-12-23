@@ -312,9 +312,9 @@ public class JsonParser: Parser {
     func expect(target: StaticString) -> Bool {
         skipWhitespaces()
 
-        if !isIdentifier(target.start.memory) {
+        if !isIdentifier(target.utf8Start.memory) {
             // when single character
-            if target.start.memory == cur.memory {
+            if target.utf8Start.memory == cur.memory {
                 nextChar()
                 return true
             } else {
@@ -326,7 +326,7 @@ public class JsonParser: Parser {
         let l = lineNumber
         let c = columnNumber
 
-        var p = target.start
+        var p = target.utf8Start
         let endp = p.advancedBy(Int(target.byteSize))
 
         LOOP: for ; p != endp; p++, nextChar() {

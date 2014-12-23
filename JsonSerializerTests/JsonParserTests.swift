@@ -233,6 +233,6 @@ class JsonParserTests: XCTestCase {
     func complexJsonExample(name: String) -> NSData {
         let bundle = NSBundle(forClass: self.dynamicType)
         let path = bundle.pathForResource(name, ofType: "json")!
-        return NSData(contentsOfFile: path)
+        return NSData(contentsOfFile: path)!
     }
 }
