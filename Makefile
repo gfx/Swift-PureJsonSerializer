@@ -1,10 +1,9 @@
 
 XCODEBUILD:=xctool
 
-default: test
+default: buildcheck test
 
-build:
-	$(XCODEBUILD) -sdk iphoneos -scheme JsonSerializer build
+buildcheck:
 	$(XCODEBUILD) -sdk iphoneos -scheme SwiftFeed build
 
 test:
