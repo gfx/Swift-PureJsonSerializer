@@ -6,7 +6,8 @@
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
-import Foundation
+import var Foundation.NSUTF8StringEncoding
+import class Foundation.NSData
 
 extension JsonParser {
     public class func parse(source: String) -> Result {
@@ -15,7 +16,7 @@ extension JsonParser {
     }
 
     public class func parse(source: NSData) -> Result {
-        let begin = unsafeBitCast(source.bytes, UnsafePointer<Byte>.self)
+        let begin = unsafeBitCast(source.bytes, UnsafePointer<UInt8>.self)
         let end = begin.advancedBy(source.length)
         return JsonParser(begin, end).parse()
     }

@@ -7,16 +7,8 @@
 //  License: The MIT License
 //
 
-import Darwin
-
-// C-like conversion from Byte to CChar
-func byte2cchar(b: Byte) -> CChar {
-    if b < 0x80 {
-        return CChar(b)
-    } else {
-        return -0x80 + CChar(b & ~Byte(0x80))
-    }
-}
+import struct Darwin.Byte
+import func Darwin.pow
 
 public class JsonParser: Parser {
 
@@ -113,7 +105,7 @@ public class JsonParser: Parser {
 
                 if let c = parseEscapedChar() {
                     for u in String(c).utf8 {
-                        buffer.append(byte2cchar(u))
+                        buffer.append(CChar(bitPattern: u))
                     }
                 } else {
                     return .Error(InvalidStringError("invalid escape sequence", self))
@@ -122,7 +114,7 @@ public class JsonParser: Parser {
             case Byte("\""): // end of the string literal
                 break LOOP
             default:
-                buffer.append(byte2cchar(cur.memory))
+                buffer.append(CChar(bitPattern: cur.memory))
             }
         }
 
