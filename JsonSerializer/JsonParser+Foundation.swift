@@ -6,18 +6,66 @@
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
-import var Foundation.NSUTF8StringEncoding
 import class Foundation.NSData
 
-extension JsonParser {
-    public class func parse(source: String) -> Result {
-        let data = source.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
-        return JsonParser.parse(data)
+struct PointerGeneratorWrapper<T>: GeneratorType {
+    typealias Element = T
+
+    let ptr: PointerSequenceWrapper<T>
+    var cur: PointerSequenceWrapper<T>.Index
+
+    init(_ ptr: PointerSequenceWrapper<T>) {
+        self.ptr = ptr
+        self.cur = ptr.startIndex
     }
 
-    public class func parse(source: NSData) -> Result {
-        let begin = unsafeBitCast(source.bytes, UnsafePointer<UInt8>.self)
-        let end = begin.advancedBy(source.length)
-        return JsonParser(begin, end).parse()
+    mutating func next() -> Element? {
+        if cur != ptr.endIndex {
+            return ptr[cur]
+        } else {
+            return nil
+        }
+    }
+}
+
+struct PointerSequenceWrapper<T>: CollectionType {
+    typealias Generator = PointerGeneratorWrapper<T>
+    typealias Element = T
+    typealias Index = Int
+
+    let begin: UnsafePointer<Element>
+    let end: UnsafePointer<Element>
+
+    init(_ begin: UnsafePointer<Element>, _ end: UnsafePointer<Element>) {
+        self.begin = begin
+        self.end = end
+    }
+
+    init(_ source: NSData){
+        self.begin = unsafeBitCast(source.bytes, UnsafePointer<T>.self)
+        self.end = begin.advancedBy(source.length)
+    }
+
+    var startIndex: Index {
+        return 0
+    }
+
+    var endIndex: Index {
+        return begin.distanceTo(end)
+    }
+
+    subscript (position: Index) -> Generator.Element {
+        return begin.advancedBy(position).memory
+    }
+
+
+    func generate() -> Generator {
+        return PointerGeneratorWrapper<T>(self)
+    }
+}
+
+extension JsonParser {
+    public static func parse(source: NSData) -> Result {
+        return GenericJsonParser<PointerSequenceWrapper<UInt8>>(PointerSequenceWrapper<UInt8>(source)).parse()
     }
 }

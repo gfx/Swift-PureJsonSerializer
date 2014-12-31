@@ -7,36 +7,45 @@
 //  License: The MIT License
 //
 
-import struct Darwin.Byte
 import func Darwin.pow
 
-public class JsonParser: Parser {
+public enum ParseResult {
+    case Success(Json)
+    case Error(ParseError)
+}
 
-    public class func parse(begin: UnsafePointer<Byte>, end: UnsafePointer<Byte>) -> Result {
-        return JsonParser(begin, end).parse()
+public struct JsonParser {
+    public typealias Result = ParseResult
+
+    public static func parse(source: String) -> Result {
+        return GenericJsonParser(source.utf8).parse()
     }
 
-    typealias Iterator = UnsafePointer<Byte>
+    public static func parse(source: [UInt8]) -> Result {
+        return GenericJsonParser(source).parse()
+    }
+}
 
+public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>: Parser {
+    typealias Source = ByteSequence
+    typealias Char = Source.Generator.Element
 
-    var cur: Iterator
-    let end: Iterator
+    public typealias Result = ParseResult
+
+    let source: Source
+    var cur: Source.Index
+    let end: Source.Index
 
     public var lineNumber = 1
     public var columnNumber = 1
 
-    public init(_ begin: UnsafePointer<Byte>, _ end: UnsafePointer<Byte>) {
-        self.cur = begin
-        self.end = end
+    public init(_ source: Source) {
+        self.source = source
+        self.cur = source.startIndex
+        self.end = source.endIndex
     }
 
-    public enum Result {
-        case Success(Json)
-        case Error(ParseError)
-    }
-
-
-    func parse() -> Result {
+    public func parse() -> Result {
         switch parseValue() {
         case .Success(let json):
             skipWhitespaces()
@@ -57,28 +66,36 @@ public class JsonParser: Parser {
             return .Error(InsufficientTokenError("unexpected end of tokens", self))
         }
 
-        switch cur.memory {
-        case Byte("n"):
+        switch currentChar {
+        case Char("n"):
             return parseSymbol("null", Json.NullValue)
-        case Byte("t"):
+        case Char("t"):
             return parseSymbol("true", Json.BooleanValue(true))
-        case Byte("f"):
+        case Char("f"):
             return parseSymbol("false", Json.BooleanValue(false))
-        case Byte("-"), Byte("0") ... Byte("9"):
+        case Char("-"), Char("0") ... Char("9"):
             return parseNumber()
-        case Byte("\""):
+        case Char("\""):
             return parseString()
-        case Byte("{"):
+        case Char("{"):
             return parseObject()
-        case Byte("["):
+        case Char("["):
             return parseArray()
         case (let c):
             return .Error(UnexpectedTokenError("unexpected token: \(c)", self))
         }
     }
 
+    var currentChar: Char {
+        return source[cur]
+    }
+
+    var nextChar: Char {
+        return source[cur.successor()]
+    }
+
     var currentSymbol: Character {
-        get { return Character(UnicodeScalar(cur.memory)) }
+        get { return Character(UnicodeScalar(currentChar)) }
     }
 
     func parseSymbol(target: StaticString, _ iftrue: @autoclosure () -> Json) -> Result {
@@ -90,15 +107,15 @@ public class JsonParser: Parser {
     }
 
     func parseString() -> Result {
-        assert(cur.memory == Byte("\""), "points a double quote")
-        nextChar()
+        assert(currentChar == Char("\""), "points a double quote")
+        advance()
 
         var buffer = [CChar]()
 
-        LOOP: for ; cur != end; nextChar() {
-            switch cur.memory {
-            case Byte("\\"):
-                nextChar()
+        LOOP: for ; cur != end; advance() {
+            switch currentChar {
+            case Char("\\"):
+                advance()
                 if (cur == end) {
                     return .Error(InvalidStringError("unexpected end of a string literal", self))
                 }
@@ -111,10 +128,10 @@ public class JsonParser: Parser {
                     return .Error(InvalidStringError("invalid escape sequence", self))
                 }
                 break
-            case Byte("\""): // end of the string literal
+            case Char("\""): // end of the string literal
                 break LOOP
             default:
-                buffer.append(CChar(bitPattern: cur.memory))
+                buffer.append(CChar(bitPattern: currentChar))
             }
         }
 
@@ -129,12 +146,12 @@ public class JsonParser: Parser {
     }
 
     func parseEscapedChar() -> UnicodeScalar? {
-        let c = UnicodeScalar(cur.memory)
+        let c = UnicodeScalar(currentChar)
         if c == "u" { // Unicode escape sequence
             var length = 0 // 2...8
             var value: UInt32 = 0
-            while let d = hexToDigit((cur+1).memory) {
-                nextChar()
+            while let d = hexToDigit(nextChar) {
+                advance()
                 length++
 
                 if length > 8 {
@@ -148,7 +165,7 @@ public class JsonParser: Parser {
             }
             return UnicodeScalar(value)
         } else {
-            let c = UnicodeScalar(cur.memory)
+            let c = UnicodeScalar(currentChar)
             return unescapeMapping[c] ?? c
         }
     }
@@ -158,12 +175,12 @@ public class JsonParser: Parser {
         let sign = expect("-") ? -1.0 : 1.0
 
         var integer: Int64 = 0
-        switch cur.memory {
-        case Byte("0"):
-            nextChar()
-        case Byte("1") ... Byte("9"):
-            for ; cur != end; nextChar() {
-                if let value = digitToInt(cur.memory) {
+        switch currentChar {
+        case Char("0"):
+            advance()
+        case Char("1") ... Char("9"):
+            for ; cur != end; advance() {
+                if let value = digitToInt(currentChar) {
                     integer = (integer * 10) + Int64(value)
                 } else {
                     break
@@ -183,8 +200,8 @@ public class JsonParser: Parser {
             var factor = 0.1
             var fractionLength = 0
 
-            for ; cur != end; nextChar() {
-                if let value = digitToInt(cur.memory) {
+            for ; cur != end; advance() {
+                if let value = digitToInt(currentChar) {
                     fraction += (Double(value) * factor)
                     factor /= 10
                     fractionLength++
@@ -210,8 +227,8 @@ public class JsonParser: Parser {
             exponent = 0
 
             var exponentLength = 0
-            for ; cur != end; nextChar() {
-                if let value = digitToInt(cur.memory) {
+            for ; cur != end; advance() {
+                if let value = digitToInt(currentChar) {
                     exponent = (exponent * 10) + Int64(value)
                     exponentLength++
                 } else {
@@ -230,8 +247,9 @@ public class JsonParser: Parser {
     }
 
     func parseObject() -> Result {
-        assert(cur.memory == Byte("{"), "points \"{\"")
-        nextChar()
+        assert(currentChar == Char("{"), "points \"{\"")
+        advance()
+        skipWhitespaces()
 
         var o = [String:Json]()
 
@@ -241,9 +259,11 @@ public class JsonParser: Parser {
             case .Success(let keyValue):
                 switch keyValue {
                 case .StringValue(let key):
+                    skipWhitespaces()
                     if !expect(":") {
                         return .Error(UnexpectedTokenError("missing colon (:)", self))
                     }
+                    skipWhitespaces()
 
                     // value
                     switch parseValue() {
@@ -274,14 +294,17 @@ public class JsonParser: Parser {
     }
 
     func parseArray() -> Result {
-        assert(cur.memory == Byte("["), "points \"[\"")
-        nextChar()
+        assert(currentChar == Char("["), "points \"[\"")
+        advance()
+        skipWhitespaces()
 
         var a = Array<Json>()
 
         LOOP: while cur != end && !expect("]") {
             switch parseValue() {
             case .Success(let json):
+                skipWhitespaces()
+
                 a.append(json)
 
                 if expect(",") {
@@ -302,12 +325,14 @@ public class JsonParser: Parser {
 
 
     func expect(target: StaticString) -> Bool {
-        skipWhitespaces()
+        if cur == end {
+            return false
+        }
 
         if !isIdentifier(target.utf8Start.memory) {
             // when single character
-            if target.utf8Start.memory == cur.memory {
-                nextChar()
+            if target.utf8Start.memory == currentChar {
+                advance()
                 return true
             } else {
                 return false
@@ -321,8 +346,8 @@ public class JsonParser: Parser {
         var p = target.utf8Start
         let endp = p.advancedBy(Int(target.byteSize))
 
-        LOOP: for ; p != endp; p++, nextChar() {
-            if p.memory != cur.memory {
+        LOOP: for ; p != endp; p++, advance() {
+            if p.memory != currentChar {
                 cur = start // unread
                 lineNumber = l
                 columnNumber = c
@@ -334,31 +359,34 @@ public class JsonParser: Parser {
     }
 
     // only "true", "false", "null" are identifiers
-    func isIdentifier(c: Byte) -> Bool {
+    func isIdentifier(c: Char) -> Bool {
         switch c {
-        case Byte("a") ... Byte("z"):
+        case Char("a") ... Char("z"):
             return true
         default:
             return false
         }
     }
 
-    func nextChar() {
+    func advance() {
+        assert(cur != end, "out of range")
         cur++
 
-        switch cur.memory {
-        case Byte("\n"):
-            lineNumber++
-            columnNumber = 1
-        default:
-            columnNumber++
+        if cur != end {
+            switch currentChar {
+            case Char("\n"):
+                lineNumber++
+                columnNumber = 1
+            default:
+                columnNumber++
+            }
         }
     }
 
     func skipWhitespaces() {
-        LOOP: for ; cur != end; nextChar() {
-            switch cur.memory {
-            case Byte(" "), Byte("\t"), Byte("\r"), Byte("\n"):
+        LOOP: for ; cur != end; advance() {
+            switch currentChar {
+            case Char(" "), Char("\t"), Char("\r"), Char("\n"):
                 break
             default:
                 return
