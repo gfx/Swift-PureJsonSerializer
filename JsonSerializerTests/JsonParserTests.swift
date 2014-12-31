@@ -214,8 +214,21 @@ class JsonParserTests: XCTestCase {
     }
 
 
-    func testPerformanceExample() {
+    func testPerformanceExampleWithNSData() {
         let jsonSource = complexJsonExample("tweets")
+
+        self.measureBlock {
+            switch JsonParser.parse(jsonSource) {
+            case .Success(let json):
+                XCTAssertTrue(true)
+            case .Error(let error):
+                XCTFail(error.description)
+            }
+        }
+    }
+
+    func testPerformanceExampleWithString() {
+        let jsonSource = NSString(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding) as String
 
         self.measureBlock {
             switch JsonParser.parse(jsonSource) {
