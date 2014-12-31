@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
-import Darwin
+import func Darwin.atof
 
 public enum Json: Printable, DebugPrintable, Equatable {
     case NullValue
