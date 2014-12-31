@@ -85,7 +85,7 @@ class ParseErrorTests: XCTestCase {
         case .Error(let error):
             XCTAssert(error is InvalidStringError, error.description)
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
-            XCTAssertEqual(error.columnNumber, 15, "columnNumbeer")
+            XCTAssertEqual(error.columnNumber, 14, "columnNumbeer")
         }
     }
 
@@ -97,12 +97,36 @@ class ParseErrorTests: XCTestCase {
         case .Error(let error):
             XCTAssert(error is InvalidStringError, error.description)
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 8, "columnNumbeer")
+        }
+    }
+
+    func testMissingColon() {
+        let x = JsonParser.parse("{ \"foo\" ")
+        switch x {
+        case .Success(_):
+            XCTFail("not reached")
+        case .Error(let error):
+            XCTAssert(error is UnexpectedTokenError, error.description)
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 8, "columnNumbeer")
+        }
+    }
+
+    func testMissingObjecValue() {
+        let x = JsonParser.parse("{ \"foo\": ")
+        switch x {
+        case .Success(_):
+            XCTFail("not reached")
+        case .Error(let error):
+            XCTAssert(error is InsufficientTokenError, error.description)
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
             XCTAssertEqual(error.columnNumber, 9, "columnNumbeer")
         }
     }
 
-    func testInvalidEscapeSequence() {
-        return // TODO
+
+    func testInvalidEscapeSequence() {        return // TODO
 
         let x = JsonParser.parse("[\"\\uFFFFFFFFFFFFFFFF\"]")
 

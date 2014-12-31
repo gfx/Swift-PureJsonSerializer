@@ -44,7 +44,7 @@ class JsonParserTests: XCTestCase {
     }
 
     func testArrayWithSpaces() {
-        let x = JsonParser.parse("[true, false, null]")
+        let x = JsonParser.parse("[ true , false , null ]")
 
         switch x {
         case .Success(let json):
@@ -86,6 +86,18 @@ class JsonParserTests: XCTestCase {
             XCTFail(error.description)
         }
     }
+
+    func testObjectWithWhiteSpaces() {
+        let x = JsonParser.parse(" { \"foo\" : [ \"bar\" , \"baz\" ] } ")
+
+        switch x {
+        case .Success(let json):
+            XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
+        case .Error(let error):
+            XCTFail(error.description)
+        }
+    }
+
 
     func testString() {
         let x = JsonParser.parse("[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
