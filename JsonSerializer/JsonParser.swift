@@ -67,19 +67,19 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         }
 
         switch currentChar {
-        case Char("n"):
+        case Char(ascii: "n"):
             return parseSymbol("null", Json.NullValue)
-        case Char("t"):
+        case Char(ascii: "t"):
             return parseSymbol("true", Json.BooleanValue(true))
-        case Char("f"):
+        case Char(ascii: "f"):
             return parseSymbol("false", Json.BooleanValue(false))
-        case Char("-"), Char("0") ... Char("9"):
+        case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"):
             return parseNumber()
-        case Char("\""):
+        case Char(ascii: "\""):
             return parseString()
-        case Char("{"):
+        case Char(ascii: "{"):
             return parseObject()
-        case Char("["):
+        case Char(ascii: "["):
             return parseArray()
         case (let c):
             return .Error(UnexpectedTokenError("unexpected token: \(c)", self))
@@ -98,7 +98,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         get { return Character(UnicodeScalar(currentChar)) }
     }
 
-    func parseSymbol(target: StaticString, _ iftrue: @autoclosure () -> Json) -> Result {
+    func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) -> Result {
         if expect(target) {
             return .Success(iftrue())
         } else {
@@ -107,14 +107,14 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     }
 
     func parseString() -> Result {
-        assert(currentChar == Char("\""), "points a double quote")
+        assert(currentChar == Char(ascii: "\""), "points a double quote")
         advance()
 
         var buffer = [CChar]()
 
         LOOP: for ; cur != end; advance() {
             switch currentChar {
-            case Char("\\"):
+            case Char(ascii: "\\"):
                 advance()
                 if (cur == end) {
                     return .Error(InvalidStringError("unexpected end of a string literal", self))
@@ -128,7 +128,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
                     return .Error(InvalidStringError("invalid escape sequence", self))
                 }
                 break
-            case Char("\""): // end of the string literal
+            case Char(ascii: "\""): // end of the string literal
                 break LOOP
             default:
                 buffer.append(CChar(bitPattern: currentChar))
@@ -176,9 +176,9 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
 
         var integer: Int64 = 0
         switch currentChar {
-        case Char("0"):
+        case Char(ascii: "0"):
             advance()
-        case Char("1") ... Char("9"):
+        case Char(ascii: "1") ... Char(ascii: "9"):
             for ; cur != end; advance() {
                 if let value = digitToInt(currentChar) {
                     integer = (integer * 10) + Int64(value)
@@ -247,7 +247,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     }
 
     func parseObject() -> Result {
-        assert(currentChar == Char("{"), "points \"{\"")
+        assert(currentChar == Char(ascii: "{"), "points \"{\"")
         advance()
         skipWhitespaces()
 
@@ -294,7 +294,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     }
 
     func parseArray() -> Result {
-        assert(currentChar == Char("["), "points \"[\"")
+        assert(currentChar == Char(ascii: "["), "points \"[\"")
         advance()
         skipWhitespaces()
 
@@ -361,7 +361,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     // only "true", "false", "null" are identifiers
     func isIdentifier(c: Char) -> Bool {
         switch c {
-        case Char("a") ... Char("z"):
+        case Char(ascii: "a") ... Char(ascii: "z"):
             return true
         default:
             return false
@@ -374,7 +374,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
 
         if cur != end {
             switch currentChar {
-            case Char("\n"):
+            case Char(ascii: "\n"):
                 lineNumber++
                 columnNumber = 1
             default:
@@ -386,7 +386,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     func skipWhitespaces() {
         LOOP: for ; cur != end; advance() {
             switch currentChar {
-            case Char(" "), Char("\t"), Char("\r"), Char("\n"):
+            case Char(ascii: " "), Char(ascii: "\t"), Char(ascii: "\r"), Char(ascii: "\n"):
                 break
             default:
                 return
