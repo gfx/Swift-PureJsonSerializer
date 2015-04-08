@@ -126,8 +126,8 @@ class ParseErrorTests: XCTestCase {
     }
 
 
-    func testInvalidEscapeSequence() {        return // TODO
-
+    func testInvalidEscapeSequence() {
+        return // TODO
         let x = JsonParser.parse("[\"\\uFFFFFFFFFFFFFFFF\"]")
 
         switch x {

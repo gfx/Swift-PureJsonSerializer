@@ -128,6 +128,7 @@ class JsonParserTests: XCTestCase {
         switch x {
         case .Success(let json):
             XCTAssertEqual(json[0].stringValue, "江戸前🍣")
+            XCTAssertEqual(json[0].description, "\"江戸前🍣\"")
             XCTAssertEqual(json.description, "[\"江戸前🍣\"]")
         case .Error(let error):
             XCTFail(error.description)
@@ -228,7 +229,7 @@ class JsonParserTests: XCTestCase {
     }
 
     func testPerformanceExampleWithString() {
-        let jsonSource = NSString(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding) as String
+        let jsonSource = NSString(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding) as! String
 
         self.measureBlock {
             switch JsonParser.parse(jsonSource) {
