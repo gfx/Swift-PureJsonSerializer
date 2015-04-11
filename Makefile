@@ -8,7 +8,7 @@ buildcheck:
 
 test:
 	$(XCODEBUILD) -sdk iphonesimulator -arch i386 -scheme JsonSerializerTests test
-	$(XCODEBUILD) -sdk iphonesimulator -arch i386 -scheme SwiftFeedTests test
+	$(XCODEBUILD) -sdk iphonesimulator -arch i386 -scheme SwiftFeed test
 
 clean:
 	$(XCODEBUILD) -sdk iphonesimulator -scheme JsonSerializer clean
