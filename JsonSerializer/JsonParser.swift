@@ -163,6 +163,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
             if length < 2 {
                 return nil
             }
+            // TODO: validate the value
             return UnicodeScalar(value)
         } else {
             let c = UnicodeScalar(currentChar)
