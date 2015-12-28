@@ -19,37 +19,62 @@ public struct JsonParser {
     }
 }
 
-public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>: Parser {
+public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>: Parser {
     public typealias Source = ByteSequence
     public typealias Char = Source.Generator.Element
+    
+    // MARK: Public Readable
 
+    public private(set) var lineNumber = 1
+    public private(set) var columnNumber = 1
 
-    let source: Source
-    var cur: Source.Index
-    let end: Source.Index
+    // MARK: Source
+    
+    private let source: Source
 
-    public var lineNumber = 1
-    public var columnNumber = 1
+    // MARK: State
+    
+    private var cur: Source.Index
+    private let end: Source.Index
+    
+    // MARK: Accessors
+    
+    private var currentChar: Char {
+        return source[cur]
+    }
+    
+    private var nextChar: Char {
+        return source[cur.successor()]
+    }
+    
+    private var currentSymbol: Character {
+        return Character(UnicodeScalar(currentChar))
+    }
 
+    // MARK: Initializer
+    
     public init(_ source: Source) {
         self.source = source
         self.cur = source.startIndex
         self.end = source.endIndex
     }
+    
+    // MARK: Serialize
 
     public func parse() throws -> Json {
         let json = try parseValue()
-        
         skipWhitespaces()
+        
         guard cur == end else {
             throw ExtraTokenError("extra tokens found", self)
         }
+        
         return json
     }
 
     func parseValue() throws -> Json {
         skipWhitespaces()
-        if cur == end {
+        guard cur != end else {
             throw InsufficientTokenError("unexpected end of tokens", self)
         }
 
@@ -68,21 +93,9 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
             return try parseObject()
         case Char(ascii: "["):
             return try parseArray()
-        case (let c):
+        case let c:
             throw UnexpectedTokenError("unexpected token: \(c)", self)
         }
-    }
-
-    var currentChar: Char {
-        return source[cur]
-    }
-
-    var nextChar: Char {
-        return source[cur.successor()]
-    }
-
-    var currentSymbol: Character {
-        get { return Character(UnicodeScalar(currentChar)) }
     }
 
     func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
