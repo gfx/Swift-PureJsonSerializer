@@ -40,12 +40,9 @@ public class DefaultJsonSerializer: JsonSerializer {
     func serializeArray(array: [Json]) -> String {
         var string = "["
         string += array
-            .map { val in
-                let serialized = val.serialize(self)
-                return indentString + serialized
-            }
+            .map { $0.serialize(self) }
             .joinWithSeparator(",")
-        return string
+        return string + "]"
     }
 
     func serializeObject(object: [String : Json]) -> String {

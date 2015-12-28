@@ -11,22 +11,20 @@ import XCTest
 class JsonTests: XCTestCase {
 
     func testConvenienceConvertions() {
-        let x = JsonParser.parse("[\"foo bar\", true, false]")
-
-        switch x {
-        case .Success(let json):
+        do {
+            let json = try JsonParser.parse("[\"foo bar\", true, false]")
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
-
+            
             XCTAssertEqual(json[0].stringValue, "foo bar")
             XCTAssertEqual(json[1].boolValue, true)
             XCTAssertEqual(json[2].boolValue, false)
-
+            
             XCTAssertEqual(json[3].stringValue, "", "out of range")
             XCTAssertEqual(json[3][0].stringValue, "", "no such item")
             XCTAssertEqual(json["no such property"].stringValue, "", "no such property")
             XCTAssertEqual(json["no"]["such"]["property"].stringValue, "", "no such properties")
-        case .Error(let error):
-            XCTFail(error.description)
+        } catch {
+            XCTFail("\(error)")
         }
     }
 
@@ -62,23 +60,15 @@ class JsonTests: XCTestCase {
     func testConvertFromArrayLiteral() {
         let a: Json = [nil, true, 10, "foo"]
 
-        switch JsonParser.parse("[null, true, 10, \"foo\"]") {
-        case .Success(let expected):
-            XCTAssertEqual(a, expected)
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let expected = try! JsonParser.parse("[null, true, 10, \"foo\"]")
+        XCTAssertEqual(a, expected)
     }
 
     func testConvertFromDictionaryLiteral() {
-        let a: Json = ["foo": 10, "bar": true]
+        let array: Json = ["foo": 10, "bar": true]
 
-        switch JsonParser.parse("{ \"foo\": 10, \"bar\": true }") {
-        case .Success(let expected):
-            XCTAssertEqual(a, expected)
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let expected = try! JsonParser.parse("{ \"foo\": 10, \"bar\": true }")
+        XCTAssertEqual(array, expected)
     }
 
     func testPrintable() {

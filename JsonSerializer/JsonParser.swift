@@ -9,20 +9,13 @@
 
 import func Darwin.pow
 
-public enum ParseResult {
-    case Success(Json)
-    case Error(ParseError)
-}
-
 public struct JsonParser {
-    public typealias Result = ParseResult
-
-    public static func parse(source: String) -> Result {
-        return GenericJsonParser(source.utf8).parse()
+    public static func parse(source: String) throws -> Json {
+        return try GenericJsonParser(source.utf8).parse()
     }
 
-    public static func parse(source: [UInt8]) -> Result {
-        return GenericJsonParser(source).parse()
+    public static func parse(source: [UInt8]) throws -> Json {
+        return try GenericJsonParser(source).parse()
     }
 }
 
@@ -30,7 +23,6 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     public typealias Source = ByteSequence
     public typealias Char = Source.Generator.Element
 
-    public typealias Result = ParseResult
 
     let source: Source
     var cur: Source.Index
@@ -45,44 +37,43 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         self.end = source.endIndex
     }
 
-    public func parse() -> Result {
-        switch parseValue() {
-        case .Success(let json):
-            skipWhitespaces()
-            if (cur == end) {
-                return .Success(json)
-            } else {
-                return .Error(ExtraTokenError("extra tokens found", self))
-            }
-        case .Error(let error):
-            return .Error(error)
+    public func parse() throws -> Json {
+        let json = try parseValue()
+        
+        skipWhitespaces()
+//        print("\n\n\(cur) \n\n == \n\n \(end)\n\n")
+        guard cur == end else {
+            throw ExtraTokenError("extra tokens found", self)
         }
+        return json
     }
 
-    func parseValue() -> Result {
+    func parseValue() throws -> Json {
+//        let c = Character(UnicodeScalar(currentChar))
+//        print("Current char: \(c)")
         skipWhitespaces()
-
+//        print("\(cur) == \(end)")
         if cur == end {
-            return .Error(InsufficientTokenError("unexpected end of tokens", self))
+            throw InsufficientTokenError("unexpected end of tokens", self)
         }
 
         switch currentChar {
         case Char(ascii: "n"):
-            return parseSymbol("null", Json.NullValue)
+            return try parseSymbol("null", Json.NullValue)
         case Char(ascii: "t"):
-            return parseSymbol("true", Json.BooleanValue(true))
+            return try parseSymbol("true", Json.BooleanValue(true))
         case Char(ascii: "f"):
-            return parseSymbol("false", Json.BooleanValue(false))
+            return try parseSymbol("false", Json.BooleanValue(false))
         case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"):
-            return parseNumber()
+            return try parseNumber()
         case Char(ascii: "\""):
-            return parseString()
+            return try parseString()
         case Char(ascii: "{"):
-            return parseObject()
+            return try parseObject()
         case Char(ascii: "["):
-            return parseArray()
+            return try parseArray()
         case (let c):
-            return .Error(UnexpectedTokenError("unexpected token: \(c)", self))
+            throw UnexpectedTokenError("unexpected token: \(c)", self)
         }
     }
 
@@ -98,15 +89,15 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         get { return Character(UnicodeScalar(currentChar)) }
     }
 
-    func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) -> Result {
+    func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
         if expect(target) {
-            return .Success(iftrue())
+            return iftrue()
         } else {
-            return .Error(UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self))
+            throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
     }
 
-    func parseString() -> Result {
+    func parseString() throws -> Json {
         assert(currentChar == Char(ascii: "\""), "points a double quote")
         advance()
 
@@ -117,7 +108,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
             case Char(ascii: "\\"):
                 advance()
                 if (cur == end) {
-                    return .Error(InvalidStringError("unexpected end of a string literal", self))
+                    throw InvalidStringError("unexpected end of a string literal", self)
                 }
 
                 if let c = parseEscapedChar() {
@@ -125,7 +116,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
                         buffer.append(CChar(bitPattern: u))
                     }
                 } else {
-                    return .Error(InvalidStringError("invalid escape sequence", self))
+                    throw InvalidStringError("invalid escape sequence", self)
                 }
                 break
             case Char(ascii: "\""): // end of the string literal
@@ -136,13 +127,13 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         }
 
         if !expect("\"") {
-            return .Error(InvalidStringError("missing double quote", self))
+            throw InvalidStringError("missing double quote", self)
         }
 
         buffer.append(0) // trailing nul
 
         let s = String.fromCString(buffer)!
-        return .Success(.StringValue(s))
+        return .StringValue(s)
     }
 
     func parseEscapedChar() -> UnicodeScalar? {
@@ -172,7 +163,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     }
 
     // number = [ minus ] int [ frac ] [ exp ]
-    func parseNumber() -> Result {
+    func parseNumber() throws -> Json {
         let sign = expect("-") ? -1.0 : 1.0
 
         var integer: Int64 = 0
@@ -188,7 +179,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
                 }
             }
         default:
-            return .Error(InvalidNumberError("invalid token in number", self))
+            throw InvalidNumberError("invalid token in number", self)
         }
 
         if integer != Int64(Double(integer)) {
@@ -212,7 +203,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
             }
 
             if fractionLength == 0 {
-                return .Error(InvalidNumberError("insufficient fraction part in number", self))
+                throw InvalidNumberError("insufficient fraction part in number", self)
             }
         }
 
@@ -237,17 +228,17 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
                 }
             }
             if exponentLength == 0 {
-                return .Error(InvalidNumberError("insufficient exponent part in number", self))
+                throw InvalidNumberError("insufficient exponent part in number", self)
             }
 
             exponent *= expSign
         }
 
         //println("nuber: \(sign) * (\(integer) + \(fraction)) * pow(10, \(exponent))")
-        return .Success(.NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent))))
+        return .NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
     }
 
-    func parseObject() -> Result {
+    func parseObject() throws -> Json {
         assert(currentChar == Char(ascii: "{"), "points \"{\"")
         advance()
         skipWhitespaces()
@@ -256,24 +247,17 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
 
         LOOP: while cur != end && !expect("}") {
             // key
-            switch parseValue() {
-            case .Success(let keyValue):
+            let keyValue = try parseValue()
                 switch keyValue {
                 case .StringValue(let key):
                     skipWhitespaces()
                     if !expect(":") {
-                        return .Error(UnexpectedTokenError("missing colon (:)", self))
+                        throw UnexpectedTokenError("missing colon (:)", self)
                     }
                     skipWhitespaces()
 
-                    // value
-                    switch parseValue() {
-                    case .Success(let value):
-                        o[key] = value
-                        break
-                    case (let error):
-                        return error
-                    }
+                    let value = try parseValue()
+                    o[key] = value
 
                     skipWhitespaces()
                     if expect(",") {
@@ -281,47 +265,41 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
                     } else if expect("}") {
                         break LOOP
                     } else {
-                        return .Error(UnexpectedTokenError("missing comma (,)", self))
+                        throw UnexpectedTokenError("missing comma (,)", self)
                     }
                 default:
-                    return .Error(NonStringKeyError("unexpected value for object key", self))
+                    throw NonStringKeyError("unexpected value for object key", self)
                 }
-            case (let error):
-                return error
-            }
         }
 
-        return .Success(.ObjectValue(o))
+        return .ObjectValue(o)
     }
 
-    func parseArray() -> Result {
+    func parseArray() throws -> Json {
         assert(currentChar == Char(ascii: "["), "points \"[\"")
         advance()
         skipWhitespaces()
-
+        
         var a = Array<Json>()
-
+        
         LOOP: while cur != end && !expect("]") {
-            switch parseValue() {
-            case .Success(let json):
-                skipWhitespaces()
-
-                a.append(json)
-
-                if expect(",") {
-                    break
-                } else if expect("]") {
-                    break LOOP
-                } else {
-                    return .Error(UnexpectedTokenError("missing comma (,) (token: \(currentSymbol))", self))
-                }
-            case (let error):
-                return error
+            let json = try parseValue()
+            skipWhitespaces()
+            
+            a.append(json)
+            
+            if expect(",") {
+                continue
+            } else if expect("]") {
+                break LOOP
+            } else {
+                throw UnexpectedTokenError("missing comma (,) (token: \(currentSymbol))", self)
             }
-
+            
         }
-
-        return .Success(.ArrayValue(a))
+        
+//        print("A: \(a)")
+        return .ArrayValue(a)
     }
 
 
