@@ -82,13 +82,13 @@ class JsonTests: XCTestCase {
     }
 
     func testPrintable() {
-        let x: Printable = Json.from(true)
+        let x: CustomStringConvertible = Json.from(true)
 
         XCTAssertEqual(x.description, "true", "Printable#description")
     }
 
     func testDebugPrintable() {
-        let x: DebugPrintable = Json.from(true)
+        let x: CustomDebugStringConvertible = Json.from(true)
 
         XCTAssertEqual(x.debugDescription, "true", "DebugPrintable#debugDescription")
     }

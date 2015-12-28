@@ -24,7 +24,7 @@ public class ParseError: CustomStringConvertible {
 
     public var description: String {
         get {
-            return "\(reflect(self).summary)[\(lineNumber):\(columnNumber)]: \(reason)"
+            return "\(Mirror(reflecting: self))[\(lineNumber):\(columnNumber)]: \(reason)"
         }
     }
 

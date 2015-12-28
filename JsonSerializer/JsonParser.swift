@@ -27,8 +27,8 @@ public struct JsonParser {
 }
 
 public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>: Parser {
-    typealias Source = ByteSequence
-    typealias Char = Source.Generator.Element
+    public typealias Source = ByteSequence
+    public typealias Char = Source.Generator.Element
 
     public typealias Result = ParseResult
 

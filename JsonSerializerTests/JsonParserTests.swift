@@ -220,8 +220,8 @@ class JsonParserTests: XCTestCase {
 
         self.measureBlock {
             switch JsonParser.parse(jsonSource) {
-            case .Success(let json):
-                XCTAssertTrue(true)
+            case .Success(_):
+                break
             case .Error(let error):
                 XCTFail(error.description)
             }
@@ -233,8 +233,8 @@ class JsonParserTests: XCTestCase {
 
         self.measureBlock {
             switch JsonParser.parse(jsonSource) {
-            case .Success(let json):
-                XCTAssertTrue(true)
+            case .Success(_):
+                break
             case .Error(let error):
                 XCTFail(error.description)
             }
@@ -244,15 +244,8 @@ class JsonParserTests: XCTestCase {
     func testPerformanceExampleInJSONSerialization() {
         let jsonSource = complexJsonExample("tweets")
         self.measureBlock {
-            var error: NSError? = nil
-            let dict: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonSource, options: .MutableContainers, error: &error)
-
-            switch error {
-            case .None:
-                break
-            case .Some(let e):
-                XCTFail("error: \(e)")
-            }
+            let dict: AnyObject? = try! NSJSONSerialization
+                .JSONObjectWithData(jsonSource, options: .MutableContainers)
         }
     }
 

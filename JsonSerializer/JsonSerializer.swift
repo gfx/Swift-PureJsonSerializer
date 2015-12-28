@@ -81,23 +81,24 @@ public class PrettyJsonSerializer: DefaultJsonSerializer {
         return s + " ]"
     }
 
-    override public func serializeObject(o: [String:Json]) -> String {
-        var s = "{"
+    override public func serializeObject(object: [String:Json]) -> String {
         indentLevel++
-        var i = 0
-
-        var keys = o.keys.array
-        keys.sortInPlace()
-        for key in keys {
-            s += "\n"
-            s += indent()
-            s += "\(escapeAsJsonString(key)): \(o[key]!.serialize(self))"
-            if i++ != (o.count - 1) {
-                s += ","
-            }
+        defer {
+            indentLevel--
         }
-        indentLevel--
-        return s + " }"
+        
+        var string = "{\n"
+        let indentString = indent()
+        string += object
+            .map { key, val in
+                let escapedKey = escapeAsJsonString(key)
+                let serializedValue = val.serialize(self)
+                let serializedLine = "\(escapedKey): \(serializedValue)"
+                return indentString + serializedLine
+            }
+            .joinWithSeparator(",\n")
+        
+        return string + " }"
     }
 
     func indent() -> String {

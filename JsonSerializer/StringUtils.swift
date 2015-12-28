@@ -13,7 +13,7 @@ let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
 ]
 
 
-let escapeMapping: [Character: String] = [
+let escapeMapping: [Character : String] = [
     "\r": "\\r",
     "\n": "\\n",
     "\t": "\\t",
@@ -60,17 +60,13 @@ let digitMapping: [UnicodeScalar:Int] = [
 ]
 
 public func escapeAsJsonString(source : String) -> String {
-    var s = "\""
-
-    for c in source.characters {
-        if let escapedSymbol = escapeMapping[c] {
-            s.extend(escapedSymbol)
-        } else {
-            s.append(c)
-        }
+    var escapedString = "\""
+    source.characters.forEach { c in
+        let escapedChar = escapeMapping[c] ?? String(c)
+        escapedString += escapedChar
     }
-    s.extend("\"")
-    return s
+    escapedString += "\""
+    return escapedString
 }
 
 func digitToInt(b: UInt8) -> Int? {
