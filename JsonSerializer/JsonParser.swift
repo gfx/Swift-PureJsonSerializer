@@ -15,7 +15,7 @@ enum Dummy : ErrorType {
 
 public struct JsonParser {
     public static func parse(source: String) throws -> Json {
-        return try GenJsonParser(Array(source.utf8)).parse()
+        return try GenJsonParser(source.utf8).parse()
     }
     
     public static func parse(source: [UInt8]) throws -> Json {
@@ -57,6 +57,10 @@ public final class GenJsonParser: Parser {
     
     // MARK: Initializer
     
+    public convenience init<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(_ sequence: ByteSequence) {
+        self.init(Array(sequence))
+    }
+    
     public init(_ source: ByteSequence) {
         self.source = source
         self.cur = source.startIndex
@@ -76,7 +80,7 @@ public final class GenJsonParser: Parser {
         return json
     }
     
-    func parseValue() throws -> Json {
+    private func parseValue() throws -> Json {
         skipWhitespaces()
         guard cur != end else {
             throw InsufficientTokenError("unexpected end of tokens", self)
@@ -102,7 +106,7 @@ public final class GenJsonParser: Parser {
         }
     }
     
-    func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
+    private func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
         if expect(target) {
             return iftrue()
         } else {
@@ -110,7 +114,7 @@ public final class GenJsonParser: Parser {
         }
     }
     
-    func parseString() throws -> Json {
+    private func parseString() throws -> Json {
         assert(currentChar == Char(ascii: "\""), "points a double quote")
         advance()
         
@@ -152,7 +156,7 @@ public final class GenJsonParser: Parser {
         return .StringValue(string)
     }
     
-    func parseEscapedChar() -> UnicodeScalar? {
+    private func parseEscapedChar() -> UnicodeScalar? {
         let c = UnicodeScalar(currentChar)
         if c == "u" { // Unicode escape sequence
             var length = 0 // 2...8
@@ -179,7 +183,7 @@ public final class GenJsonParser: Parser {
     }
     
     // number = [ minus ] int [ frac ] [ exp ]
-    func parseNumber() throws -> Json {
+    private func parseNumber() throws -> Json {
         let sign = expect("-") ? -1.0 : 1.0
         
         var integer: Int64 = 0
@@ -288,7 +292,7 @@ public final class GenJsonParser: Parser {
         return .ObjectValue(object)
     }
     
-    func parseArray() throws -> Json {
+    private func parseArray() throws -> Json {
         assert(currentChar == Char(ascii: "["), "points \"[\"")
         advance()
         skipWhitespaces()
@@ -315,8 +319,7 @@ public final class GenJsonParser: Parser {
         return .ArrayValue(a)
     }
     
-    
-    func expect(target: StaticString) -> Bool {
+    private func expect(target: StaticString) -> Bool {
         if cur == end {
             return false
         }
@@ -353,7 +356,7 @@ public final class GenJsonParser: Parser {
     }
     
     // only "true", "false", "null" are identifiers
-    func isIdentifier(c: Char) -> Bool {
+    private func isIdentifier(c: Char) -> Bool {
         switch c {
         case Char(ascii: "a") ... Char(ascii: "z"):
             return true
@@ -362,7 +365,7 @@ public final class GenJsonParser: Parser {
         }
     }
     
-    func advance() {
+    private func advance() {
         assert(cur != end, "out of range")
         cur++
         
@@ -377,7 +380,7 @@ public final class GenJsonParser: Parser {
         }
     }
     
-    func skipWhitespaces() {
+    private func skipWhitespaces() {
         while cur != end && currentChar.isWhitespace {
             advance()
         }
