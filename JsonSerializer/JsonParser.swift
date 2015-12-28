@@ -9,33 +9,37 @@
 
 import func Darwin.pow
 
+enum Dummy : ErrorType {
+    case Error
+}
+
 public struct JsonParser {
     public static func parse(source: String) throws -> Json {
-        return try GenericJsonParser(source.utf8).parse()
+        return try GenJsonParser(Array(source.utf8)).parse()
     }
-
+    
     public static func parse(source: [UInt8]) throws -> Json {
-        return try GenericJsonParser(source).parse()
+        return try GenJsonParser(source).parse()
     }
 }
 
-public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>: Parser {
-    public typealias Source = ByteSequence
-    public typealias Char = Source.Generator.Element
+public final class GenJsonParser: Parser {
+    public typealias ByteSequence = [UInt8]
+    public typealias Char = UInt8
     
     // MARK: Public Readable
-
+    
     public private(set) var lineNumber = 1
     public private(set) var columnNumber = 1
-
+    
     // MARK: Source
     
-    private let source: Source
-
+    private let source: [UInt8]
+    
     // MARK: State
     
-    private var cur: Source.Index
-    private let end: Source.Index
+    private var cur: Int
+    private let end: Int
     
     // MARK: Accessors
     
@@ -50,17 +54,17 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
     private var currentSymbol: Character {
         return Character(UnicodeScalar(currentChar))
     }
-
+    
     // MARK: Initializer
     
-    public init(_ source: Source) {
+    public init(_ source: ByteSequence) {
         self.source = source
         self.cur = source.startIndex
         self.end = source.endIndex
     }
     
     // MARK: Serialize
-
+    
     public func parse() throws -> Json {
         let json = try parseValue()
         skipWhitespaces()
@@ -71,13 +75,13 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
         
         return json
     }
-
+    
     func parseValue() throws -> Json {
         skipWhitespaces()
         guard cur != end else {
             throw InsufficientTokenError("unexpected end of tokens", self)
         }
-
+        
         switch currentChar {
         case Char(ascii: "n"):
             return try parseSymbol("null", Json.NullValue)
@@ -97,7 +101,7 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             throw UnexpectedTokenError("unexpected token: \(c)", self)
         }
     }
-
+    
     func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
         if expect(target) {
             return iftrue()
@@ -105,11 +109,11 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
     }
-
+    
     func parseString() throws -> Json {
         assert(currentChar == Char(ascii: "\""), "points a double quote")
         advance()
-
+        
         var buffer = [CChar]()
         
         while cur != end && currentChar != Char(ascii: "\"") {
@@ -134,20 +138,20 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             
             advance()
         }
-
+        
         guard expect("\"") else {
             throw InvalidStringError("missing double quote", self)
         }
-
+        
         buffer.append(0) // trailing nul
-
+        
         guard let string = String.fromCString(buffer) else {
             throw InvalidStringError("Unable to parse CString", self)
         }
         
         return .StringValue(string)
     }
-
+    
     func parseEscapedChar() -> UnicodeScalar? {
         let c = UnicodeScalar(currentChar)
         if c == "u" { // Unicode escape sequence
@@ -156,11 +160,11 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             while let d = hexToDigit(nextChar) {
                 advance()
                 length++
-
+                
                 if length > 8 {
                     break
                 }
-
+                
                 value = (value << 4) | d
             }
             if length < 2 {
@@ -173,11 +177,11 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             return unescapeMapping[c] ?? c
         }
     }
-
+    
     // number = [ minus ] int [ frac ] [ exp ]
     func parseNumber() throws -> Json {
         let sign = expect("-") ? -1.0 : 1.0
-
+        
         var integer: Int64 = 0
         switch currentChar {
         case Char(ascii: "0"):
@@ -190,17 +194,17 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
         default:
             throw InvalidNumberError("invalid token in number", self)
         }
-
+        
         if integer != Int64(Float80(integer)) {
             // TODO: Verify implications of Float80
             throw InvalidNumberError("too much integer part in number", self)
         }
-
+        
         var fraction: Double = 0.0
         if expect(".") {
             var factor = 0.1
             var fractionLength = 0
-
+            
             while let value = digitToInt(currentChar) where cur != end {
                 fraction += (Double(value) * factor)
                 factor /= 10
@@ -208,12 +212,12 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
                 
                 advance()
             }
-
+            
             guard fractionLength != 0 else {
                 throw InvalidNumberError("insufficient fraction part in number", self)
             }
         }
-
+        
         var exponent: Int64 = 0
         if expect("e") || expect("E") {
             var expSign: Int64 = 1
@@ -222,9 +226,9 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             } else if expect("+") {
                 // do nothing
             }
-
+            
             exponent = 0
-
+            
             var exponentLength = 0
             while let value = digitToInt(currentChar) where cur != end {
                 exponent = (exponent * 10) + Int64(value)
@@ -235,50 +239,55 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             guard exponentLength != 0 else {
                 throw InvalidNumberError("insufficient exponent part in number", self)
             }
-
+            
             exponent *= expSign
         }
-
+        
         return .NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
     }
-
-    func parseObject() throws -> Json {
+    
+    private func parseObject() throws -> Json {
+        return try getObject()
+    }
+    
+    /**
+     There is a bug in the compiler which makes this function necessary to be called from parseObject
+     */
+    private func getObject() throws -> Json {
         assert(currentChar == Char(ascii: "{"), "points \"{\"")
         advance()
         skipWhitespaces()
-
-        var o = [String:Json]()
-
-        LOOP: while cur != end && !expect("}") {
-            // key
-            let keyValue = try parseValue()
-                switch keyValue {
-                case .StringValue(let key):
-                    skipWhitespaces()
-                    if !expect(":") {
-                        throw UnexpectedTokenError("missing colon (:)", self)
-                    }
-                    skipWhitespaces()
-
-                    let value = try parseValue()
-                    o[key] = value
-
-                    skipWhitespaces()
-                    if expect(",") {
-                        break
-                    } else if expect("}") {
-                        break LOOP
-                    } else {
-                        throw UnexpectedTokenError("missing comma (,)", self)
-                    }
-                default:
-                    throw NonStringKeyError("unexpected value for object key", self)
-                }
+        
+        var object = [String:Json]()
+        
+        while cur != end && !expect("}") {
+            guard case let .StringValue(key) = try parseValue() else {
+                throw NonStringKeyError("unexpected value for object key", self)
+            }
+            
+            skipWhitespaces()
+            guard expect(":") else {
+                throw UnexpectedTokenError("missing colon (:)", self)
+            }
+            skipWhitespaces()
+            
+            let value = try parseValue()
+            object[key] = value
+            
+            skipWhitespaces()
+            
+            guard !expect("}") else {
+                break
+            }
+            
+            guard expect(",") else {
+                throw UnexpectedTokenError("missing comma (,)", self)
+            }
         }
-
-        return .ObjectValue(o)
+        
+        return .ObjectValue(object)
     }
-
+    
     func parseArray() throws -> Json {
         assert(currentChar == Char(ascii: "["), "points \"[\"")
         advance()
@@ -302,16 +311,16 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             
         }
         
-//        print("A: \(a)")
+        //        print("A: \(a)")
         return .ArrayValue(a)
     }
-
-
+    
+    
     func expect(target: StaticString) -> Bool {
         if cur == end {
             return false
         }
-
+        
         if !isIdentifier(target.utf8Start.memory) {
             // when single character
             if target.utf8Start.memory == currentChar {
@@ -321,11 +330,11 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
                 return false
             }
         }
-
+        
         let start = cur
         let l = lineNumber
         let c = columnNumber
-
+        
         var p = target.utf8Start
         let endp = p.advancedBy(Int(target.byteSize))
         while p != endp {
@@ -339,10 +348,10 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             p++
             advance()
         }
-    
+        
         return true
     }
-
+    
     // only "true", "false", "null" are identifiers
     func isIdentifier(c: Char) -> Bool {
         switch c {
@@ -352,7 +361,7 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             return false
         }
     }
-
+    
     func advance() {
         assert(cur != end, "out of range")
         cur++
@@ -367,7 +376,7 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
             }
         }
     }
-
+    
     func skipWhitespaces() {
         while cur != end && currentChar.isWhitespace {
             advance()
@@ -375,7 +384,7 @@ public final class GenericJsonParser<ByteSequence: CollectionType where ByteSequ
     }
 }
 
-extension GenericJsonParser.Char {
+extension GenJsonParser.Char {
     var isWhitespace: Bool {
         let type = self.dynamicType
         switch self {

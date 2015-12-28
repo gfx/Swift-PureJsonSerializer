@@ -116,7 +116,7 @@ class JsonParserTests: XCTestCase {
     }
 
     func testPerformanceExampleWithString() {
-        let jsonSource = NSString(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding) as! String
+        let jsonSource = String(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding)!
 
         self.measureBlock {
             let _ = try! JsonParser.parse(jsonSource)

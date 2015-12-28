@@ -66,9 +66,7 @@ struct PointerSequenceWrapper<T>: CollectionType {
 
 extension JsonParser {
     public static func parse(data: NSData) throws -> Json {
-        let ParserType = GenericJsonParser<PointerSequenceWrapper<UInt8>>.self
         let source = PointerSequenceWrapper<UInt8>(data)
-        let parser = ParserType.init(source)
-        return try parser.parse()
+        return try JsonParser.parse(Array(source))
     }
 }
