@@ -244,7 +244,7 @@ class JsonParserTests: XCTestCase {
     func testPerformanceExampleInJSONSerialization() {
         let jsonSource = complexJsonExample("tweets")
         self.measureBlock {
-            let dict: AnyObject? = try! NSJSONSerialization
+            let _: AnyObject? = try! NSJSONSerialization
                 .JSONObjectWithData(jsonSource, options: .MutableContainers)
         }
     }
