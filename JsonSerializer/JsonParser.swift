@@ -41,7 +41,6 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         let json = try parseValue()
         
         skipWhitespaces()
-//        print("\n\n\(cur) \n\n == \n\n \(end)\n\n")
         guard cur == end else {
             throw ExtraTokenError("extra tokens found", self)
         }
@@ -49,10 +48,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     }
 
     func parseValue() throws -> Json {
-//        let c = Character(UnicodeScalar(currentChar))
-//        print("Current char: \(c)")
         skipWhitespaces()
-//        print("\(cur) == \(end)")
         if cur == end {
             throw InsufficientTokenError("unexpected end of tokens", self)
         }
@@ -350,7 +346,7 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     func advance() {
         assert(cur != end, "out of range")
         cur++
-
+        
         if cur != end {
             switch currentChar {
             case Char(ascii: "\n"):
@@ -363,13 +359,20 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
     }
 
     func skipWhitespaces() {
-        LOOP: for ; cur != end; advance() {
-            switch currentChar {
-            case Char(ascii: " "), Char(ascii: "\t"), Char(ascii: "\r"), Char(ascii: "\n"):
-                break
-            default:
-                return
-            }
+        while cur != end && currentChar.isWhitespace {
+            advance()
+        }
+    }
+}
+
+extension GenericJsonParser.Char {
+    var isWhitespace: Bool {
+        let type = self.dynamicType
+        switch self {
+        case type.init(ascii: " "), type.init(ascii: "\t"), type.init(ascii: "\r"), type.init(ascii: "\n"):
+            return true
+        default:
+            return false
         }
     }
 }

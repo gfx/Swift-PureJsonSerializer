@@ -26,7 +26,7 @@ class JsonParserTests: XCTestCase {
     }
 
     func testArrayWithSpaces() {
-        let json = try! JsonParser.parse("[ true , false , null ]")
+        let json = try! JsonParser.parse("[ true ,     false , null ]")
         XCTAssertEqual(json.description, "[true,false,null]")
     }
 
