@@ -98,38 +98,41 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         advance()
 
         var buffer = [CChar]()
-
-        LOOP: for ; cur != end; advance() {
+        
+        while cur != end && currentChar != Char(ascii: "\"") {
             switch currentChar {
             case Char(ascii: "\\"):
                 advance()
-                if (cur == end) {
+                
+                guard cur != end else {
                     throw InvalidStringError("unexpected end of a string literal", self)
                 }
-
-                if let c = parseEscapedChar() {
-                    for u in String(c).utf8 {
-                        buffer.append(CChar(bitPattern: u))
-                    }
-                } else {
+                
+                guard let escapedChar = parseEscapedChar() else {
                     throw InvalidStringError("invalid escape sequence", self)
                 }
-                break
-            case Char(ascii: "\""): // end of the string literal
-                break LOOP
+                
+                String(escapedChar).utf8.forEach {
+                    buffer.append(CChar(bitPattern: $0))
+                }
             default:
                 buffer.append(CChar(bitPattern: currentChar))
             }
+            
+            advance()
         }
 
-        if !expect("\"") {
+        guard expect("\"") else {
             throw InvalidStringError("missing double quote", self)
         }
 
         buffer.append(0) // trailing nul
 
-        let s = String.fromCString(buffer)!
-        return .StringValue(s)
+        guard let string = String.fromCString(buffer) else {
+            throw InvalidStringError("Unable to parse CString", self)
+        }
+        
+        return .StringValue(string)
     }
 
     func parseEscapedChar() -> UnicodeScalar? {
@@ -167,20 +170,17 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
         case Char(ascii: "0"):
             advance()
         case Char(ascii: "1") ... Char(ascii: "9"):
-            for ; cur != end; advance() {
-                if let value = digitToInt(currentChar) {
-                    integer = (integer * 10) + Int64(value)
-                } else {
-                    break
-                }
+            while let value = digitToInt(currentChar) where cur != end {
+                integer = (integer * 10) + Int64(value)
+                advance()
             }
         default:
             throw InvalidNumberError("invalid token in number", self)
         }
 
-        if integer != Int64(Double(integer)) {
-            // TODO
-            //return .Error(InvalidNumberError("too much integer part in number", self))
+        if integer != Int64(Float80(integer)) {
+            // TODO: Verify implications of Float80
+            throw InvalidNumberError("too much integer part in number", self)
         }
 
         var fraction: Double = 0.0
@@ -188,17 +188,15 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
             var factor = 0.1
             var fractionLength = 0
 
-            for ; cur != end; advance() {
-                if let value = digitToInt(currentChar) {
-                    fraction += (Double(value) * factor)
-                    factor /= 10
-                    fractionLength++
-                } else {
-                    break
-                }
+            while let value = digitToInt(currentChar) where cur != end {
+                fraction += (Double(value) * factor)
+                factor /= 10
+                fractionLength++
+                
+                advance()
             }
 
-            if fractionLength == 0 {
+            guard fractionLength != 0 else {
                 throw InvalidNumberError("insufficient fraction part in number", self)
             }
         }
@@ -215,22 +213,19 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
             exponent = 0
 
             var exponentLength = 0
-            for ; cur != end; advance() {
-                if let value = digitToInt(currentChar) {
-                    exponent = (exponent * 10) + Int64(value)
-                    exponentLength++
-                } else {
-                    break
-                }
+            while let value = digitToInt(currentChar) where cur != end {
+                exponent = (exponent * 10) + Int64(value)
+                exponentLength++
+                advance()
             }
-            if exponentLength == 0 {
+            
+            guard exponentLength != 0 else {
                 throw InvalidNumberError("insufficient exponent part in number", self)
             }
 
             exponent *= expSign
         }
 
-        //println("nuber: \(sign) * (\(integer) + \(fraction)) * pow(10, \(exponent))")
         return .NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
     }
 
@@ -320,16 +315,18 @@ public class GenericJsonParser<ByteSequence: CollectionType where ByteSequence.G
 
         var p = target.utf8Start
         let endp = p.advancedBy(Int(target.byteSize))
-
-        LOOP: for ; p != endp; p++, advance() {
+        while p != endp {
             if p.memory != currentChar {
                 cur = start // unread
                 lineNumber = l
                 columnNumber = c
                 return false
             }
+            
+            p++
+            advance()
         }
-
+    
         return true
     }
 
