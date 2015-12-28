@@ -97,10 +97,10 @@ class JsonTests: XCTestCase {
         let x = Json.from([true, [ "foo": 1, "bar": 2 ], false])
         XCTAssertEqual(x.debugDescription,
             "[\n" +
-            "  true,\n" +
-            "  {\n" +
-            "    \"bar\": 2,\n" +
-            "    \"foo\": 1 },\n" +
+                "  true,\n" +
+                "  {\n" +
+                "    \"bar\": 2,\n" +
+                "    \"foo\": 1 },\n" +
             "  false ]",
             "PrettyJsonSerializer")
     }
