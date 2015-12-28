@@ -9,17 +9,17 @@
 
 import func Darwin.pow
 
-public struct JsonParser {
+extension JsonParser {
     public static func parse(source: String) throws -> Json {
-        return try GenJsonParser(source.utf8).parse()
+        return try self.init(source.utf8).parse()
     }
     
     public static func parse(source: [UInt8]) throws -> Json {
-        return try GenJsonParser(source).parse()
+        return try self.init(source).parse()
     }
 }
 
-public final class GenJsonParser: Parser {
+public final class JsonParser: Parser {
     public typealias ByteSequence = [UInt8]
     public typealias Char = UInt8
     
@@ -381,7 +381,7 @@ public final class GenJsonParser: Parser {
     }
 }
 
-extension GenJsonParser.Char {
+extension JsonParser.Char {
     var isWhitespace: Bool {
         let type = self.dynamicType
         switch self {
