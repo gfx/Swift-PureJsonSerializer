@@ -11,7 +11,7 @@ protocol Parser {
     var columnNumber: Int { get }
 }
 
-public class ParseError: Printable {
+public class ParseError: CustomStringConvertible {
     public let reason: String
     let parser: Parser
 

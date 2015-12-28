@@ -8,7 +8,7 @@
 
 import func Darwin.atof
 
-public enum Json: Printable, DebugPrintable, Equatable {
+public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatable {
     case NullValue
     case BooleanValue(Bool)
     case NumberValue(Double)

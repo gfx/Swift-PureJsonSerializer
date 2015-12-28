@@ -62,7 +62,7 @@ let digitMapping: [UnicodeScalar:Int] = [
 public func escapeAsJsonString(source : String) -> String {
     var s = "\""
 
-    for c in source {
+    for c in source.characters {
         if let escapedSymbol = escapeMapping[c] {
             s.extend(escapedSymbol)
         } else {

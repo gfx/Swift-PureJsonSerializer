@@ -8,7 +8,7 @@
 
 
 public protocol JsonSerializer {
-    func serialize(Json) -> String
+    func serialize(_: Json) -> String
 }
 
 public class DefaultJsonSerializer: JsonSerializer {
@@ -87,7 +87,7 @@ public class PrettyJsonSerializer: DefaultJsonSerializer {
         var i = 0
 
         var keys = o.keys.array
-        sort(&keys)
+        keys.sortInPlace()
         for key in keys {
             s += "\n"
             s += indent()
