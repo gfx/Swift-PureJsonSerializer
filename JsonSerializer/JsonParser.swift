@@ -9,10 +9,6 @@
 
 import func Darwin.pow
 
-enum Dummy : ErrorType {
-    case Error
-}
-
 public struct JsonParser {
     public static func parse(source: String) throws -> Json {
         return try GenJsonParser(source.utf8).parse()
@@ -315,7 +311,6 @@ public final class GenJsonParser: Parser {
             
         }
         
-        //        print("A: \(a)")
         return .ArrayValue(a)
     }
     
@@ -368,15 +363,14 @@ public final class GenJsonParser: Parser {
     private func advance() {
         assert(cur != end, "out of range")
         cur++
+        guard cur != end else { return }
         
-        if cur != end {
-            switch currentChar {
-            case Char(ascii: "\n"):
-                lineNumber++
-                columnNumber = 1
-            default:
-                columnNumber++
-            }
+        switch currentChar {
+        case Char(ascii: "\n"):
+            lineNumber++
+            columnNumber = 1
+        default:
+            columnNumber++
         }
     }
     
