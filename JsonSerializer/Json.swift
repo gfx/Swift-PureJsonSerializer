@@ -6,9 +6,8 @@
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
-import func Darwin.atof
-
 public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatable {
+    
     case NullValue
     case BooleanValue(Bool)
     case NumberValue(Double)
@@ -16,6 +15,30 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
     case ArrayValue([Json])
     case ObjectValue([String:Json])
 
+    // MARK: Initialization
+    
+    init(_ value: Bool) {
+        self = .BooleanValue(value)
+    }
+    
+    init(_ value: Double) {
+        self = .NumberValue(value)
+    }
+    
+    init(_ value: String) {
+        self = .StringValue(value)
+    }
+    
+    init(_ value: [Json]) {
+        self = .ArrayValue(value)
+    }
+    
+    init(_ value: [String : Json]) {
+        self = .ObjectValue(value)
+    }
+    
+    // MARK: From
+    
     static func from(value: Bool) -> Json {
         return .BooleanValue(value)
     }
@@ -32,115 +55,91 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
         return .ArrayValue(value)
     }
 
-    static func from(value: [String:Json]) -> Json {
+    static func from(value: [String : Json]) -> Json {
         return .ObjectValue(value)
     }
+}
 
-    public var boolValue: Bool {
-        get {
-            switch self {
-            case .NullValue:
-                return false
-            case .BooleanValue(let b):
-                return b
-            default:
-                return true
-            }
+// MARK: Convenience
+
+extension Json {
+    public var isNull: Bool {
+        guard case .NullValue = self else { return false }
+        return true
+    }
+    
+    public var boolValue: Bool? {
+        guard case let .BooleanValue(bool) = self else {
+            return nil
         }
+        
+        return bool
     }
 
-    public var doubleValue: Double {
-        get {
-            switch self {
-            case .NumberValue(let n):
-                return n
-            case .StringValue(let s):
-                return atof(s)
-            case .BooleanValue(let b):
-                return b ? 1.0 : 0.0
-            default:
-                return 0.0
-            }
+    public var doubleValue: Double? {
+        guard case let .NumberValue(double) = self else {
+            return nil
         }
+        
+        return double
     }
 
-    public var intValue: Int {
-        get { return Int(doubleValue) }
-    }
-
-    public var uintValue: UInt {
-        get { return UInt(doubleValue) }
-    }
-
-    public var stringValue: String {
-        get {
-            switch self {
-            case .NullValue:
-                return ""
-            case .StringValue(let s):
-                return s
-            default:
-                return description
-            }
+    public var intValue: Int? {
+        guard case let .NumberValue(double) = self where double == Double(Int(double)) else {
+            return nil
         }
+        
+        return Int(double)
     }
 
-    public var arrayValue: [Json] {
-        get {
-            switch self {
-            case .NullValue:
-                return []
-            case .ArrayValue(let array):
-                return array
-            default:
-                return []
-            }
+    public var uintValue: UInt? {
+        guard let intValue = intValue else { return nil }
+        return UInt(intValue)
+    }
+
+    public var stringValue: String? {
+        guard case let .StringValue(string) = self else {
+            return nil
         }
+        
+        return string
     }
 
-    public var dictionaryValue: [String:Json] {
-        get {
-            switch self {
-            case .NullValue:
-                return [:]
-            case .ObjectValue(let dictionary):
-                return dictionary
-            default:
-                return [:]
-            }
-        }
+    public var arrayValue: [Json]? {
+        guard case let .ArrayValue(array) = self else { return nil }
+        return array
     }
 
-    public subscript(index: Int) -> Json {
-        get {
-            switch self {
-            case .ArrayValue(let a):
-                return index < a.count ? a[index] : .NullValue
-            default:
-                return .NullValue
-            }
-        }
+    public var dictionaryValue: [String : Json]? {
+        guard case let .ObjectValue(dictionary) = self else { return nil }
+        return dictionary
+    }
+}
+
+extension Json {
+    public subscript(index: Int) -> Json? {
+        assert(index > 0)
+        guard let array = arrayValue where index < array.count else { return nil }
+        return array[index]
     }
 
-    public subscript(key: String) -> Json {
-        get {
-            switch self {
-            case .ObjectValue(let o):
-                return o[key] ?? .NullValue
-            default:
-                return .NullValue
-            }
-        }
+    public subscript(key: String) -> Json? {
+        guard let dict = dictionaryValue else { return nil }
+        return dict[key]
     }
+}
 
+extension Json {
     public var description: String {
-        get { return serialize(DefaultJsonSerializer()) }
+        return serialize(DefaultJsonSerializer())
     }
 
     public var debugDescription: String {
-        get { return serialize(PrettyJsonSerializer()) }
+        return serialize(PrettyJsonSerializer())
     }
+}
 
+extension Json {
     public func serialize(serializer: JsonSerializer) -> String {
         return serializer.serialize(self)
     }
@@ -150,50 +149,26 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
 public func ==(lhs: Json, rhs: Json) -> Bool {
     switch lhs {
     case .NullValue:
-        switch rhs {
-        case .NullValue:
-            return true
-        default:
-            return false
-        }
+        return rhs.isNull
     case .BooleanValue(let lhsValue):
-        switch rhs {
-        case .BooleanValue(let rhsValue):
-            return lhsValue == rhsValue
-        default:
-            return false
-        }
+        guard let rhsValue = rhs.boolValue else { return false }
+        return lhsValue == rhsValue
     case .StringValue(let lhsValue):
-        switch rhs {
-        case .StringValue(let rhsValue):
-            return lhsValue == rhsValue
-        default:
-            return false
-        }
+        guard let rhsValue = rhs.stringValue else { return false }
+        return lhsValue == rhsValue
     case .NumberValue(let lhsValue):
-        switch rhs {
-        case .NumberValue(let rhsValue):
-            return lhsValue == rhsValue
-        default:
-            return false
-        }
+        guard let rhsValue = rhs.doubleValue else { return false }
+        return lhsValue == rhsValue
     case .ArrayValue(let lhsValue):
-        switch rhs {
-        case .ArrayValue(let rhsValue):
-            return lhsValue == rhsValue
-        default:
-            return false
-        }
+        guard let rhsValue = rhs.arrayValue else { return false }
+        return lhsValue == rhsValue
     case .ObjectValue(let lhsValue):
-        switch rhs {
-        case .ObjectValue(let rhsValue):
-            return lhsValue == rhsValue
-        default:
-            return false
-        }
+        guard let rhsValue = rhs.dictionaryValue else { return false }
+        return lhsValue == rhsValue
     }
 }
 
+// MARK: Literal Convertibles
 
 extension Json: NilLiteralConvertible {
     public init(nilLiteral value: Void) {
@@ -221,11 +196,12 @@ extension Json: FloatLiteralConvertible {
 
 extension Json: StringLiteralConvertible {
     public typealias UnicodeScalarLiteralType = String
+    public typealias ExtendedGraphemeClusterLiteralType = String
+
     public init(unicodeScalarLiteral value: UnicodeScalarLiteralType) {
         self = .StringValue(value)
     }
 
-    public typealias ExtendedGraphemeClusterLiteralType = String
     public init(extendedGraphemeClusterLiteral value: ExtendedGraphemeClusterType) {
         self = .StringValue(value)
     }

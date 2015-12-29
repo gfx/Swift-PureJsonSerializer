@@ -27,7 +27,7 @@ let escapeMapping: [Character : String] = [
     "\r\n": "\\r\\n",
 ]
 
-let hexMapping: [UnicodeScalar: UInt32] = [
+let hexMapping: [UnicodeScalar : UInt32] = [
     "0": 0x0,
     "1": 0x1,
     "2": 0x2,

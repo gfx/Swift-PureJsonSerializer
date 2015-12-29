@@ -58,14 +58,14 @@ class JsonParserTests: XCTestCase {
 
     func testStringWithMyltiBytes() {
         let json = try! JsonParser.parse("[\"こんにちは\"]")
-        XCTAssertEqual(json[0].stringValue, "こんにちは")
+        XCTAssertEqual(json[0]!.stringValue, "こんにちは")
         XCTAssertEqual(json.description, "[\"こんにちは\"]")
     }
 
     func testStringWithMyltiUnicodeScalars() {
         let json = try! JsonParser.parse("[\"江戸前🍣\"]")
-        XCTAssertEqual(json[0].stringValue, "江戸前🍣")
-        XCTAssertEqual(json[0].description, "\"江戸前🍣\"")
+        XCTAssertEqual(json[0]!.stringValue!, "江戸前🍣")
+        XCTAssertEqual(json[0]!.description, "\"江戸前🍣\"")
         XCTAssertEqual(json.description, "[\"江戸前🍣\"]")
     }
 
@@ -81,29 +81,29 @@ class JsonParserTests: XCTestCase {
 
     func testNumberOfExponent() {
         let json = try! JsonParser.parse("[1e2, 1e-2, 3.14e+01]")
-        XCTAssertEqual(json[0].stringValue, "100")
-        XCTAssertEqual(json[1].stringValue, "0.01")
-        XCTAssertEqual(json[2].stringValue, "31.4")
+        XCTAssertEqual(json[0]!.intValue, 100)
+        XCTAssertEqual(json[1]!.doubleValue, 0.01)
+        XCTAssertEqual("\(json[2]!.doubleValue!)", "31.4")
     }
 
     func testUnicodeEscapeSequences() {
         let json = try! JsonParser.parse("[\"\\u003c \\u003e\"]")
-        XCTAssertEqual(json[0].stringValue, "< >")
+        XCTAssertEqual(json[0]!.stringValue!, "< >")
     }
 
     func testUnicodeEscapeSequencesWith32bitsUnicodeScalar() {
         let json = try! JsonParser.parse("[\"\\u0001F363\"]")
-        XCTAssertEqual(json[0].stringValue, "\u{0001F363}")
+        XCTAssertEqual(json[0]!.stringValue, "\u{0001F363}")
     }
 
     func testTwitterJson() {
         let json = try! JsonParser.parse(complexJsonExample("tweets"))
-        XCTAssertEqual(json["statuses"][0]["id_str"].stringValue, "250075927172759552")
+        XCTAssertEqual(json["statuses"]![0]!["id_str"]!.stringValue, "250075927172759552")
     }
 
     func testStackexchangeJson() {
         let json = try! JsonParser.parse(complexJsonExample("stackoverflow-items"))
-        XCTAssertEqual(json["items"][0]["view_count"].stringValue, "18711")
+        XCTAssertEqual(json["items"]![0]!["view_count"]!.intValue, 18711)
     }
 
 

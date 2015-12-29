@@ -103,11 +103,11 @@ public final class JsonParser: Parser {
     }
     
     private func parseSymbol(target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
-        if expect(target) {
-            return iftrue()
-        } else {
+        guard expect(target) else {
             throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
+        
+        return iftrue()
     }
     
     private func parseString() throws -> Json {
@@ -115,7 +115,7 @@ public final class JsonParser: Parser {
         advance()
         
         var buffer = [CChar]()
-        
+
         while cur != end && currentChar != Char(ascii: "\"") {
             switch currentChar {
             case Char(ascii: "\\"):
@@ -153,29 +153,28 @@ public final class JsonParser: Parser {
     }
     
     private func parseEscapedChar() -> UnicodeScalar? {
-        let c = UnicodeScalar(currentChar)
-        if c == "u" { // Unicode escape sequence
-            var length = 0 // 2...8
-            var value: UInt32 = 0
-            while let d = hexToDigit(nextChar) {
-                advance()
-                length++
-                
-                if length > 8 {
-                    break
-                }
-                
-                value = (value << 4) | d
-            }
-            if length < 2 {
-                return nil
-            }
-            // TODO: validate the value
-            return UnicodeScalar(value)
-        } else {
-            let c = UnicodeScalar(currentChar)
-            return unescapeMapping[c] ?? c
+        let character = UnicodeScalar(currentChar)
+        
+        // 'u' indicates unicode
+        guard character == "u" else {
+            return unescapeMapping[character] ?? character
         }
+        
+        var length = 0 // 2...8
+        var value: UInt32 = 0
+        while let d = hexToDigit(nextChar) {
+            advance()
+            length++
+            
+            guard length <= 8 else { break }
+            value <<= 4
+            value |= d
+        }
+        
+        guard length >= 2 else { return nil }
+        
+        // TODO: validate the value
+        return UnicodeScalar(value)
     }
     
     // number = [ minus ] int [ frac ] [ exp ]
@@ -315,9 +314,7 @@ public final class JsonParser: Parser {
     }
     
     private func expect(target: StaticString) -> Bool {
-        if cur == end {
-            return false
-        }
+        guard cur != end else { return false }
         
         if !isIdentifier(target.utf8Start.memory) {
             // when single character
@@ -392,3 +389,16 @@ extension JsonParser.Char {
         }
     }
 }
+
+extension CollectionType {
+    func prefixUntil(@noescape stopCondition: Generator.Element -> Bool) -> Array<Generator.Element> {
+        var prefix: [Generator.Element] = []
+        for element in self {
+            guard !stopCondition(element) else { return prefix }
+            prefix.append(element)
+        }
+        return prefix
+    }
+}
+
+

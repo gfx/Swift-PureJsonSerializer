@@ -15,14 +15,14 @@ class JsonTests: XCTestCase {
             let json = try JsonParser.parse("[\"foo bar\", true, false]")
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
             
-            XCTAssertEqual(json[0].stringValue, "foo bar")
-            XCTAssertEqual(json[1].boolValue, true)
-            XCTAssertEqual(json[2].boolValue, false)
+            XCTAssertEqual(json[0]!.stringValue!, "foo bar")
+            XCTAssertEqual(json[1]!.boolValue!, true)
+            XCTAssertEqual(json[2]!.boolValue!, false)
             
-            XCTAssertEqual(json[3].stringValue, "", "out of range")
-            XCTAssertEqual(json[3][0].stringValue, "", "no such item")
-            XCTAssertEqual(json["no such property"].stringValue, "", "no such property")
-            XCTAssertEqual(json["no"]["such"]["property"].stringValue, "", "no such properties")
+            XCTAssertEqual(json[3]?.stringValue, nil, "out of range")
+            XCTAssertEqual(json[3]?[0]?.stringValue, nil, "no such item")
+            XCTAssertEqual(json["no such property"]?.stringValue, nil, "no such property")
+            XCTAssertEqual(json["no"]?["such"]?["property"]?.stringValue, nil, "no such properties")
         } catch {
             XCTFail("\(error)")
         }
