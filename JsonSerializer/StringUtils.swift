@@ -59,14 +59,17 @@ let digitMapping: [UnicodeScalar:Int] = [
     "9": 9,
 ]
 
-public func escapeAsJsonString(source : String) -> String {
-    var escapedString = "\""
-    source.characters.forEach { c in
-        let escapedChar = escapeMapping[c] ?? String(c)
-        escapedString += escapedChar
+extension String {
+    public var escapedJsonString: String {
+        let mapped = characters
+            .map { escapeMapping[$0] ?? String($0) }
+            .joinWithSeparator("")
+        return "\"" + mapped + "\""
     }
-    escapedString += "\""
-    return escapedString
+}
+
+public func escapeAsJsonString(source : String) -> String {
+    return source.escapedJsonString
 }
 
 func digitToInt(b: UInt8) -> Int? {
