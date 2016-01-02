@@ -12,7 +12,6 @@ let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
     "n": "\n",
 ]
 
-
 let escapeMapping: [Character : String] = [
     "\r": "\\r",
     "\n": "\\n",
