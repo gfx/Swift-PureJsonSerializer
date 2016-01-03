@@ -121,7 +121,7 @@ extension Json {
     }
 
     public var intValue: Int? {
-        guard case let .NumberValue(double) = self where double == Double(Int(double)) else {
+        guard case let .NumberValue(double) = self where Float80(double) == Float80(IntMax(double)) else {
             return nil
         }
         
