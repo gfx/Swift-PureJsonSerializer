@@ -154,7 +154,7 @@ extension Json {
 
 extension Json {
     public subscript(index: Int) -> Json? {
-        assert(index > 0)
+        assert(index >= 0)
         guard let array = arrayValue where index < array.count else { return nil }
         return array[index]
     }
