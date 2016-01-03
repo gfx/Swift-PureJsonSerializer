@@ -9,17 +9,7 @@
 
 import func Darwin.pow
 
-extension JsonParser {
-    public static func parse(source: String) throws -> Json {
-        return try self.init(source.utf8).parse()
-    }
-    
-    public static func parse(source: [UInt8]) throws -> Json {
-        return try self.init(source).parse()
-    }
-}
-
-public final class JsonParser: Parser {
+public final class JsonDeserializer: Parser {
     public typealias ByteSequence = [UInt8]
     public typealias Char = UInt8
     
@@ -53,11 +43,11 @@ public final class JsonParser: Parser {
     
     // MARK: Initializer
     
-    public convenience init<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(_ sequence: ByteSequence) {
+    public required convenience init<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(_ sequence: ByteSequence) {
         self.init(Array(sequence))
     }
     
-    public init(_ source: ByteSequence) {
+    public required init(_ source: ByteSequence) {
         self.source = source
         self.cur = source.startIndex
         self.end = source.endIndex
@@ -65,7 +55,7 @@ public final class JsonParser: Parser {
     
     // MARK: Serialize
     
-    public func parse() throws -> Json {
+    public func deserialize() throws -> Json {
         let json = try parseValue()
         skipWhitespaces()
         
@@ -378,7 +368,7 @@ public final class JsonParser: Parser {
     }
 }
 
-extension JsonParser.Char {
+extension JsonDeserializer.Char {
     var isWhitespace: Bool {
         let type = self.dynamicType
         switch self {

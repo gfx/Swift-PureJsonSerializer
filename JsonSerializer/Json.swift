@@ -60,6 +60,22 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
     }
 }
 
+// MARK: Serialization
+
+extension Json {
+    public static func deserialize(source: String) throws -> Json {
+        return try JsonDeserializer(source.utf8).deserialize()
+    }
+    
+    public static func deserialize(source: [UInt8]) throws -> Json {
+        return try JsonDeserializer(source).deserialize()
+    }
+    
+    public static func deserialize<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(sequence: ByteSequence) throws -> Json {
+        return try JsonDeserializer(sequence).deserialize()
+    }
+}
+
 // MARK: Convenience
 
 extension Json {

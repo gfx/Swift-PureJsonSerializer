@@ -28,7 +28,7 @@ class ApiClient {
             }
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let result = JsonParser.parse(data);
+                let result = JsonParser.deserializedata);
 
                 dispatch_async(dispatch_get_main_queue()) {
                     switch result {

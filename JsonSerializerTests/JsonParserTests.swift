@@ -8,101 +8,101 @@
 
 import XCTest
 
-class JsonParserTests: XCTestCase {
+class JsonDeserializerTests: XCTestCase {
 
     func testEmptyArray() {
-        let json = try! JsonParser.parse("[]")
+        let json = try! Json.deserialize("[]")
         XCTAssertEqual(json.description, "[]")
     }
 
     func testEmptyArrayWithSpaces() {
-        let json = try! JsonParser.parse(" [ ] ")
+        let json = try! Json.deserialize(" [ ] ")
         XCTAssertEqual(json.description, "[]")
     }
 
     func testArray() {
-        let json = try! JsonParser.parse("[true,false,null]")
+        let json = try! Json.deserialize("[true,false,null]")
         XCTAssertEqual(json.description, "[true,false,null]")
     }
 
     func testArrayWithSpaces() {
-        let json = try! JsonParser.parse("[ true ,     false , null ]")
+        let json = try! Json.deserialize("[ true ,     false , null ]")
         XCTAssertEqual(json.description, "[true,false,null]")
     }
 
     func testEmptyObject() {
-        let json = try! JsonParser.parse("{}")
+        let json = try! Json.deserialize("{}")
         XCTAssertEqual(json.description, "{}")
     }
 
     func testEmptyObjectWithSpace() {
-        let json = try! JsonParser.parse(" { } ")
+        let json = try! Json.deserialize(" { } ")
         XCTAssertEqual(json.description, "{}")
     }
 
     func testObject() {
-        let json = try! JsonParser.parse("{\"foo\":[\"bar\",\"baz\"]}")
+        let json = try! Json.deserialize("{\"foo\":[\"bar\",\"baz\"]}")
         XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
     }
 
     func testObjectWithWhiteSpaces() {
-        let json = try! JsonParser.parse(" { \"foo\" : [ \"bar\" , \"baz\" ] } ")
+        let json = try! Json.deserialize(" { \"foo\" : [ \"bar\" , \"baz\" ] } ")
         XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
     }
 
 
     func testString() {
-        let json = try! JsonParser.parse("[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
+        let json = try! Json.deserialize("[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
         XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
     }
 
     func testStringWithMyltiBytes() {
-        let json = try! JsonParser.parse("[\"こんにちは\"]")
+        let json = try! Json.deserialize("[\"こんにちは\"]")
         XCTAssertEqual(json[0]!.stringValue, "こんにちは")
         XCTAssertEqual(json.description, "[\"こんにちは\"]")
     }
 
     func testStringWithMyltiUnicodeScalars() {
-        let json = try! JsonParser.parse("[\"江戸前🍣\"]")
+        let json = try! Json.deserialize("[\"江戸前🍣\"]")
         XCTAssertEqual(json[0]!.stringValue!, "江戸前🍣")
         XCTAssertEqual(json[0]!.description, "\"江戸前🍣\"")
         XCTAssertEqual(json.description, "[\"江戸前🍣\"]")
     }
 
     func testNumberOfInt() {
-        let json = try! JsonParser.parse("[0, 10, 234]")
+        let json = try! Json.deserialize("[0, 10, 234]")
         XCTAssertEqual(json.description, "[0,10,234]")
     }
 
     func testNumberOfFloat() {
-        let json = try! JsonParser.parse("[3.14, 0.035]")
+        let json = try! Json.deserialize("[3.14, 0.035]")
         XCTAssertEqual(json.description, "[3.14,0.035]")
     }
 
     func testNumberOfExponent() {
-        let json = try! JsonParser.parse("[1e2, 1e-2, 3.14e+01]")
+        let json = try! Json.deserialize("[1e2, 1e-2, 3.14e+01]")
         XCTAssertEqual(json[0]!.intValue, 100)
         XCTAssertEqual(json[1]!.doubleValue, 0.01)
         XCTAssertEqual("\(json[2]!.doubleValue!)", "31.4")
     }
 
     func testUnicodeEscapeSequences() {
-        let json = try! JsonParser.parse("[\"\\u003c \\u003e\"]")
+        let json = try! Json.deserialize("[\"\\u003c \\u003e\"]")
         XCTAssertEqual(json[0]!.stringValue!, "< >")
     }
 
     func testUnicodeEscapeSequencesWith32bitsUnicodeScalar() {
-        let json = try! JsonParser.parse("[\"\\u0001F363\"]")
+        let json = try! Json.deserialize("[\"\\u0001F363\"]")
         XCTAssertEqual(json[0]!.stringValue, "\u{0001F363}")
     }
 
     func testTwitterJson() {
-        let json = try! JsonParser.parse(complexJsonExample("tweets"))
+        let json = try! Json.deserialize(complexJsonExample("tweets"))
         XCTAssertEqual(json["statuses"]![0]!["id_str"]!.stringValue, "250075927172759552")
     }
 
     func testStackexchangeJson() {
-        let json = try! JsonParser.parse(complexJsonExample("stackoverflow-items"))
+        let json = try! Json.deserialize(complexJsonExample("stackoverflow-items"))
         XCTAssertEqual(json["items"]![0]!["view_count"]!.intValue, 18711)
     }
 
@@ -111,7 +111,7 @@ class JsonParserTests: XCTestCase {
         let jsonSource = complexJsonExample("tweets")
 
         self.measureBlock {
-            let _ = try! JsonParser.parse(jsonSource)
+            let _ = try! Json.deserialize(jsonSource)
         }
     }
 
@@ -119,7 +119,7 @@ class JsonParserTests: XCTestCase {
         let jsonSource = String(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding)!
 
         self.measureBlock {
-            let _ = try! JsonParser.parse(jsonSource)
+            let _ = try! Json.deserialize(jsonSource)
         }
     }
 

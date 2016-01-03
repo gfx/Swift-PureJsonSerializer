@@ -12,7 +12,7 @@ class JsonTests: XCTestCase {
 
     func testConvenienceConvertions() {
         do {
-            let json = try JsonParser.parse("[\"foo bar\", true, false]")
+            let json = try Json.deserialize("[\"foo bar\", true, false]")
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
             
             XCTAssertEqual(json[0]!.stringValue!, "foo bar")
@@ -60,14 +60,14 @@ class JsonTests: XCTestCase {
     func testConvertFromArrayLiteral() {
         let a: Json = [nil, true, 10, "foo"]
 
-        let expected = try! JsonParser.parse("[null, true, 10, \"foo\"]")
+        let expected = try! Json.deserialize("[null, true, 10, \"foo\"]")
         XCTAssertEqual(a, expected)
     }
 
     func testConvertFromDictionaryLiteral() {
         let array: Json = ["foo": 10, "bar": true]
 
-        let expected = try! JsonParser.parse("{ \"foo\": 10, \"bar\": true }")
+        let expected = try! Json.deserialize("{ \"foo\": 10, \"bar\": true }")
         XCTAssertEqual(array, expected)
     }
 
