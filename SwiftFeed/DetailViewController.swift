@@ -22,11 +22,14 @@ class DetailViewController: UIViewController, UIWebViewDelegate {
     }
 
     func configureView() {
-        title = detailItem["title"].stringValue
+        title = detailItem["title"]?.stringValue
 
-        let url = NSURL(string: detailItem["link"].stringValue)!
+        guard
+            let urlString = detailItem["link"]?.stringValue,
+            let url = NSURL(string: urlString)
+            else { return }
+        
         let request = NSURLRequest(URL: url)
-
         webView.loadRequest(request)
         webView.delegate = self
     }

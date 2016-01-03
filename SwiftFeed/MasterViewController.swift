@@ -15,6 +15,13 @@ class MasterViewController: UITableViewController {
 
     var entries: [Json] = []
 
+    let dateFormatter: NSDateFormatter = {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.timeZone = NSTimeZone.localTimeZone()
+        dateFormatter.dateFormat = "yyyy/M/d HH:mm:dd"
+        return dateFormatter
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,11 +33,11 @@ class MasterViewController: UITableViewController {
 
             switch result {
             case .Success(let json):
-                NSLog("quota max: %@", json["quota_max"].stringValue)
-                self.entries = json["items"].arrayValue
+                NSLog("quota max: %@", json["quota_max"]?.stringValue ?? "")
+                self.entries = json["items"]?.arrayValue ?? []
                 self.tableView.reloadData()
             case .Error(let error):
-                NSLog("Error: %@", error)
+                print("Error: \(error)")
             }
         }
     }
@@ -38,12 +45,15 @@ class MasterViewController: UITableViewController {
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "showDetail" {
-            if let indexPath = self.tableView.indexPathForSelectedRow() {
-                let object = entries[indexPath.row]
-                (segue.destinationViewController as! DetailViewController).detailItem = object
-            }
-        }
+        guard
+            segue.identifier == "showDetail",
+            let indexPath = self.tableView.indexPathForSelectedRow,
+            let detailViewController = segue.destinationViewController as? DetailViewController
+            where indexPath.row < entries.count
+            else { return }
+        
+        let object = entries[indexPath.row]
+        detailViewController.detailItem = object
     }
 
     // MARK: - Table View
@@ -57,16 +67,15 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
 
         let object = entries[indexPath.row]
-        cell.textLabel!.text = object["title"].stringValue
+        cell.textLabel?.text = object["title"]?.stringValue
 
-        let lastActivityDate = NSDate(timeIntervalSince1970: object["last_activity_date"].doubleValue)
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.timeZone = NSTimeZone.localTimeZone()
-        dateFormatter.dateFormat = "yyyy/M/d HH:mm:dd"
-        cell.detailTextLabel!.text = dateFormatter.stringFromDate(lastActivityDate)
+        if let timeInterval = object["last_activity_date"]?.doubleValue {
+            let date = NSDate(timeIntervalSince1970: timeInterval)
+            cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
+        }
         return cell
     }
 }
