@@ -146,9 +146,9 @@ extension Json {
         return array
     }
 
-    public var dictionaryValue: [String : Json]? {
-        guard case let .ObjectValue(dictionary) = self else { return nil }
-        return dictionary
+    public var objectValue: [String : Json]? {
+        guard case let .ObjectValue(object) = self else { return nil }
+        return object
     }
 }
 
@@ -160,7 +160,7 @@ extension Json {
     }
 
     public subscript(key: String) -> Json? {
-        guard let dict = dictionaryValue else { return nil }
+        guard let dict = objectValue else { return nil }
         return dict[key]
     }
 }
@@ -199,7 +199,7 @@ public func ==(lhs: Json, rhs: Json) -> Bool {
         guard let rhsValue = rhs.arrayValue else { return false }
         return lhsValue == rhsValue
     case .ObjectValue(let lhsValue):
-        guard let rhsValue = rhs.dictionaryValue else { return false }
+        guard let rhsValue = rhs.objectValue else { return false }
         return lhsValue == rhsValue
     }
 }
@@ -255,13 +255,10 @@ extension Json: ArrayLiteralConvertible {
 
 extension Json: DictionaryLiteralConvertible {
     public init(dictionaryLiteral elements: (String, Json)...) {
-        var dictionary = [String:Json](minimumCapacity: elements.count)
-        for pair in elements {
-            dictionary[pair.0] = pair.1
+        var object = [String : Json](minimumCapacity: elements.count)
+        elements.forEach { key, value in
+            object[key] = value
         }
-        self = .ObjectValue(dictionary)
+        self = .ObjectValue(object)
     }
 }
-
-
-
