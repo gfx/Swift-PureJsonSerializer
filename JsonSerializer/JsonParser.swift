@@ -9,14 +9,14 @@
 
 import func Darwin.pow
 
-public final class JsonDeserializer: Parser {
-    public typealias ByteSequence = [UInt8]
-    public typealias Char = UInt8
+internal final class JsonDeserializer: Parser {
+    internal  typealias ByteSequence = [UInt8]
+    internal  typealias Char = UInt8
     
     // MARK: Public Readable
     
-    public private(set) var lineNumber = 1
-    public private(set) var columnNumber = 1
+    internal private(set) var lineNumber = 1
+    internal private(set) var columnNumber = 1
     
     // MARK: Source
     
@@ -43,11 +43,11 @@ public final class JsonDeserializer: Parser {
     
     // MARK: Initializer
     
-    public required convenience init<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(_ sequence: ByteSequence) {
+    internal required convenience init<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(_ sequence: ByteSequence) {
         self.init(Array(sequence))
     }
     
-    public required init(_ source: ByteSequence) {
+    internal required init(_ source: ByteSequence) {
         self.source = source
         self.cur = source.startIndex
         self.end = source.endIndex
@@ -55,8 +55,8 @@ public final class JsonDeserializer: Parser {
     
     // MARK: Serialize
     
-    public func deserialize() throws -> Json {
-        let json = try parseValue()
+    internal func deserialize() throws -> Json {
+        let json = try deserializeNextValue()
         skipWhitespaces()
         
         guard cur == end else {
@@ -66,7 +66,7 @@ public final class JsonDeserializer: Parser {
         return json
     }
     
-    private func parseValue() throws -> Json {
+    private func deserializeNextValue() throws -> Json {
         skipWhitespaces()
         guard cur != end else {
             throw InsufficientTokenError("unexpected end of tokens", self)
@@ -250,7 +250,7 @@ public final class JsonDeserializer: Parser {
         var object = [String:Json]()
         
         while cur != end && !expect("}") {
-            guard case let .StringValue(key) = try parseValue() else {
+            guard case let .StringValue(key) = try deserializeNextValue() else {
                 throw NonStringKeyError("unexpected value for object key", self)
             }
             
@@ -260,7 +260,7 @@ public final class JsonDeserializer: Parser {
             }
             skipWhitespaces()
             
-            let value = try parseValue()
+            let value = try deserializeNextValue()
             object[key] = value
             
             skipWhitespaces()
@@ -285,7 +285,7 @@ public final class JsonDeserializer: Parser {
         var a = Array<Json>()
         
         LOOP: while cur != end && !expect("]") {
-            let json = try parseValue()
+            let json = try deserializeNextValue()
             skipWhitespaces()
             
             a.append(json)

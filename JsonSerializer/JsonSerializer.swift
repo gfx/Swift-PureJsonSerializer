@@ -6,13 +6,16 @@
 //  Copyright (c) 2014年 Fuji Goro. All rights reserved.
 //
 
-
 public protocol JsonSerializer {
+    init()
     func serialize(_: Json) -> String
 }
 
-public class DefaultJsonSerializer: JsonSerializer {
-    public func serialize(json: Json) -> String {
+internal class DefaultJsonSerializer: JsonSerializer {
+    
+    required init() {}
+    
+    internal func serialize(json: Json) -> String {
         switch json {
         case .NullValue:
             return "null"
@@ -59,10 +62,14 @@ public class DefaultJsonSerializer: JsonSerializer {
 
 }
 
-public class PrettyJsonSerializer: DefaultJsonSerializer {
+internal class PrettyJsonSerializer: DefaultJsonSerializer {
     private var indentLevel = 0
 
-    override public func serializeArray(array: [Json]) -> String {
+    required init() {
+        super.init()
+    }
+    
+    override internal func serializeArray(array: [Json]) -> String {
         indentLevel++
         defer {
             indentLevel--
@@ -80,7 +87,7 @@ public class PrettyJsonSerializer: DefaultJsonSerializer {
         return string + " ]"
     }
 
-    override public func serializeObject(object: [String : Json]) -> String {
+    override internal func serializeObject(object: [String : Json]) -> String {
         indentLevel++
         defer {
             indentLevel--

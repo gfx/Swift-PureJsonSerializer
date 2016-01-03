@@ -76,6 +76,26 @@ extension Json {
     }
 }
 
+extension Json {
+    public enum SerializationStyle {
+        case Default
+        case PrettyPrint
+        
+        private var serializer: JsonSerializer.Type {
+            switch self {
+            case .Default:
+                return DefaultJsonSerializer.self
+            case .PrettyPrint:
+                return PrettyJsonSerializer.self
+            }
+        }
+    }
+    
+    public func serialize(style: SerializationStyle = .Default) -> String {
+        return style.serializer.init().serialize(self)
+    }
+}
+
 // MARK: Convenience
 
 extension Json {
