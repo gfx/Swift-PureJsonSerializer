@@ -122,7 +122,6 @@ class JsonTests: XCTestCase {
         XCTAssertEqual(b1, b1)
         XCTAssertNotEqual(b0, e)
         XCTAssertNotEqual(b0, b1)
-        XCTAssertNotEqual(b0, n0)
         XCTAssertNotEqual(b0, s0)
         XCTAssertNotEqual(b0, a0)
         XCTAssertNotEqual(b0, o0)
