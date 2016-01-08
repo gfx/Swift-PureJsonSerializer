@@ -11,21 +11,19 @@ protocol Parser {
     var columnNumber: Int { get }
 }
 
-public class ParseError: Printable {
+public class ParseError: ErrorType, CustomStringConvertible {
     public let reason: String
     let parser: Parser
 
     public var lineNumber: Int {
-        get { return parser.lineNumber }
+        return parser.lineNumber
     }
     public var columnNumber: Int {
-        get { return parser.columnNumber }
+        return parser.columnNumber
     }
 
     public var description: String {
-        get {
-            return "\(reflect(self).summary)[\(lineNumber):\(columnNumber)]: \(reason)"
-        }
+        return "\(Mirror(reflecting: self))[\(lineNumber):\(columnNumber)]: \(reason)"
     }
 
     init(_ reason: String, _ parser: Parser) {
@@ -33,7 +31,6 @@ public class ParseError: Printable {
         self.parser = parser
     }
 }
-
 
 public class UnexpectedTokenError: ParseError { }
 

@@ -13,7 +13,7 @@ class ApiClient {
 
     enum Result {
         case Success(Json)
-        case Error(NSError)
+        case Error(ErrorType)
     }
 
     func get(url: NSURL, completion: (Result) -> Void) {
@@ -22,26 +22,20 @@ class ApiClient {
 
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { (data, request, error) -> Void in
-            if (error != nil) {
-                completion(.Error(error))
+            if let err = error {
+                completion(.Error(err))
                 return
             }
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let result = JsonParser.parse(data);
-
-                dispatch_async(dispatch_get_main_queue()) {
-                    switch result {
-                    case .Success(let json):
-                        completion(.Success(json))
-                    case .Error(let error):
-                        NSLog("json: %@", NSString(data: data, encoding: NSUTF8StringEncoding)!);
-                        NSLog("json parse error: %@", error.description)
-                        completion(.Error(NSError(domain: "SwiftFeed.JsonParseError",
-                            code: 100,
-                            userInfo: ["parseError": error])))
+                guard let data = data else { return }
+                do {
+                    let result = try Json.deserialize(data);
+                    dispatch_async(dispatch_get_main_queue()) {
+                        completion(.Success(result))
                     }
-
+                } catch {
+                    completion(.Error(error))
                 }
             }
         }

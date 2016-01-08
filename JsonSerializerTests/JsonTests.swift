@@ -11,22 +11,20 @@ import XCTest
 class JsonTests: XCTestCase {
 
     func testConvenienceConvertions() {
-        let x = JsonParser.parse("[\"foo bar\", true, false]")
-
-        switch x {
-        case .Success(let json):
+        do {
+            let json = try Json.deserialize("[\"foo bar\", true, false]")
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
-
-            XCTAssertEqual(json[0].stringValue, "foo bar")
-            XCTAssertEqual(json[1].boolValue, true)
-            XCTAssertEqual(json[2].boolValue, false)
-
-            XCTAssertEqual(json[3].stringValue, "", "out of range")
-            XCTAssertEqual(json[3][0].stringValue, "", "no such item")
-            XCTAssertEqual(json["no such property"].stringValue, "", "no such property")
-            XCTAssertEqual(json["no"]["such"]["property"].stringValue, "", "no such properties")
-        case .Error(let error):
-            XCTFail(error.description)
+            
+            XCTAssertEqual(json[0]!.stringValue!, "foo bar")
+            XCTAssertEqual(json[1]!.boolValue!, true)
+            XCTAssertEqual(json[2]!.boolValue!, false)
+            
+            XCTAssertEqual(json[3]?.stringValue, nil, "out of range")
+            XCTAssertEqual(json[3]?[0]?.stringValue, nil, "no such item")
+            XCTAssertEqual(json["no such property"]?.stringValue, nil, "no such property")
+            XCTAssertEqual(json["no"]?["such"]?["property"]?.stringValue, nil, "no such properties")
+        } catch {
+            XCTFail("\(error)")
         }
     }
 
@@ -62,33 +60,25 @@ class JsonTests: XCTestCase {
     func testConvertFromArrayLiteral() {
         let a: Json = [nil, true, 10, "foo"]
 
-        switch JsonParser.parse("[null, true, 10, \"foo\"]") {
-        case .Success(let expected):
-            XCTAssertEqual(a, expected)
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let expected = try! Json.deserialize("[null, true, 10, \"foo\"]")
+        XCTAssertEqual(a, expected)
     }
 
     func testConvertFromDictionaryLiteral() {
-        let a: Json = ["foo": 10, "bar": true]
+        let array: Json = ["foo": 10, "bar": true]
 
-        switch JsonParser.parse("{ \"foo\": 10, \"bar\": true }") {
-        case .Success(let expected):
-            XCTAssertEqual(a, expected)
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let expected = try! Json.deserialize("{ \"foo\": 10, \"bar\": true }")
+        XCTAssertEqual(array, expected)
     }
 
     func testPrintable() {
-        let x: Printable = Json.from(true)
+        let x: CustomStringConvertible = Json.from(true)
 
         XCTAssertEqual(x.description, "true", "Printable#description")
     }
 
     func testDebugPrintable() {
-        let x: DebugPrintable = Json.from(true)
+        let x: CustomDebugStringConvertible = Json.from(true)
 
         XCTAssertEqual(x.debugDescription, "true", "DebugPrintable#debugDescription")
     }
@@ -97,10 +87,10 @@ class JsonTests: XCTestCase {
         let x = Json.from([true, [ "foo": 1, "bar": 2 ], false])
         XCTAssertEqual(x.debugDescription,
             "[\n" +
-            "  true,\n" +
-            "  {\n" +
-            "    \"bar\": 2,\n" +
-            "    \"foo\": 1 },\n" +
+                "  true,\n" +
+                "  {\n" +
+                "    \"bar\": 2,\n" +
+                "    \"foo\": 1 },\n" +
             "  false ]",
             "PrettyJsonSerializer")
     }
@@ -132,7 +122,6 @@ class JsonTests: XCTestCase {
         XCTAssertEqual(b1, b1)
         XCTAssertNotEqual(b0, e)
         XCTAssertNotEqual(b0, b1)
-        XCTAssertNotEqual(b0, n0)
         XCTAssertNotEqual(b0, s0)
         XCTAssertNotEqual(b0, a0)
         XCTAssertNotEqual(b0, o0)

@@ -8,210 +8,102 @@
 
 import XCTest
 
-class JsonParserTests: XCTestCase {
+class JsonDeserializerTests: XCTestCase {
 
     func testEmptyArray() {
-        let x = JsonParser.parse("[]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[]")
+        XCTAssertEqual(json.description, "[]")
     }
 
     func testEmptyArrayWithSpaces() {
-        let x = JsonParser.parse(" [ ] ")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize(" [ ] ")
+        XCTAssertEqual(json.description, "[]")
     }
 
     func testArray() {
-        let x = JsonParser.parse("[true,false,null]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[true,false,null]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[true,false,null]")
+        XCTAssertEqual(json.description, "[true,false,null]")
     }
 
     func testArrayWithSpaces() {
-        let x = JsonParser.parse("[ true , false , null ]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[true,false,null]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[ true ,     false , null ]")
+        XCTAssertEqual(json.description, "[true,false,null]")
     }
 
     func testEmptyObject() {
-        let x = JsonParser.parse("{}")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "{}")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("{}")
+        XCTAssertEqual(json.description, "{}")
     }
 
     func testEmptyObjectWithSpace() {
-        let x = JsonParser.parse(" { } ")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "{}")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize(" { } ")
+        XCTAssertEqual(json.description, "{}")
     }
 
     func testObject() {
-        let x = JsonParser.parse("{\"foo\":[\"bar\",\"baz\"]}")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("{\"foo\":[\"bar\",\"baz\"]}")
+        XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
     }
 
     func testObjectWithWhiteSpaces() {
-        let x = JsonParser.parse(" { \"foo\" : [ \"bar\" , \"baz\" ] } ")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize(" { \"foo\" : [ \"bar\" , \"baz\" ] } ")
+        XCTAssertEqual(json.description, "{\"foo\":[\"bar\",\"baz\"]}")
     }
 
 
     func testString() {
-        let x = JsonParser.parse("[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
+        XCTAssertEqual(json.description, "[\"foo [\\t] [\\r] [\\n]] [\\\\] bar\"]")
     }
 
     func testStringWithMyltiBytes() {
-        let x = JsonParser.parse("[\"こんにちは\"]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json[0].stringValue, "こんにちは")
-            XCTAssertEqual(json.description, "[\"こんにちは\"]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[\"こんにちは\"]")
+        XCTAssertEqual(json[0]!.stringValue, "こんにちは")
+        XCTAssertEqual(json.description, "[\"こんにちは\"]")
     }
 
     func testStringWithMyltiUnicodeScalars() {
-        let x = JsonParser.parse("[\"江戸前🍣\"]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json[0].stringValue, "江戸前🍣")
-            XCTAssertEqual(json[0].description, "\"江戸前🍣\"")
-            XCTAssertEqual(json.description, "[\"江戸前🍣\"]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[\"江戸前🍣\"]")
+        XCTAssertEqual(json[0]!.stringValue!, "江戸前🍣")
+        XCTAssertEqual(json[0]!.description, "\"江戸前🍣\"")
+        XCTAssertEqual(json.description, "[\"江戸前🍣\"]")
     }
 
     func testNumberOfInt() {
-        let x = JsonParser.parse("[0, 10, 234]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[0,10,234]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[0, 10, 234]")
+        XCTAssertEqual(json.description, "[0,10,234]")
     }
 
     func testNumberOfFloat() {
-        let x = JsonParser.parse("[3.14, 0.035]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json.description, "[3.14,0.035]")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[3.14, 0.035]")
+        XCTAssertEqual(json.description, "[3.14,0.035]")
     }
 
     func testNumberOfExponent() {
-        let x = JsonParser.parse("[1e2, 1e-2, 3.14e+01]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json[0].stringValue, "100")
-            XCTAssertEqual(json[1].stringValue, "0.01")
-            XCTAssertEqual(json[2].stringValue, "31.4")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[1e2, 1e-2, 3.14e+01]")
+        XCTAssertEqual(json[0]!.intValue, 100)
+        XCTAssertEqual(json[1]!.doubleValue, 0.01)
+        XCTAssertEqual("\(json[2]!.doubleValue!)", "31.4")
     }
 
     func testUnicodeEscapeSequences() {
-        let x = JsonParser.parse("[\"\\u003c \\u003e\"]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json[0].stringValue, "< >")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[\"\\u003c \\u003e\"]")
+        XCTAssertEqual(json[0]!.stringValue!, "< >")
     }
 
     func testUnicodeEscapeSequencesWith32bitsUnicodeScalar() {
-        let x = JsonParser.parse("[\"\\u0001F363\"]")
-
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json[0].stringValue, "\u{0001F363}")
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize("[\"\\u0001F363\"]")
+        XCTAssertEqual(json[0]!.stringValue, "\u{0001F363}")
     }
 
     func testTwitterJson() {
-        let x = JsonParser.parse(complexJsonExample("tweets"))
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json["statuses"][0]["id_str"].stringValue, "250075927172759552")
-
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize(complexJsonExample("tweets"))
+        XCTAssertEqual(json["statuses"]![0]!["id_str"]!.stringValue, "250075927172759552")
     }
 
     func testStackexchangeJson() {
-        let x = JsonParser.parse(complexJsonExample("stackoverflow-items"))
-        switch x {
-        case .Success(let json):
-            XCTAssertEqual(json["items"][0]["view_count"].stringValue, "18711")
-
-        case .Error(let error):
-            XCTFail(error.description)
-        }
+        let json = try! Json.deserialize(complexJsonExample("stackoverflow-items"))
+        XCTAssertEqual(json["items"]![0]!["view_count"]!.intValue, 18711)
     }
 
 
@@ -219,40 +111,23 @@ class JsonParserTests: XCTestCase {
         let jsonSource = complexJsonExample("tweets")
 
         self.measureBlock {
-            switch JsonParser.parse(jsonSource) {
-            case .Success(let json):
-                XCTAssertTrue(true)
-            case .Error(let error):
-                XCTFail(error.description)
-            }
+            let _ = try! Json.deserialize(jsonSource)
         }
     }
 
     func testPerformanceExampleWithString() {
-        let jsonSource = NSString(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding) as! String
+        let jsonSource = String(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding)!
 
         self.measureBlock {
-            switch JsonParser.parse(jsonSource) {
-            case .Success(let json):
-                XCTAssertTrue(true)
-            case .Error(let error):
-                XCTFail(error.description)
-            }
+            let _ = try! Json.deserialize(jsonSource)
         }
     }
 
     func testPerformanceExampleInJSONSerialization() {
         let jsonSource = complexJsonExample("tweets")
         self.measureBlock {
-            var error: NSError? = nil
-            let dict: AnyObject? = NSJSONSerialization.JSONObjectWithData(jsonSource, options: .MutableContainers, error: &error)
-
-            switch error {
-            case .None:
-                break
-            case .Some(let e):
-                XCTFail("error: \(e)")
-            }
+            let _: AnyObject? = try! NSJSONSerialization
+                .JSONObjectWithData(jsonSource, options: .MutableContainers)
         }
     }
 

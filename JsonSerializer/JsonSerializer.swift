@@ -6,13 +6,16 @@
 //  Copyright (c) 2014年 Fuji Goro. All rights reserved.
 //
 
-
 public protocol JsonSerializer {
-    func serialize(Json) -> String
+    init()
+    func serialize(_: Json) -> String
 }
 
-public class DefaultJsonSerializer: JsonSerializer {
-    public func serialize(json: Json) -> String {
+internal class DefaultJsonSerializer: JsonSerializer {
+    
+    required init() {}
+    
+    internal func serialize(json: Json) -> String {
         switch json {
         case .NullValue:
             return "null"
@@ -37,74 +40,78 @@ public class DefaultJsonSerializer: JsonSerializer {
         }
     }
 
-    func serializeArray(a: [Json]) -> String {
-        var s = "["
-        for var i = 0; i < a.count; i++ {
-            s += a[i].serialize(self)
-            if i != (a.count - 1) {
-                s += ","
-            }
-        }
-        return s + "]"
+    func serializeArray(array: [Json]) -> String {
+        var string = "["
+        string += array
+            .map { $0.serialize(self) }
+            .joinWithSeparator(",")
+        return string + "]"
     }
 
-    func serializeObject(o: [String:Json]) -> String {
-        var s = "{"
-        var i = 0
-        for entry in o {
-            s += "\(escapeAsJsonString(entry.0)):\(entry.1.serialize(self))"
-            if i++ != (o.count - 1) {
-                s += ","
+    func serializeObject(object: [String : Json]) -> String {
+        var string = "{"
+        string += object
+            .map { key, val in
+                let escapedKey = escapeAsJsonString(key)
+                let serializedVal = val.serialize(self)
+                return "\(escapedKey):\(serializedVal)"
             }
-        }
-
-        return s + "}"
+            .joinWithSeparator(",")
+        return string + "}"
     }
 
 }
 
-public class PrettyJsonSerializer: DefaultJsonSerializer {
-    var indentLevel = 0
+internal class PrettyJsonSerializer: DefaultJsonSerializer {
+    private var indentLevel = 0
 
-    override public func serializeArray(a: [Json]) -> String {
-        var s = "["
+    required init() {
+        super.init()
+    }
+    
+    override internal func serializeArray(array: [Json]) -> String {
         indentLevel++
-        for var i = 0; i < a.count; i++ {
-            s += "\n"
-            s += indent()
-            s += a[i].serialize(self)
-            if i != (a.count - 1) {
-                s += ","
-            }
+        defer {
+            indentLevel--
         }
-        indentLevel--
-        return s + " ]"
+        
+        let indentString = indent()
+        
+        var string = "[\n"
+        string += array
+            .map { val in
+                let serialized = val.serialize(self)
+                return indentString + serialized
+            }
+            .joinWithSeparator(",\n")
+        return string + " ]"
     }
 
-    override public func serializeObject(o: [String:Json]) -> String {
-        var s = "{"
+    override internal func serializeObject(object: [String : Json]) -> String {
         indentLevel++
-        var i = 0
-
-        var keys = o.keys.array
-        sort(&keys)
-        for key in keys {
-            s += "\n"
-            s += indent()
-            s += "\(escapeAsJsonString(key)): \(o[key]!.serialize(self))"
-            if i++ != (o.count - 1) {
-                s += ","
-            }
+        defer {
+            indentLevel--
         }
-        indentLevel--
-        return s + " }"
+        
+        let indentString = indent()
+        
+        var string = "{\n"
+        string += object
+            .map { key, val in
+                let escapedKey = escapeAsJsonString(key)
+                let serializedValue = val.serialize(self)
+                let serializedLine = "\(escapedKey): \(serializedValue)"
+                return indentString + serializedLine
+            }
+            .joinWithSeparator(",\n")
+        string += " }"
+        
+        return string
     }
 
     func indent() -> String {
-        var s = ""
-        for var i = 0; i < indentLevel; i++ {
-            s += "  "
-        }
-        return s
+        return Array(1...indentLevel)
+            .map { _ in "  " }
+            .joinWithSeparator("")
     }
 }

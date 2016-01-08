@@ -12,8 +12,7 @@ let unescapeMapping: [UnicodeScalar: UnicodeScalar] = [
     "n": "\n",
 ]
 
-
-let escapeMapping: [Character: String] = [
+let escapeMapping: [Character : String] = [
     "\r": "\\r",
     "\n": "\\n",
     "\t": "\\t",
@@ -27,7 +26,7 @@ let escapeMapping: [Character: String] = [
     "\r\n": "\\r\\n",
 ]
 
-let hexMapping: [UnicodeScalar: UInt32] = [
+let hexMapping: [UnicodeScalar : UInt32] = [
     "0": 0x0,
     "1": 0x1,
     "2": 0x2,
@@ -59,18 +58,17 @@ let digitMapping: [UnicodeScalar:Int] = [
     "9": 9,
 ]
 
-public func escapeAsJsonString(source : String) -> String {
-    var s = "\""
-
-    for c in source {
-        if let escapedSymbol = escapeMapping[c] {
-            s.extend(escapedSymbol)
-        } else {
-            s.append(c)
-        }
+extension String {
+    public var escapedJsonString: String {
+        let mapped = characters
+            .map { escapeMapping[$0] ?? String($0) }
+            .joinWithSeparator("")
+        return "\"" + mapped + "\""
     }
-    s.extend("\"")
-    return s
+}
+
+public func escapeAsJsonString(source : String) -> String {
+    return source.escapedJsonString
 }
 
 func digitToInt(b: UInt8) -> Int? {
