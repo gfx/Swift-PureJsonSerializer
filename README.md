@@ -2,7 +2,7 @@
 
 A pure-Swift JSON parser and serializer.
 
-# Cocoapods
+# COCOAPODS
 
 Lot's of Cocoapods means lots of failed namespaces. The actual pod for this library is called `PureJsonSerializer`.
 
@@ -10,7 +10,7 @@ Lot's of Cocoapods means lots of failed namespaces. The actual pod for this libr
 pod 'PureJsonSerializer'
 ```
 
-# Deserialize
+# DESERIALIZE
 
 ```Swift
 import PureJsonSerializer
@@ -27,7 +27,7 @@ do {
 }
 ```
 
-# Build
+# BUILD
 
 ```Swift
 // build a JSON structure
@@ -40,7 +40,7 @@ println(profile.description)      // packed JSON string
 println(profile.debugDescription) // pretty JSON string
 ```
 
-# Serialize
+# SERIALIZE
 
 ```Swift
 let serializedJson = json.serialize(.PrettyPrint)
@@ -50,6 +50,10 @@ let serializedJson = json.serialize(.PrettyPrint)
 
 Swift-JsonSerializer is a JSON serializer and deserializer which are implemented in **Pure Swift** and adds nothing
 to built-in / standard classes in Swift.
+
+# GENOME
+
+This library is featured in a complete Json mapping library you can find <a href="https://github.com/LoganWright/Genome">here.</a>
 
 # KNOWN ISSUES
 
