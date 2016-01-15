@@ -1,23 +1,35 @@
 # Swift-JsonSerializer [![Build Status](https://travis-ci.org/gfx/Swift-JsonSerializer.svg)](https://travis-ci.org/gfx/Swift-JsonSerializer)
 
-A pure-Swift JSON parser and serializer
+A pure-Swift JSON parser and serializer.
 
-# SYNOPSIS
+# COCOAPODS
 
+Lot's of Cocoapods means lots of failed namespaces. The actual pod for this library is called `PureJsonSerializer`.
+
+```Ruby
+pod 'PureJsonSerializer'
 ```
-import class JsonSerializer.JsonParser
-import enum JsonSerializer.Json
+
+# DESERIALIZE
+
+```Swift
+import PureJsonSerializer
 
 // parse a JSON data
-let data: NSData
+let data: NSData = ...
 
-switch JsonParser.parse(data) {
-case .Success(let json):
-  println(json["foo"]["bar"].stringValue)
-case .Error(let error):
-  println(error)
+do {
+  let json = try Json.deserialize(jsonSource)
+  let value = json["Foo"]?["bar"]?.stringValue ?? ""
+  print(value)
+} catch {
+  print("Json serialization failed with error: \(error)")
 }
+```
 
+# BUILD
+
+```Swift
 // build a JSON structure
 let profile: Json = [
   "name": "Swift",
@@ -28,10 +40,20 @@ println(profile.description)      // packed JSON string
 println(profile.debugDescription) // pretty JSON string
 ```
 
+# SERIALIZE
+
+```Swift
+let serializedJson = json.serialize(.PrettyPrint)
+```
+
 # DESCRIPTION
 
-Swift-JsonSerializer is a JSON serializer and deserializer which are implemented in **pure Swift** and adds nothing
+Swift-JsonSerializer is a JSON serializer and deserializer which are implemented in **Pure Swift** and adds nothing
 to built-in / standard classes in Swift.
+
+# GENOME
+
+This library is featured in a complete Json mapping library you can find <a href="https://github.com/LoganWright/Genome">here.</a>
 
 # KNOWN ISSUES
 
