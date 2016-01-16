@@ -1,4 +1,4 @@
-# PureJsonSerializer [![Build Status](https://travis-ci.org/gfx/Swift-JsonSerializer.svg)](https://travis-ci.org/gfx/Swift-PureJsonSerializer)
+# PureJsonSerializer [![Build Status](https://travis-ci.org/gfx/Swift-PureJsonSerializer.svg)](https://travis-ci.org/gfx/Swift-PureJsonSerializer)
 
 A pure-Swift JSON serializer and deserializer.
 
