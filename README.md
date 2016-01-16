@@ -1,10 +1,10 @@
-# Swift-JsonSerializer [![Build Status](https://travis-ci.org/gfx/Swift-JsonSerializer.svg)](https://travis-ci.org/gfx/Swift-JsonSerializer)
+# PureJsonSerializer [![Build Status](https://travis-ci.org/gfx/Swift-JsonSerializer.svg)](https://travis-ci.org/gfx/Swift-PureJsonSerializer)
 
-A pure-Swift JSON parser and serializer.
+A pure-Swift JSON serializer and deserializer.
 
 # COCOAPODS
 
-Lot's of Cocoapods means lots of failed namespaces. The actual pod for this library is called `PureJsonSerializer`.
+Lot's of CocoaPods means lots of failed namespaces. The actual pod for this library is called `PureJsonSerializer`.
 
 ```Ruby
 pod 'PureJsonSerializer'
