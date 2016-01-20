@@ -6,7 +6,38 @@
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
-import class Foundation.NSNull
+import Foundation
+
+extension Json {
+    var anyValue: AnyObject {
+        switch self {
+        case .ObjectValue(let ob):
+            var mapped: [String : AnyObject] = [:]
+            ob.forEach { key, val in
+                mapped[key] = val.anyValue
+            }
+            return mapped
+        case .ArrayValue(let array):
+            return array.map { $0.anyValue }
+        case .BooleanValue(let bool):
+            return bool
+        case .NumberValue(let number):
+            return number
+        case .StringValue(let string):
+            return string
+        case .NullValue:
+            return NSNull()
+        }
+    }
+    
+    var foundationDictionary: [String : AnyObject]? {
+        return anyValue as? [String : AnyObject]
+    }
+    
+    var foundationArray: [AnyObject]? {
+        return anyValue as? [AnyObject]
+    }
+}
 
 extension Json {
     public static func from(any: AnyObject) -> Json {
@@ -37,8 +68,6 @@ extension Json {
         return .from(mutable)
     }
 }
-
-import class Foundation.NSData
 
 extension Json {
     public static func deserialize(data: NSData) throws -> Json {
