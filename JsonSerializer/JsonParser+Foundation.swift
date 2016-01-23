@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Json {
+public extension Json {
     var anyValue: AnyObject {
         switch self {
         case .ObjectValue(let ob):
