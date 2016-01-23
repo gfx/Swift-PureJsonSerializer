@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'PureJsonSerializer'
-  spec.version      = '1.0.1'
+  spec.version      = '1.0.2'
   spec.license      = { :type => 'Apache 2.0'}
   spec.homepage     = 'https://github.com/gfx/Swift-JsonSerializer'
   spec.authors      = { 'Goro Fuji' => 'gfuji@cpan.org' }
