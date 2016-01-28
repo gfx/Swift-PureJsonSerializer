@@ -37,7 +37,7 @@
 		FA3AF21719C9CA5C00F9B28A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3AF21619C9CA5C00F9B28A /* Images.xcassets */; };
 		FA3AF21A19C9CA5C00F9B28A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA3AF21819C9CA5C00F9B28A /* LaunchScreen.xib */; };
 		FA3AF22619C9CA5C00F9B28A /* SwiftFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF22519C9CA5C00F9B28A /* SwiftFeedTests.swift */; };
-		FA3AF22D19C9CA7000F9B28A /* JsonSerializer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06004B19C10B7900B4A852 /* JsonSerializer.framework */; };
+		FA3AF22D19C9CA7000F9B28A /* PureJsonSerializer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06004B19C10B7900B4A852 /* PureJsonSerializer.framework */; };
 		FA3AF23519C9CEA500F9B28A /* stackoverflow-items.json in Resources */ = {isa = PBXBuildFile; fileRef = FA3AF23319C9CEA500F9B28A /* stackoverflow-items.json */; };
 		FA3AF23619C9CEA500F9B28A /* TemplateIcon2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3AF23419C9CEA500F9B28A /* TemplateIcon2x.png */; };
 		FA3AF23819CA4B4E00F9B28A /* JsonSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3AF23719CA4B4E00F9B28A /* JsonSerializer.swift */; };
@@ -68,10 +68,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E434DF561C5A1D4C00A95287 /* JsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E434DF631C5A1DAA00A95287 /* JsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E434DF7D1C5A1E3D00A95287 /* JsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA06004B19C10B7900B4A852 /* JsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E434DF561C5A1D4C00A95287 /* PureJsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PureJsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E434DF631C5A1DAA00A95287 /* PureJsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PureJsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E434DF7D1C5A1E3D00A95287 /* PureJsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PureJsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA06004B19C10B7900B4A852 /* PureJsonSerializer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PureJsonSerializer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA06004F19C10B7900B4A852 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA06005619C10B7900B4A852 /* JsonSerializerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JsonSerializerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA06005919C10B7900B4A852 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -143,7 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA3AF22D19C9CA7000F9B28A /* JsonSerializer.framework in Frameworks */,
+				FA3AF22D19C9CA7000F9B28A /* PureJsonSerializer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,13 +170,13 @@
 		FA06004C19C10B7900B4A852 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FA06004B19C10B7900B4A852 /* JsonSerializer.framework */,
+				FA06004B19C10B7900B4A852 /* PureJsonSerializer.framework */,
 				FA06005619C10B7900B4A852 /* JsonSerializerTests.xctest */,
 				FA3AF20919C9CA5C00F9B28A /* SwiftFeed.app */,
 				FA3AF21F19C9CA5C00F9B28A /* SwiftFeedTests.xctest */,
-				E434DF561C5A1D4C00A95287 /* JsonSerializer.framework */,
-				E434DF631C5A1DAA00A95287 /* JsonSerializer.framework */,
-				E434DF7D1C5A1E3D00A95287 /* JsonSerializer.framework */,
+				E434DF561C5A1D4C00A95287 /* PureJsonSerializer.framework */,
+				E434DF631C5A1DAA00A95287 /* PureJsonSerializer.framework */,
+				E434DF7D1C5A1E3D00A95287 /* PureJsonSerializer.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -325,7 +325,7 @@
 			);
 			name = "JsonSerializer-OSX";
 			productName = "JsonSerializer-OSX";
-			productReference = E434DF561C5A1D4C00A95287 /* JsonSerializer.framework */;
+			productReference = E434DF561C5A1D4C00A95287 /* PureJsonSerializer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E434DF621C5A1DAA00A95287 /* JsonSerializer-watchOS */ = {
@@ -343,7 +343,7 @@
 			);
 			name = "JsonSerializer-watchOS";
 			productName = "JsonSerializer-watchOS";
-			productReference = E434DF631C5A1DAA00A95287 /* JsonSerializer.framework */;
+			productReference = E434DF631C5A1DAA00A95287 /* PureJsonSerializer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E434DF7C1C5A1E3D00A95287 /* JsonSerializer-tvOS */ = {
@@ -361,7 +361,7 @@
 			);
 			name = "JsonSerializer-tvOS";
 			productName = "JsonSerializer-tvOS";
-			productReference = E434DF7D1C5A1E3D00A95287 /* JsonSerializer.framework */;
+			productReference = E434DF7D1C5A1E3D00A95287 /* PureJsonSerializer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		FA06004A19C10B7900B4A852 /* JsonSerializer-iOS */ = {
@@ -379,7 +379,7 @@
 			);
 			name = "JsonSerializer-iOS";
 			productName = JsonSerializer;
-			productReference = FA06004B19C10B7900B4A852 /* JsonSerializer.framework */;
+			productReference = FA06004B19C10B7900B4A852 /* PureJsonSerializer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		FA06005519C10B7900B4A852 /* JsonSerializerTests */ = {
@@ -689,7 +689,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-OSX";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -712,7 +712,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-OSX";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -733,7 +733,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-watchOS";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -756,7 +756,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-watchOS";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -778,7 +778,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-tvOS";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -800,7 +800,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-tvOS";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -908,7 +908,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-iOS";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -925,7 +925,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.gfx.swift.JsonSerializer-iOS";
-				PRODUCT_NAME = JsonSerializer;
+				PRODUCT_NAME = PureJsonSerializer;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -1042,6 +1042,7 @@
 				E434DF5D1C5A1D4D00A95287 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E434DF681C5A1DAA00A95287 /* Build configuration list for PBXNativeTarget "JsonSerializer-watchOS" */ = {
 			isa = XCConfigurationList;
@@ -1050,6 +1051,7 @@
 				E434DF6A1C5A1DAA00A95287 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E434DF821C5A1E3D00A95287 /* Build configuration list for PBXNativeTarget "JsonSerializer-tvOS" */ = {
 			isa = XCConfigurationList;
@@ -1058,6 +1060,7 @@
 				E434DF841C5A1E3D00A95287 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FA06004519C10B7900B4A852 /* Build configuration list for PBXProject "JsonSerializer" */ = {
 			isa = XCConfigurationList;
