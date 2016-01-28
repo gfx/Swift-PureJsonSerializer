@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E434DF7C1C5A1E3D00A95287"
-               BuildableName = "JsonSerializer.framework"
+               BuildableName = "PureJsonSerializer.framework"
                BlueprintName = "JsonSerializer-tvOS"
                ReferencedContainer = "container:JsonSerializer.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E434DF7C1C5A1E3D00A95287"
-            BuildableName = "JsonSerializer.framework"
+            BuildableName = "PureJsonSerializer.framework"
             BlueprintName = "JsonSerializer-tvOS"
             ReferencedContainer = "container:JsonSerializer.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E434DF7C1C5A1E3D00A95287"
-            BuildableName = "JsonSerializer.framework"
+            BuildableName = "PureJsonSerializer.framework"
             BlueprintName = "JsonSerializer-tvOS"
             ReferencedContainer = "container:JsonSerializer.xcodeproj">
          </BuildableReference>
