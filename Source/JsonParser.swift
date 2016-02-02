@@ -154,7 +154,7 @@ internal final class JsonDeserializer: Parser {
         var value: UInt32 = 0
         while let d = hexToDigit(nextChar) {
             advance()
-            length++
+            length += 1
             
             guard length <= 8 else { break }
             value <<= 4
@@ -192,7 +192,7 @@ internal final class JsonDeserializer: Parser {
             while let value = digitToInt(currentChar) where cur != end {
                 fraction += (Double(value) * factor)
                 factor /= 10
-                fractionLength++
+                fractionLength += 1
                 
                 advance()
             }
@@ -216,7 +216,7 @@ internal final class JsonDeserializer: Parser {
             var exponentLength = 0
             while let value = digitToInt(currentChar) where cur != end {
                 exponent = (exponent * 10) + Int64(value)
-                exponentLength++
+                exponentLength += 1
                 advance()
             }
             
@@ -325,7 +325,7 @@ internal final class JsonDeserializer: Parser {
                 return false
             }
             
-            p++
+            p += 1
             advance()
         }
         
@@ -344,15 +344,15 @@ internal final class JsonDeserializer: Parser {
     
     private func advance() {
         assert(cur != end, "out of range")
-        cur++
+        cur += 1
         guard cur != end else { return }
         
         switch currentChar {
         case Char(ascii: "\n"):
-            lineNumber++
+            lineNumber += 1
             columnNumber = 1
         default:
-            columnNumber++
+            columnNumber += 1
         }
     }
     
