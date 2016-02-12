@@ -70,9 +70,9 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
     }
     
     override internal func serializeArray(array: [Json]) -> String {
-        indentLevel++
+        indentLevel += 1
         defer {
-            indentLevel--
+            indentLevel -= 1
         }
         
         let indentString = indent()
@@ -88,9 +88,9 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
     }
 
     override internal func serializeObject(object: [String : Json]) -> String {
-        indentLevel++
+        indentLevel += 1
         defer {
-            indentLevel--
+            indentLevel -= 1
         }
         
         let indentString = indent()
