@@ -7,7 +7,11 @@
 //  License: The MIT License
 //
 
-import func Darwin.pow
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
 
 internal final class JsonDeserializer: Parser {
     internal  typealias ByteSequence = [UInt8]
@@ -385,5 +389,3 @@ extension CollectionType {
         return prefix
     }
 }
-
-
