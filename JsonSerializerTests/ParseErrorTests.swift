@@ -121,16 +121,14 @@ class ParseErrorTests: XCTestCase {
 
 
     func testInvalidEscapeSequence() {
-        return // TODO:
-//        let x = JsonParser.deserialize("[\"\\uFFFFFFFFFFFFFFFF\"]")
-//
-//        switch x {
-//        case .Success(let json):
-//            XCTFail("not reached: \(json)")
-//        case .Error(let error):
-//            XCTAssert(error is InvalidNumberError, error.description)
-//            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
-//            XCTAssertEqual(error.columnNumber, 9, "columnNumbeer")
-//        }
+        do {
+            let _ = try Json.deserialize("\"\\uFFF\"")
+            XCTFail("not reached")
+        } catch let error as InvalidStringError {
+            XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
+            XCTAssertEqual(error.columnNumber, 6, "columnNumbeer")
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
     }
 }
