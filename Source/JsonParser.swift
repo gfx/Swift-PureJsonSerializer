@@ -166,10 +166,11 @@ internal final class JsonDeserializer: Parser {
         return UnicodeScalar(surrogateValue)
     }
     private func parseEscapedUnicodeSurrogate() -> UInt32? {
-        var length = 0 // must be 4
+        let requiredLength = 4
+        
+        var length = 0
         var value: UInt32 = 0
-        while let d = hexToDigit(nextChar) {
-            guard length < 4 else { break }
+        while let d = hexToDigit(nextChar) where length < requiredLength {
             advance()
             length += 1
             
@@ -177,9 +178,7 @@ internal final class JsonDeserializer: Parser {
             value |= d
         }
         
-        guard length == 4 else { return nil }
-        
-        // TODO: validate the value
+        guard length == requiredLength else { return nil }
         return value
     }
     
