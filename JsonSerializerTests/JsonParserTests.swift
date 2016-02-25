@@ -92,8 +92,13 @@ class JsonDeserializerTests: XCTestCase {
     }
 
     func testUnicodeEscapeSequencesWith32bitsUnicodeScalar() {
-        let json = try! Json.deserialize("[\"\\u0001F363\"]")
+        let json = try! Json.deserialize("[\"\\u0001\\uF363\"]")
         XCTAssertEqual(json[0]!.stringValue, "\u{0001F363}")
+    }
+    
+    func testUnicodeEscapeSequencesWithTwo16bitsUnicodeScalar() {
+        let json = try! Json.deserialize("[\"\\u00015\\uF363\"]")
+        XCTAssertEqual(json[0]!.stringValue, "\u{0001}5\u{F363}")
     }
 
     func testTwitterJson() {
