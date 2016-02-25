@@ -154,21 +154,33 @@ internal final class JsonDeserializer: Parser {
             return unescapeMapping[character] ?? character
         }
         
-        var length = 0 // 2...8
+        guard let surrogateValue = parseEscapedUnicodeSurrogate() else { return nil }
+
+        // two consecutive \u#### sequences represent 32 bit unicode characters
+        if nextChar == Char(ascii: "\\") && source[cur.advancedBy(2)] == Char(ascii: "u") {
+                advance(); advance()
+                guard let surrogatePairValue = parseEscapedUnicodeSurrogate() else { return nil }
+                
+                return UnicodeScalar(surrogateValue << 16 | surrogatePairValue)
+        }
+        
+        return UnicodeScalar(surrogateValue)
+    }
+    private func parseEscapedUnicodeSurrogate() -> UInt32? {
+        let requiredLength = 4
+        
+        var length = 0
         var value: UInt32 = 0
-        while let d = hexToDigit(nextChar) {
+        while let d = hexToDigit(nextChar) where length < requiredLength {
             advance()
             length += 1
             
-            guard length <= 8 else { break }
             value <<= 4
             value |= d
         }
         
-        guard length >= 2 else { return nil }
-        
-        // TODO: validate the value
-        return UnicodeScalar(value)
+        guard length == requiredLength else { return nil }
+        return value
     }
     
     // number = [ minus ] int [ frac ] [ exp ]
