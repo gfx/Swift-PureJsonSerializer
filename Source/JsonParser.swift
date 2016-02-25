@@ -156,6 +156,7 @@ internal final class JsonDeserializer: Parser {
         
         guard let surrogateValue = parseEscapedUnicodeSurrogate() else { return nil }
 
+        // two consecutive \u#### sequences represent 32 bit unicode characters
         if nextChar == Char(ascii: "\\") && source[cur.advancedBy(2)] == Char(ascii: "u") {
                 advance(); advance()
                 guard let surrogatePairValue = parseEscapedUnicodeSurrogate() else { return nil }
