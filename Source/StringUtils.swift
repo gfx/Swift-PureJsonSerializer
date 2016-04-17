@@ -62,20 +62,20 @@ extension String {
     public var escapedJsonString: String {
         let mapped = characters
             .map { escapeMapping[$0] ?? String($0) }
-            .joinWithSeparator("")
+            .joined(separator: "")
         return "\"" + mapped + "\""
     }
 }
 
-public func escapeAsJsonString(source : String) -> String {
+public func escapeAsJsonString(_ source : String) -> String {
     return source.escapedJsonString
 }
 
-func digitToInt(b: UInt8) -> Int? {
+func digitToInt(_ b: UInt8) -> Int? {
     return digitMapping[UnicodeScalar(b)]
 }
 
-func hexToDigit(b: UInt8) -> UInt32? {
+func hexToDigit(_ b: UInt8) -> UInt32? {
     return hexMapping[UnicodeScalar(b)]
 }
 

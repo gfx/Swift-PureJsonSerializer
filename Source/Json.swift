@@ -39,23 +39,23 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
     
     // MARK: From
     
-    public static func from(value: Bool) -> Json {
+    public static func from(_ value: Bool) -> Json {
         return .BooleanValue(value)
     }
 
-    public static func from(value: Double) -> Json {
+    public static func from(_ value: Double) -> Json {
         return .NumberValue(value)
     }
 
-    public static func from(value: String) -> Json {
+    public static func from(_ value: String) -> Json {
         return .StringValue(value)
     }
 
-    public static func from(value: [Json]) -> Json {
+    public static func from(_ value: [Json]) -> Json {
         return .ArrayValue(value)
     }
 
-    public static func from(value: [String : Json]) -> Json {
+    public static func from(_ value: [String : Json]) -> Json {
         return .ObjectValue(value)
     }
 }
@@ -63,15 +63,15 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
 // MARK: Serialization
 
 extension Json {
-    public static func deserialize(source: String) throws -> Json {
+    public static func deserialize(_ source: String) throws -> Json {
         return try JsonDeserializer(source.utf8).deserialize()
     }
     
-    public static func deserialize(source: [UInt8]) throws -> Json {
+    public static func deserialize(_ source: [UInt8]) throws -> Json {
         return try JsonDeserializer(source).deserialize()
     }
     
-    public static func deserialize<ByteSequence: CollectionType where ByteSequence.Generator.Element == UInt8>(sequence: ByteSequence) throws -> Json {
+    public static func deserialize<ByteSequence: Collection where ByteSequence.Iterator.Element == UInt8>(_ sequence: ByteSequence) throws -> Json {
         return try JsonDeserializer(sequence).deserialize()
     }
 }
@@ -91,7 +91,7 @@ extension Json {
         }
     }
     
-    public func serialize(style: SerializationStyle = .Default) -> String {
+    public func serialize(_ style: SerializationStyle = .Default) -> String {
         return style.serializer.init().serialize(self)
     }
 }
@@ -195,7 +195,7 @@ extension Json {
 }
 
 extension Json {
-    public func serialize(serializer: JsonSerializer) -> String {
+    public func serialize(_ serializer: JsonSerializer) -> String {
         return serializer.serialize(self)
     }
 }
