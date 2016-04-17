@@ -40,7 +40,7 @@ public extension Json {
 }
 
 extension Json {
-    public static func from(any: AnyObject) -> Json {
+    public static func from(_ any: AnyObject) -> Json {
         switch any {
             // If we're coming from foundation, it will be an `NSNumber`.
             //This represents double, integer, and boolean.
@@ -60,7 +60,7 @@ extension Json {
         return .NullValue
     }
     
-    public static func from(any: [String : AnyObject]) -> Json {
+    public static func from(_ any: [String : AnyObject]) -> Json {
         var mutable: [String : Json] = [:]
         any.forEach { key, val in
             mutable[key] = .from(val)
@@ -70,7 +70,7 @@ extension Json {
 }
 
 extension Json {
-    public static func deserialize(data: NSData) throws -> Json {
+    public static func deserialize(_ data: NSData) throws -> Json {
         let startPointer = UnsafePointer<UInt8>(data.bytes)
         let bufferPointer = UnsafeBufferPointer(start: startPointer, count: data.length)
         return try deserialize(bufferPointer)
