@@ -15,7 +15,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
     
     required init() {}
     
-    internal func serialize(json: Json) -> String {
+    internal func serialize(_ json: Json) -> String {
         switch json {
         case .NullValue:
             return "null"
@@ -32,7 +32,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
         }
     }
 
-    func serializeNumber(n: Double) -> String {
+    func serializeNumber(_ n: Double) -> String {
         if n == Double(Int64(n)) {
             return Int64(n).description
         } else {
@@ -40,15 +40,15 @@ internal class DefaultJsonSerializer: JsonSerializer {
         }
     }
 
-    func serializeArray(array: [Json]) -> String {
+    func serializeArray(_ array: [Json]) -> String {
         var string = "["
         string += array
             .map { $0.serialize(self) }
-            .joinWithSeparator(",")
+            .joined(separator: ",")
         return string + "]"
     }
 
-    func serializeObject(object: [String : Json]) -> String {
+    func serializeObject(_ object: [String : Json]) -> String {
         var string = "{"
         string += object
             .map { key, val in
@@ -56,7 +56,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
                 let serializedVal = val.serialize(self)
                 return "\(escapedKey):\(serializedVal)"
             }
-            .joinWithSeparator(",")
+            .joined(separator: ",")
         return string + "}"
     }
 
@@ -69,7 +69,7 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
         super.init()
     }
     
-    override internal func serializeArray(array: [Json]) -> String {
+    override internal func serializeArray(_ array: [Json]) -> String {
         indentLevel += 1
         defer {
             indentLevel -= 1
@@ -83,11 +83,11 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
                 let serialized = val.serialize(self)
                 return indentString + serialized
             }
-            .joinWithSeparator(",\n")
+            .joined(separator: ",\n")
         return string + " ]"
     }
 
-    override internal func serializeObject(object: [String : Json]) -> String {
+    override internal func serializeObject(_ object: [String : Json]) -> String {
         indentLevel += 1
         defer {
             indentLevel -= 1
@@ -103,7 +103,7 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
                 let serializedLine = "\(escapedKey): \(serializedValue)"
                 return indentString + serializedLine
             }
-            .joinWithSeparator(",\n")
+            .joined(separator: ",\n")
         string += " }"
         
         return string
@@ -112,6 +112,6 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
     func indent() -> String {
         return Array(1...indentLevel)
             .map { _ in "  " }
-            .joinWithSeparator("")
+            .joined(separator: "")
     }
 }
