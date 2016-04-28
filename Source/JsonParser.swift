@@ -96,7 +96,7 @@ internal final class JsonDeserializer: Parser {
         }
     }
     
-    private func parseSymbol(_ target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
+    private func parseSymbol(_ target: StaticString, _ iftrue: @autoclosure () -> Json) throws -> Json {
         guard expect(target) else {
             throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
@@ -388,7 +388,7 @@ extension JsonDeserializer.Char {
 }
 
 extension Collection {
-    func prefixUntil(@noescape _ stopCondition: Generator.Element -> Bool) -> Array<Generator.Element> {
+    func prefixUntil(_ stopCondition: @noescape Generator.Element -> Bool) -> Array<Generator.Element> {
         var prefix: [Generator.Element] = []
         for element in self {
             guard !stopCondition(element) else { return prefix }

@@ -3,23 +3,23 @@ client:
 tools: {}
 targets:
   test: []
-  main: [<PureJsonSerializer.module>]
+  main: [<PureJson.module>]
 default: main
 commands: 
-  /Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build:
+  /Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build:
     tool: mkdir
-    outputs: ["/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build"]
+    outputs: ["/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build"]
 
-  <PureJsonSerializer.module>:
+  <PureJson.module>:
     tool: "swift-compiler"
     executable: "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2016-04-25-a.xctoolchain/usr/bin/swiftc"
-    module-name: PureJsonSerializer
-    module-output-path: "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.swiftmodule"
+    module-name: PureJson
+    module-output-path: "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.swiftmodule"
     inputs: []
-    outputs: [<PureJsonSerializer.module>, "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/Json.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/JsonParser.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/JsonSerializer.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/ParseError.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/StringUtils.swift.o"]
+    outputs: [<PureJson.module>, "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/Json.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/JsonParser.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/JsonSerializer.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/ParseError.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/StringUtils.swift.o"]
     import-paths: ["/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug"]
-    temps-path: "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build"
-    objects: ["/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/Json.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/JsonParser.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/JsonSerializer.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/ParseError.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJsonSerializer.build/StringUtils.swift.o"]
+    temps-path: "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build"
+    objects: ["/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/Json.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/JsonParser.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/JsonSerializer.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/ParseError.swift.o", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/.build/debug/PureJson.build/StringUtils.swift.o"]
     other-args: ["-j8", "-Onone", "-g", "-D", SWIFT_PACKAGE, "-enable-testing", "-F", /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks, "-target", "x86_64-apple-macosx10.10", "-sdk", /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk]
     sources: ["/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/Json.swift", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/JsonParser.swift", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/JsonSerializer.swift", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/ParseError.swift", "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/StringUtils.swift"]
     is-library: true
