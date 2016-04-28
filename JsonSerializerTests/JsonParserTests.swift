@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import Foundation
 
 class JsonDeserializerTests: XCTestCase {
 
@@ -111,11 +112,9 @@ class JsonDeserializerTests: XCTestCase {
         XCTAssertEqual(json["items"]![0]!["view_count"]!.intValue, 18711)
     }
 
-
     func testPerformanceExampleWithNSData() {
         let jsonSource = complexJsonExample("tweets")
-
-        self.measureBlock {
+            self.measure {
             let _ = try! Json.deserialize(jsonSource)
         }
     }
@@ -123,21 +122,21 @@ class JsonDeserializerTests: XCTestCase {
     func testPerformanceExampleWithString() {
         let jsonSource = String(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding)!
 
-        self.measureBlock {
+        self.measure {
             let _ = try! Json.deserialize(jsonSource)
         }
     }
 
     func testPerformanceExampleInJSONSerialization() {
         let jsonSource = complexJsonExample("tweets")
-        self.measureBlock {
-            let _: AnyObject? = try! NSJSONSerialization
-                .JSONObjectWithData(jsonSource, options: .MutableContainers)
+        self.measure {
+            let _: AnyObject? = try! NSJSONSerialization.jsonObject(with: jsonSource,
+                                                                    options: .mutableContainers)
         }
     }
 
-    func complexJsonExample(name: String) -> NSData {
-        let bundle = NSBundle(forClass: self.dynamicType)
+    func complexJsonExample(_ name: String) -> NSData {
+        let bundle = NSBundle(for: self.dynamicType)
         let path = bundle.pathForResource(name, ofType: "json")!
         return NSData(contentsOfFile: path)!
     }
