@@ -38,7 +38,7 @@ internal final class JsonDeserializer: Parser {
     }
     
     private var nextChar: Char {
-        return source[cur.successor()]
+        return source[cur + 1]
     }
     
     private var currentSymbol: Character {
