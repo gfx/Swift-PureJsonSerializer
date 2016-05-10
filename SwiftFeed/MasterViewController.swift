@@ -33,8 +33,8 @@ class MasterViewController: UITableViewController {
 
             switch result {
             case .Success(let json):
-                NSLog("quota max: %@", json["quota_max"]?.stringValue ?? "")
-                self.entries = json["items"]?.arrayValue ?? []
+                NSLog("quota max: %@", json["quota_max"]?.string ?? "")
+                self.entries = json["items"]?.array ?? []
                 self.tableView.reloadData()
             case .Error(let error):
                 print("Error: \(error)")
@@ -70,7 +70,7 @@ class MasterViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
 
         let object = entries[indexPath.row]
-        cell.textLabel?.text = object["title"]?.stringValue
+        cell.textLabel?.text = object["title"]?.string
 
         if let timeInterval = object["last_activity_date"]?.doubleValue {
             let date = NSDate(timeIntervalSince1970: timeInterval)

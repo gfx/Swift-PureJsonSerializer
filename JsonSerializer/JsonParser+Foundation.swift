@@ -11,21 +11,21 @@ import Foundation
 public extension Json {
     var anyValue: AnyObject {
         switch self {
-        case .ObjectValue(let ob):
+        case .object(let ob):
             var mapped: [String : AnyObject] = [:]
             ob.forEach { key, val in
                 mapped[key] = val.anyValue
             }
             return mapped
-        case .ArrayValue(let array):
+        case .array(let array):
             return array.map { $0.anyValue }
-        case .BooleanValue(let bool):
+        case .bool(let bool):
             return bool
-        case .NumberValue(let number):
+        case .number(let number):
             return number
-        case .StringValue(let string):
+        case .string(let string):
             return string
-        case .NullValue:
+        case .null:
             return NSNull()
         }
     }
@@ -45,19 +45,19 @@ extension Json {
             // If we're coming from foundation, it will be an `NSNumber`.
             //This represents double, integer, and boolean.
         case let number as Double:
-            return .NumberValue(number)
+            return .number(number)
         case let string as String:
-            return .StringValue(string)
+            return .string(string)
         case let object as [String : AnyObject]:
             return from(object)
         case let array as [AnyObject]:
-            return .ArrayValue(array.map(from))
+            return .array(array.map(from))
         case _ as NSNull:
-            return .NullValue
+            return .null
         default:
             fatalError("Unsupported foundation type")
         }
-        return .NullValue
+        return .null
     }
     
     public static func from(_ any: [String : AnyObject]) -> Json {

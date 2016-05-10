@@ -15,14 +15,14 @@ class JsonTests: XCTestCase {
             let json = try Json.deserialize("[\"foo bar\", true, false]")
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
             
-            XCTAssertEqual(json[0]!.stringValue!, "foo bar")
-            XCTAssertEqual(json[1]!.boolValue!, true)
-            XCTAssertEqual(json[2]!.boolValue!, false)
+            XCTAssertEqual(json[0]!.string!, "foo bar")
+            XCTAssertEqual(json[1]!.bool!, true)
+            XCTAssertEqual(json[2]!.bool!, false)
             
-            XCTAssertEqual(json[3]?.stringValue, nil, "out of range")
-            XCTAssertEqual(json[3]?[0]?.stringValue, nil, "no such item")
-            XCTAssertEqual(json["no such property"]?.stringValue, nil, "no such property")
-            XCTAssertEqual(json["no"]?["such"]?["property"]?.stringValue, nil, "no such properties")
+            XCTAssertEqual(json[3]?.string, nil, "out of range")
+            XCTAssertEqual(json[3]?[0]?.string, nil, "no such item")
+            XCTAssertEqual(json["no such property"]?.string, nil, "no such property")
+            XCTAssertEqual(json["no"]?["such"]?["property"]?.string, nil, "no such properties")
         } catch {
             XCTFail("\(error)")
         }
@@ -31,7 +31,7 @@ class JsonTests: XCTestCase {
 
     func testConvertFromNilLiteral() {
         let value: Json = nil
-        XCTAssertEqual(value, Json.NullValue)
+        XCTAssertEqual(value, Json.null)
     }
 
     func testConvertFromBooleanLiteral() {
@@ -117,7 +117,7 @@ class JsonTests: XCTestCase {
         XCTAssertNotEqual(e, o0)
     }
 
-    func testBooleanValueEquality() {
+    func testboolEquality() {
         XCTAssertEqual(b0, b0)
         XCTAssertEqual(b1, b1)
         XCTAssertNotEqual(b0, e)
@@ -138,7 +138,7 @@ class JsonTests: XCTestCase {
         XCTAssertNotEqual(n0, o0)
     }
 
-    func testStringValueEquality() {
+    func teststringEquality() {
         XCTAssertEqual(s0, s0)
         XCTAssertEqual(s1, s1)
         XCTAssertNotEqual(s0, e)
@@ -149,7 +149,7 @@ class JsonTests: XCTestCase {
         XCTAssertNotEqual(s0, o0)
     }
 
-    func testArrayValueEquality() {
+    func testarrayEquality() {
         XCTAssertEqual(a0, a0)
         XCTAssertEqual(a1, a1)
         XCTAssertNotEqual(a0, e)
@@ -160,7 +160,7 @@ class JsonTests: XCTestCase {
         XCTAssertNotEqual(a0, o0)
     }
 
-    func testObjectValueEquality() {
+    func testobjectEquality() {
         XCTAssertEqual(o0, o0)
         XCTAssertEqual(o1, o1)
         XCTAssertNotEqual(o0, e)

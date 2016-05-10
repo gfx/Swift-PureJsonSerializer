@@ -8,55 +8,55 @@
 
 public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatable {
     
-    case NullValue
-    case BooleanValue(Bool)
-    case NumberValue(Double)
-    case StringValue(String)
-    case ArrayValue([Json])
-    case ObjectValue([String:Json])
+    case null
+    case bool(Bool)
+    case number(Double)
+    case string(String)
+    case array([Json])
+    case object([String:Json])
 
     // MARK: Initialization
     
     public init(_ value: Bool) {
-        self = .BooleanValue(value)
+        self = .bool(value)
     }
     
     public init(_ value: Double) {
-        self = .NumberValue(value)
+        self = .number(value)
     }
     
     public init(_ value: String) {
-        self = .StringValue(value)
+        self = .string(value)
     }
     
     public init(_ value: [Json]) {
-        self = .ArrayValue(value)
+        self = .array(value)
     }
     
     public init(_ value: [String : Json]) {
-        self = .ObjectValue(value)
+        self = .object(value)
     }
     
     // MARK: From
     
     public static func from(_ value: Bool) -> Json {
-        return .BooleanValue(value)
+        return .bool(value)
     }
 
     public static func from(_ value: Double) -> Json {
-        return .NumberValue(value)
+        return .number(value)
     }
 
     public static func from(_ value: String) -> Json {
-        return .StringValue(value)
+        return .string(value)
     }
 
     public static func from(_ value: [Json]) -> Json {
-        return .ArrayValue(value)
+        return .array(value)
     }
 
     public static func from(_ value: [String : Json]) -> Json {
-        return .ObjectValue(value)
+        return .object(value)
     }
 }
 
@@ -100,14 +100,14 @@ extension Json {
 
 extension Json {
     public var isNull: Bool {
-        guard case .NullValue = self else { return false }
+        guard case .null = self else { return false }
         return true
     }
     
-    public var boolValue: Bool? {
-        if case let .BooleanValue(bool) = self {
+    public var bool: Bool? {
+        if case let .bool(bool) = self {
             return bool
-        } else if let integer = intValue where integer == 1 || integer == 0 {
+        } else if let integer = int where integer == 1 || integer == 0 {
             // When converting from foundation type `[String : AnyObject]`, something that I see as important, 
             // it's not possible to distinguish between 'bool', 'double', and 'int'.
             // Because of this, if we have an integer that is 0 or 1, and a user is requesting a boolean val,
@@ -118,47 +118,47 @@ extension Json {
         }
     }
 
-    public var floatValue: Float? {
-        guard let double = doubleValue else { return nil }
+    public var float: Float? {
+        guard let double = double else { return nil }
         return Float(double)
     }
     
-    public var doubleValue: Double? {
-        guard case let .NumberValue(double) = self else {
+    public var double: Double? {
+        guard case let .number(double) = self else {
             return nil
         }
         
         return double
     }
 
-    public var intValue: Int? {
-        guard case let .NumberValue(double) = self where double % 1 == 0 else {
+    public var int: Int? {
+        guard case let .number(double) = self where double % 1 == 0 else {
             return nil
         }
         
         return Int(double)
     }
 
-    public var uintValue: UInt? {
-        guard let intValue = intValue else { return nil }
+    public var uint: UInt? {
+        guard let intValue = int else { return nil }
         return UInt(intValue)
     }
 
-    public var stringValue: String? {
-        guard case let .StringValue(string) = self else {
+    public var string: String? {
+        guard case let .string(string) = self else {
             return nil
         }
         
         return string
     }
 
-    public var arrayValue: [Json]? {
-        guard case let .ArrayValue(array) = self else { return nil }
+    public var array: [Json]? {
+        guard case let .array(array) = self else { return nil }
         return array
     }
 
-    public var objectValue: [String : Json]? {
-        guard case let .ObjectValue(object) = self else { return nil }
+    public var object: [String : Json]? {
+        guard case let .object(object) = self else { return nil }
         return object
     }
 }
@@ -166,17 +166,17 @@ extension Json {
 extension Json {
     public subscript(index: Int) -> Json? {
         assert(index >= 0)
-        guard let array = arrayValue where index < array.count else { return nil }
+        guard let array = self.array where index < array.count else { return nil }
         return array[index]
     }
 
     public subscript(key: String) -> Json? {
         get {
-            guard let dict = objectValue else { return nil }
+            guard let dict = self.object else { return nil }
             return dict[key]
         }
         set {
-            guard let object = objectValue else { fatalError("Unable to set string subscript on non-object type!") }
+            guard let object = self.object else { fatalError("Unable to set string subscript on non-object type!") }
             var mutableObject = object
             mutableObject[key] = newValue
             self = .from(mutableObject)
@@ -203,22 +203,22 @@ extension Json {
 
 public func ==(lhs: Json, rhs: Json) -> Bool {
     switch lhs {
-    case .NullValue:
+    case .null:
         return rhs.isNull
-    case .BooleanValue(let lhsValue):
-        guard let rhsValue = rhs.boolValue else { return false }
+    case .bool(let lhsValue):
+        guard let rhsValue = rhs.bool else { return false }
         return lhsValue == rhsValue
-    case .StringValue(let lhsValue):
-        guard let rhsValue = rhs.stringValue else { return false }
+    case .string(let lhsValue):
+        guard let rhsValue = rhs.string else { return false }
         return lhsValue == rhsValue
-    case .NumberValue(let lhsValue):
-        guard let rhsValue = rhs.doubleValue else { return false }
+    case .number(let lhsValue):
+        guard let rhsValue = rhs.double else { return false }
         return lhsValue == rhsValue
-    case .ArrayValue(let lhsValue):
-        guard let rhsValue = rhs.arrayValue else { return false }
+    case .array(let lhsValue):
+        guard let rhsValue = rhs.array else { return false }
         return lhsValue == rhsValue
-    case .ObjectValue(let lhsValue):
-        guard let rhsValue = rhs.objectValue else { return false }
+    case .object(let lhsValue):
+        guard let rhsValue = rhs.object else { return false }
         return lhsValue == rhsValue
     }
 }
@@ -227,25 +227,25 @@ public func ==(lhs: Json, rhs: Json) -> Bool {
 
 extension Json: NilLiteralConvertible {
     public init(nilLiteral value: Void) {
-        self = .NullValue
+        self = .null
     }
 }
 
 extension Json: BooleanLiteralConvertible {
     public init(booleanLiteral value: BooleanLiteralType) {
-        self = .BooleanValue(value)
+        self = .bool(value)
     }
 }
 
 extension Json: IntegerLiteralConvertible {
     public init(integerLiteral value: IntegerLiteralType) {
-        self = .NumberValue(Double(value))
+        self = .number(Double(value))
     }
 }
 
 extension Json: FloatLiteralConvertible {
     public init(floatLiteral value: FloatLiteralType) {
-        self = .NumberValue(Double(value))
+        self = .number(Double(value))
     }
 }
 
@@ -254,21 +254,21 @@ extension Json: StringLiteralConvertible {
     public typealias ExtendedGraphemeClusterLiteralType = String
 
     public init(unicodeScalarLiteral value: UnicodeScalarLiteralType) {
-        self = .StringValue(value)
+        self = .string(value)
     }
 
     public init(extendedGraphemeClusterLiteral value: ExtendedGraphemeClusterType) {
-        self = .StringValue(value)
+        self = .string(value)
     }
 
     public init(stringLiteral value: StringLiteralType) {
-        self = .StringValue(value)
+        self = .string(value)
     }
 }
 
 extension Json: ArrayLiteralConvertible {
     public init(arrayLiteral elements: Json...) {
-        self = .ArrayValue(elements)
+        self = .array(elements)
     }
 }
 
@@ -278,6 +278,6 @@ extension Json: DictionaryLiteralConvertible {
         elements.forEach { key, value in
             object[key] = value
         }
-        self = .ObjectValue(object)
+        self = .object(object)
     }
 }
