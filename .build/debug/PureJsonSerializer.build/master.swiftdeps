@@ -1,9 +1,0 @@
-version: "Apple Swift version 3.0-dev (LLVM 752e1430fc, Clang 1e6cba3ce3, Swift 56052cfe61)"
-options: "c33be052a44248cd931d7926ce95ac1c"
-build_time: [515119360, 963386000]
-inputs:
-  "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/Json.swift": [515119357, 0]
-  "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/JsonParser.swift": [515119357, 0]
-  "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/JsonSerializer.swift": [515119357, 0]
-  "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/ParseError.swift": [515119357, 0]
-  "/Users/loganwright/Dropbox/Programming/xCode/Swift-PureJsonSerializer/Source/StringUtils.swift": [515119357, 0]
