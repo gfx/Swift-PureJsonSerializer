@@ -16,15 +16,15 @@ public extension Json {
             ob.forEach { key, val in
                 mapped[key] = val.anyValue
             }
-            return mapped
+            return mapped as AnyObject
         case .array(let array):
-            return array.map { $0.anyValue }
+            return array.map { $0.anyValue }  as AnyObject
         case .bool(let bool):
-            return bool
+            return bool as AnyObject
         case .number(let number):
-            return number
+            return number as AnyObject
         case .string(let string):
-            return string
+            return string as AnyObject
         case .null:
             return NSNull()
         }
@@ -40,32 +40,31 @@ public extension Json {
 }
 
 extension Json {
-    public static func from(_ any: AnyObject) -> Json {
+    public init(_ any: AnyObject) {
         switch any {
             // If we're coming from foundation, it will be an `NSNumber`.
             //This represents double, integer, and boolean.
         case let number as Double:
-            return .number(number)
+            self = .number(number)
         case let string as String:
-            return .string(string)
+            self = .string(string)
         case let object as [String : AnyObject]:
-            return from(object)
+            self = Json(object)
         case let array as [AnyObject]:
-            return .array(array.map(from))
+            self = .array(array.map(Json.init))
         case _ as NSNull:
-            return .null
+            self = .null
         default:
             fatalError("Unsupported foundation type")
         }
-        return .null
     }
     
-    public static func from(_ any: [String : AnyObject]) -> Json {
+    public init(_ any: [String : AnyObject]) {
         var mutable: [String : Json] = [:]
         any.forEach { key, val in
-            mutable[key] = .from(val)
+            mutable[key] = Json(val)
         }
-        return .from(mutable)
+        self = Json(mutable)
     }
 }
 

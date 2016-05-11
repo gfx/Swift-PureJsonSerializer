@@ -388,7 +388,7 @@ extension JsonDeserializer.Char {
 }
 
 extension Collection {
-    func prefixUntil(_ stopCondition: @noescape Generator.Element -> Bool) -> Array<Generator.Element> {
+    func prefixUntil(_ stopCondition: @noescape (Generator.Element) -> Bool) -> Array<Generator.Element> {
         var prefix: [Generator.Element] = []
         for element in self {
             guard !stopCondition(element) else { return prefix }
