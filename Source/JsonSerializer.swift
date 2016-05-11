@@ -17,17 +17,17 @@ internal class DefaultJsonSerializer: JsonSerializer {
     
     internal func serialize(_ json: Json) -> String {
         switch json {
-        case .NullValue:
+        case .null:
             return "null"
-        case .BooleanValue(let b):
+        case .bool(let b):
             return b ? "true" : "false"
-        case .NumberValue(let n):
+        case .number(let n):
             return serializeNumber(n)
-        case .StringValue(let s):
+        case .string(let s):
             return escapeAsJsonString(s)
-        case .ArrayValue(let a):
+        case .array(let a):
             return serializeArray(a)
-        case .ObjectValue(let o):
+        case .object(let o):
             return serializeObject(o)
         }
     }

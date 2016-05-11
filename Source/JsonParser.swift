@@ -38,7 +38,7 @@ internal final class JsonDeserializer: Parser {
     }
     
     private var nextChar: Char {
-        return source[cur.successor()]
+        return source[cur + 1]
     }
     
     private var currentSymbol: Character {
@@ -78,11 +78,11 @@ internal final class JsonDeserializer: Parser {
         
         switch currentChar {
         case Char(ascii: "n"):
-            return try parseSymbol("null", Json.NullValue)
+            return try parseSymbol("null", Json.null)
         case Char(ascii: "t"):
-            return try parseSymbol("true", Json.BooleanValue(true))
+            return try parseSymbol("true", Json.bool(true))
         case Char(ascii: "f"):
-            return try parseSymbol("false", Json.BooleanValue(false))
+            return try parseSymbol("false", Json.bool(false))
         case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"):
             return try parseNumber()
         case Char(ascii: "\""):
@@ -96,7 +96,7 @@ internal final class JsonDeserializer: Parser {
         }
     }
     
-    private func parseSymbol(_ target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
+    private func parseSymbol(_ target: StaticString, _ iftrue: @autoclosure () -> Json) throws -> Json {
         guard expect(target) else {
             throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
@@ -139,7 +139,7 @@ internal final class JsonDeserializer: Parser {
         
         buffer.append(0) // trailing nul
         
-        return .StringValue(String(cString: buffer))
+        return .string(String(cString: buffer))
     }
     
     private func parseEscapedChar() -> UnicodeScalar? {
@@ -239,7 +239,7 @@ internal final class JsonDeserializer: Parser {
             exponent *= expSign
         }
         
-        return .NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
+        return .number(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
     }
     
     private func parseObject() throws -> Json {
@@ -257,7 +257,7 @@ internal final class JsonDeserializer: Parser {
         var object = [String:Json]()
         
         while cur != end && !expect("}") {
-            guard case let .StringValue(key) = try deserializeNextValue() else {
+            guard case let .string(key) = try deserializeNextValue() else {
                 throw NonStringKeyError("unexpected value for object key", self)
             }
             
@@ -281,7 +281,7 @@ internal final class JsonDeserializer: Parser {
             }
         }
         
-        return .ObjectValue(object)
+        return .object(object)
     }
     
     private func parseArray() throws -> Json {
@@ -307,7 +307,7 @@ internal final class JsonDeserializer: Parser {
             
         }
         
-        return .ArrayValue(a)
+        return .array(a)
     }
     
     private func expect(_ target: StaticString) -> Bool {
@@ -388,7 +388,7 @@ extension JsonDeserializer.Char {
 }
 
 extension Collection {
-    func prefixUntil(@noescape _ stopCondition: Generator.Element -> Bool) -> Array<Generator.Element> {
+    func prefixUntil(_ stopCondition: @noescape Generator.Element -> Bool) -> Array<Generator.Element> {
         var prefix: [Generator.Element] = []
         for element in self {
             guard !stopCondition(element) else { return prefix }

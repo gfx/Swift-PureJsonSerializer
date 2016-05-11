@@ -22,10 +22,10 @@ class DetailViewController: UIViewController, UIWebViewDelegate {
     }
 
     func configureView() {
-        title = detailItem["title"]?.stringValue
+        title = detailItem["title"]?.string
 
         guard
-            let urlString = detailItem["link"]?.stringValue,
+            let urlString = detailItem["link"]?.string,
             let url = NSURL(string: urlString)
             else { return }
         
