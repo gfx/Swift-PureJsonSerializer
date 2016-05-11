@@ -36,25 +36,25 @@ class JsonTests: XCTestCase {
 
     func testConvertFromBooleanLiteral() {
         let a: Json = true
-        XCTAssertEqual(a, Json.from(true))
+        XCTAssertEqual(a, Json(true))
 
         let b: Json = false
-        XCTAssertEqual(b, Json.from(false))
+        XCTAssertEqual(b, Json(false))
     }
 
     func testConvertFromIntegerLiteral() {
         let a: Json = 42
-        XCTAssertEqual(a, Json.from(42))
+        XCTAssertEqual(a, Json(42))
     }
 
     func testConvertFromFloatLiteral() {
         let a: Json = 3.14
-        XCTAssertEqual(a, Json.from(3.14))
+        XCTAssertEqual(a, Json(3.14))
     }
 
     func testConvertFromStringLiteral() {
         let a: Json = "foo"
-        XCTAssertEqual(a, Json.from("foo"))
+        XCTAssertEqual(a, Json("foo"))
     }
 
     func testConvertFromArrayLiteral() {
@@ -72,19 +72,19 @@ class JsonTests: XCTestCase {
     }
 
     func testPrintable() {
-        let x: CustomStringConvertible = Json.from(true)
+        let x: CustomStringConvertible = Json(true)
 
         XCTAssertEqual(x.description, "true", "Printable#description")
     }
 
     func testDebugPrintable() {
-        let x: CustomDebugStringConvertible = Json.from(true)
+        let x: CustomDebugStringConvertible = Json(true)
 
         XCTAssertEqual(x.debugDescription, "true", "DebugPrintable#debugDescription")
     }
 
     func testPrlettySerializer() {
-        let x = Json.from([true, [ "foo": 1, "bar": 2 ], false])
+        let x = Json([true, [ "foo": 1, "bar": 2 ], false])
         XCTAssertEqual(x.debugDescription,
             "[\n" +
                 "  true,\n" +

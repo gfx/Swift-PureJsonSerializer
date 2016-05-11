@@ -20,6 +20,11 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
     public init(_ value: Bool) {
         self = .bool(value)
     }
+
+    public init(_ value: Int) {
+        let double = Double(value)
+        self = .number(double)
+    }
     
     public init(_ value: Double) {
         self = .number(value)
@@ -35,28 +40,6 @@ public enum Json: CustomStringConvertible, CustomDebugStringConvertible, Equatab
     
     public init(_ value: [String : Json]) {
         self = .object(value)
-    }
-    
-    // MARK: From
-    
-    public static func from(_ value: Bool) -> Json {
-        return .bool(value)
-    }
-
-    public static func from(_ value: Double) -> Json {
-        return .number(value)
-    }
-
-    public static func from(_ value: String) -> Json {
-        return .string(value)
-    }
-
-    public static func from(_ value: [Json]) -> Json {
-        return .array(value)
-    }
-
-    public static func from(_ value: [String : Json]) -> Json {
-        return .object(value)
     }
 }
 
@@ -179,7 +162,7 @@ extension Json {
             guard let object = self.object else { fatalError("Unable to set string subscript on non-object type!") }
             var mutableObject = object
             mutableObject[key] = newValue
-            self = .from(mutableObject)
+            self = .init(mutableObject)
         }
     }
 }
