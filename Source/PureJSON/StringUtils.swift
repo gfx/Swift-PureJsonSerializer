@@ -1,6 +1,6 @@
 //
 //  StringUtils.swift
-//  JsonSerializer
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/15.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -59,7 +59,7 @@ let digitMapping: [UnicodeScalar:Int] = [
 ]
 
 extension String {
-    public var escapedJsonString: String {
+    public var escapedJSONString: String {
         let mapped = characters
             .map { escapeMapping[$0] ?? String($0) }
             .joined(separator: "")
@@ -67,8 +67,8 @@ extension String {
     }
 }
 
-public func escapeAsJsonString(_ source : String) -> String {
-    return source.escapedJsonString
+public func escapeAsJSONString(_ source : String) -> String {
+    return source.escapedJSONString
 }
 
 func digitToInt(_ b: UInt8) -> Int? {

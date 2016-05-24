@@ -1,14 +1,15 @@
 //
-//  JsonSerializer+Foundation.swift
-//  JsonSerializer
+//  JSONSerializer+Foundation.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/15.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
 import Foundation
+@_exported import PureJSON
 
-public extension Json {
+public extension JSON {
     var anyValue: AnyObject {
         switch self {
         case .object(let ob):
@@ -39,7 +40,7 @@ public extension Json {
     }
 }
 
-extension Json {
+extension JSON {
     public init(_ any: AnyObject) {
         switch any {
             // If we're coming from foundation, it will be an `NSNumber`.
@@ -49,9 +50,9 @@ extension Json {
         case let string as String:
             self = .string(string)
         case let object as [String : AnyObject]:
-            self = Json(object)
+            self = JSON(object)
         case let array as [AnyObject]:
-            self = .array(array.map(Json.init))
+            self = .array(array.map(JSON.init))
         case _ as NSNull:
             self = .null
         default:
@@ -60,16 +61,16 @@ extension Json {
     }
     
     public init(_ any: [String : AnyObject]) {
-        var mutable: [String : Json] = [:]
+        var mutable: [String : JSON] = [:]
         any.forEach { key, val in
-            mutable[key] = Json(val)
+            mutable[key] = JSON(val)
         }
-        self = Json(mutable)
+        self = JSON(mutable)
     }
 }
 
-extension Json {
-    public static func deserialize(_ data: NSData) throws -> Json {
+extension JSON {
+    public static func deserialize(_ data: NSData) throws -> JSON {
         let startPointer = UnsafePointer<UInt8>(data.bytes)
         let bufferPointer = UnsafeBufferPointer(start: startPointer, count: data.length)
         return try deserialize(bufferPointer)
