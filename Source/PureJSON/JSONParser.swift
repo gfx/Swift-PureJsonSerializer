@@ -1,6 +1,6 @@
 //
-//  JsonSerializer.swift
-//  JsonSerializer
+//  JSONSerializer.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/11.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -13,7 +13,7 @@
     import Darwin
 #endif
 
-internal final class JsonDeserializer: Parser {
+internal final class JSONDeserializer: Parser {
     internal  typealias ByteSequence = [UInt8]
     internal  typealias Char = UInt8
     
@@ -38,7 +38,7 @@ internal final class JsonDeserializer: Parser {
     }
     
     private var nextChar: Char {
-        return source[cur.successor()]
+        return source[cur + 1]
     }
     
     private var currentSymbol: Character {
@@ -59,7 +59,7 @@ internal final class JsonDeserializer: Parser {
     
     // MARK: Serialize
     
-    internal func deserialize() throws -> Json {
+    internal func deserialize() throws -> JSON {
         let json = try deserializeNextValue()
         skipWhitespaces()
         
@@ -70,7 +70,7 @@ internal final class JsonDeserializer: Parser {
         return json
     }
     
-    private func deserializeNextValue() throws -> Json {
+    private func deserializeNextValue() throws -> JSON {
         skipWhitespaces()
         guard cur != end else {
             throw InsufficientTokenError("unexpected end of tokens", self)
@@ -78,11 +78,11 @@ internal final class JsonDeserializer: Parser {
         
         switch currentChar {
         case Char(ascii: "n"):
-            return try parseSymbol("null", Json.NullValue)
+            return try parseSymbol("null", JSON.null)
         case Char(ascii: "t"):
-            return try parseSymbol("true", Json.BooleanValue(true))
+            return try parseSymbol("true", JSON.boolean(true))
         case Char(ascii: "f"):
-            return try parseSymbol("false", Json.BooleanValue(false))
+            return try parseSymbol("false", JSON.boolean(false))
         case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"):
             return try parseNumber()
         case Char(ascii: "\""):
@@ -96,7 +96,7 @@ internal final class JsonDeserializer: Parser {
         }
     }
     
-    private func parseSymbol(_ target: StaticString, @autoclosure _ iftrue:  () -> Json) throws -> Json {
+    private func parseSymbol(_ target: StaticString, _ iftrue: @autoclosure () -> JSON) throws -> JSON {
         guard expect(target) else {
             throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
@@ -104,7 +104,7 @@ internal final class JsonDeserializer: Parser {
         return iftrue()
     }
     
-    private func parseString() throws -> Json {
+    private func parseString() throws -> JSON {
         assert(currentChar == Char(ascii: "\""), "points a double quote")
         advance()
         
@@ -139,7 +139,7 @@ internal final class JsonDeserializer: Parser {
         
         buffer.append(0) // trailing nul
         
-        return .StringValue(String(cString: buffer))
+        return .string(String(cString: buffer))
     }
     
     private func parseEscapedChar() -> UnicodeScalar? {
@@ -180,7 +180,7 @@ internal final class JsonDeserializer: Parser {
     }
     
     // number = [ minus ] int [ frac ] [ exp ]
-    private func parseNumber() throws -> Json {
+    private func parseNumber() throws -> JSON {
         let sign = expect("-") ? -1.0 : 1.0
         
         var integer: Int64 = 0
@@ -238,26 +238,27 @@ internal final class JsonDeserializer: Parser {
             
             exponent *= expSign
         }
-        
-        return .NumberValue(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
+
+        let val = sign * (Double(integer) + fraction) * pow(10, Double(exponent))
+        return .number(.double(val))
     }
     
-    private func parseObject() throws -> Json {
+    private func parseObject() throws -> JSON {
         return try getObject()
     }
     
     /**
      There is a bug in the compiler which makes this function necessary to be called from parseObject
      */
-    private func getObject() throws -> Json {
+    private func getObject() throws -> JSON {
         assert(currentChar == Char(ascii: "{"), "points \"{\"")
         advance()
         skipWhitespaces()
         
-        var object = [String:Json]()
+        var object = [String:JSON]()
         
         while cur != end && !expect("}") {
-            guard case let .StringValue(key) = try deserializeNextValue() else {
+            guard case let .string(key) = try deserializeNextValue() else {
                 throw NonStringKeyError("unexpected value for object key", self)
             }
             
@@ -281,15 +282,15 @@ internal final class JsonDeserializer: Parser {
             }
         }
         
-        return .ObjectValue(object)
+        return .object(object)
     }
     
-    private func parseArray() throws -> Json {
+    private func parseArray() throws -> JSON {
         assert(currentChar == Char(ascii: "["), "points \"[\"")
         advance()
         skipWhitespaces()
         
-        var a = Array<Json>()
+        var a = Array<JSON>()
         
         LOOP: while cur != end && !expect("]") {
             let json = try deserializeNextValue()
@@ -307,7 +308,7 @@ internal final class JsonDeserializer: Parser {
             
         }
         
-        return .ArrayValue(a)
+        return .array(a)
     }
     
     private func expect(_ target: StaticString) -> Bool {
@@ -375,7 +376,7 @@ internal final class JsonDeserializer: Parser {
     }
 }
 
-extension JsonDeserializer.Char {
+extension JSONDeserializer.Char {
     var isWhitespace: Bool {
         let type = self.dynamicType
         switch self {
@@ -388,7 +389,7 @@ extension JsonDeserializer.Char {
 }
 
 extension Collection {
-    func prefixUntil(@noescape _ stopCondition: Generator.Element -> Bool) -> Array<Generator.Element> {
+    func prefixUntil(_ stopCondition: @noescape (Generator.Element) -> Bool) -> Array<Generator.Element> {
         var prefix: [Generator.Element] = []
         for element in self {
             guard !stopCondition(element) else { return prefix }

@@ -1,31 +1,32 @@
 //
-//  JsonSerializer+Foundation.swift
-//  JsonSerializer
+//  JSONSerializer+Foundation.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/15.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
 //
 
 import Foundation
+@_exported import PureJSON
 
-public extension Json {
+public extension JSON {
     var anyValue: AnyObject {
         switch self {
-        case .ObjectValue(let ob):
+        case .object(let ob):
             var mapped: [String : AnyObject] = [:]
             ob.forEach { key, val in
                 mapped[key] = val.anyValue
             }
-            return mapped
-        case .ArrayValue(let array):
-            return array.map { $0.anyValue }
-        case .BooleanValue(let bool):
-            return bool
-        case .NumberValue(let number):
-            return number
-        case .StringValue(let string):
-            return string
-        case .NullValue:
+            return mapped as AnyObject
+        case .array(let array):
+            return array.map { $0.anyValue }  as AnyObject
+        case .boolean(let bool):
+            return bool as AnyObject
+        case .number(let number):
+            return number.double as AnyObject
+        case .string(let string):
+            return string as AnyObject
+        case .null:
             return NSNull()
         }
     }
@@ -39,38 +40,37 @@ public extension Json {
     }
 }
 
-extension Json {
-    public static func from(_ any: AnyObject) -> Json {
+extension JSON {
+    public init(_ any: AnyObject) {
         switch any {
             // If we're coming from foundation, it will be an `NSNumber`.
             //This represents double, integer, and boolean.
         case let number as Double:
-            return .NumberValue(number)
+            self = .number(.double(number))
         case let string as String:
-            return .StringValue(string)
+            self = .string(string)
         case let object as [String : AnyObject]:
-            return from(object)
+            self = JSON(object)
         case let array as [AnyObject]:
-            return .ArrayValue(array.map(from))
+            self = .array(array.map(JSON.init))
         case _ as NSNull:
-            return .NullValue
+            self = .null
         default:
             fatalError("Unsupported foundation type")
         }
-        return .NullValue
     }
     
-    public static func from(_ any: [String : AnyObject]) -> Json {
-        var mutable: [String : Json] = [:]
+    public init(_ any: [String : AnyObject]) {
+        var mutable: [String : JSON] = [:]
         any.forEach { key, val in
-            mutable[key] = .from(val)
+            mutable[key] = JSON(val)
         }
-        return .from(mutable)
+        self = JSON(mutable)
     }
 }
 
-extension Json {
-    public static func deserialize(_ data: NSData) throws -> Json {
+extension JSON {
+    public static func deserialize(_ data: NSData) throws -> JSON {
         let startPointer = UnsafePointer<UInt8>(data.bytes)
         let bufferPointer = UnsafeBufferPointer(start: startPointer, count: data.length)
         return try deserialize(bufferPointer)
