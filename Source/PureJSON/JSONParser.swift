@@ -80,9 +80,9 @@ internal final class JSONDeserializer: Parser {
         case Char(ascii: "n"):
             return try parseSymbol("null", JSON.null)
         case Char(ascii: "t"):
-            return try parseSymbol("true", JSON.bool(true))
+            return try parseSymbol("true", JSON.boolean(true))
         case Char(ascii: "f"):
-            return try parseSymbol("false", JSON.bool(false))
+            return try parseSymbol("false", JSON.boolean(false))
         case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"):
             return try parseNumber()
         case Char(ascii: "\""):
@@ -238,8 +238,9 @@ internal final class JSONDeserializer: Parser {
             
             exponent *= expSign
         }
-        
-        return .number(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
+
+        let val = sign * (Double(integer) + fraction) * pow(10, Double(exponent))
+        return .number(.double(val))
     }
     
     private func parseObject() throws -> JSON {

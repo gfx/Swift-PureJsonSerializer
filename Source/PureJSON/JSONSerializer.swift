@@ -19,7 +19,7 @@ internal class DefaultJSONSerializer: JSONSerializer {
         switch json {
         case .null:
             return "null"
-        case .bool(let b):
+        case .boolean(let b):
             return b ? "true" : "false"
         case .number(let n):
             return serializeNumber(n)
@@ -32,12 +32,8 @@ internal class DefaultJSONSerializer: JSONSerializer {
         }
     }
 
-    func serializeNumber(_ n: Double) -> String {
-        if n % 1 == 0 {
-            return Int64(n).description
-        } else {
-            return n.description
-        }
+    func serializeNumber(_ n: JSON.Number) -> String {
+        return n.description
     }
 
     func serializeArray(_ array: [JSON]) -> String {

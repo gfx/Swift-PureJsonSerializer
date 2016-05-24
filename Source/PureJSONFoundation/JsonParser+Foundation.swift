@@ -20,10 +20,10 @@ public extension JSON {
             return mapped as AnyObject
         case .array(let array):
             return array.map { $0.anyValue }  as AnyObject
-        case .bool(let bool):
+        case .boolean(let bool):
             return bool as AnyObject
         case .number(let number):
-            return number as AnyObject
+            return number.double as AnyObject
         case .string(let string):
             return string as AnyObject
         case .null:
@@ -46,7 +46,7 @@ extension JSON {
             // If we're coming from foundation, it will be an `NSNumber`.
             //This represents double, integer, and boolean.
         case let number as Double:
-            self = .number(number)
+            self = .number(.double(number))
         case let string as String:
             self = .string(string)
         case let object as [String : AnyObject]:
