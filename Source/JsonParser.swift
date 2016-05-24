@@ -59,7 +59,7 @@ internal final class JsonDeserializer: Parser {
     
     // MARK: Serialize
     
-    internal func deserialize() throws -> Json {
+    internal func deserialize() throws -> JSON {
         let json = try deserializeNextValue()
         skipWhitespaces()
         
@@ -70,7 +70,7 @@ internal final class JsonDeserializer: Parser {
         return json
     }
     
-    private func deserializeNextValue() throws -> Json {
+    private func deserializeNextValue() throws -> JSON {
         skipWhitespaces()
         guard cur != end else {
             throw InsufficientTokenError("unexpected end of tokens", self)
@@ -78,11 +78,11 @@ internal final class JsonDeserializer: Parser {
         
         switch currentChar {
         case Char(ascii: "n"):
-            return try parseSymbol("null", Json.null)
+            return try parseSymbol("null", JSON.null)
         case Char(ascii: "t"):
-            return try parseSymbol("true", Json.bool(true))
+            return try parseSymbol("true", JSON.bool(true))
         case Char(ascii: "f"):
-            return try parseSymbol("false", Json.bool(false))
+            return try parseSymbol("false", JSON.bool(false))
         case Char(ascii: "-"), Char(ascii: "0") ... Char(ascii: "9"):
             return try parseNumber()
         case Char(ascii: "\""):
@@ -96,7 +96,7 @@ internal final class JsonDeserializer: Parser {
         }
     }
     
-    private func parseSymbol(_ target: StaticString, _ iftrue: @autoclosure () -> Json) throws -> Json {
+    private func parseSymbol(_ target: StaticString, _ iftrue: @autoclosure () -> JSON) throws -> JSON {
         guard expect(target) else {
             throw UnexpectedTokenError("expected \"\(target)\" but \(currentSymbol)", self)
         }
@@ -104,7 +104,7 @@ internal final class JsonDeserializer: Parser {
         return iftrue()
     }
     
-    private func parseString() throws -> Json {
+    private func parseString() throws -> JSON {
         assert(currentChar == Char(ascii: "\""), "points a double quote")
         advance()
         
@@ -180,7 +180,7 @@ internal final class JsonDeserializer: Parser {
     }
     
     // number = [ minus ] int [ frac ] [ exp ]
-    private func parseNumber() throws -> Json {
+    private func parseNumber() throws -> JSON {
         let sign = expect("-") ? -1.0 : 1.0
         
         var integer: Int64 = 0
@@ -242,19 +242,19 @@ internal final class JsonDeserializer: Parser {
         return .number(sign * (Double(integer) + fraction) * pow(10, Double(exponent)))
     }
     
-    private func parseObject() throws -> Json {
+    private func parseObject() throws -> JSON {
         return try getObject()
     }
     
     /**
      There is a bug in the compiler which makes this function necessary to be called from parseObject
      */
-    private func getObject() throws -> Json {
+    private func getObject() throws -> JSON {
         assert(currentChar == Char(ascii: "{"), "points \"{\"")
         advance()
         skipWhitespaces()
         
-        var object = [String:Json]()
+        var object = [String:JSON]()
         
         while cur != end && !expect("}") {
             guard case let .string(key) = try deserializeNextValue() else {
@@ -284,12 +284,12 @@ internal final class JsonDeserializer: Parser {
         return .object(object)
     }
     
-    private func parseArray() throws -> Json {
+    private func parseArray() throws -> JSON {
         assert(currentChar == Char(ascii: "["), "points \"[\"")
         advance()
         skipWhitespaces()
         
-        var a = Array<Json>()
+        var a = Array<JSON>()
         
         LOOP: while cur != end && !expect("]") {
             let json = try deserializeNextValue()

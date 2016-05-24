@@ -8,14 +8,14 @@
 
 public protocol JsonSerializer {
     init()
-    func serialize(_: Json) -> String
+    func serialize(_: JSON) -> String
 }
 
 internal class DefaultJsonSerializer: JsonSerializer {
     
     required init() {}
     
-    internal func serialize(_ json: Json) -> String {
+    internal func serialize(_ json: JSON) -> String {
         switch json {
         case .null:
             return "null"
@@ -40,7 +40,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
         }
     }
 
-    func serializeArray(_ array: [Json]) -> String {
+    func serializeArray(_ array: [JSON]) -> String {
         var string = "["
         string += array
             .map { $0.serialize(self) }
@@ -48,7 +48,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
         return string + "]"
     }
 
-    func serializeObject(_ object: [String : Json]) -> String {
+    func serializeObject(_ object: [String : JSON]) -> String {
         var string = "{"
         string += object
             .map { key, val in
@@ -69,7 +69,7 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
         super.init()
     }
     
-    override internal func serializeArray(_ array: [Json]) -> String {
+    override internal func serializeArray(_ array: [JSON]) -> String {
         indentLevel += 1
         defer {
             indentLevel -= 1
@@ -87,7 +87,7 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
         return string + " ]"
     }
 
-    override internal func serializeObject(_ object: [String : Json]) -> String {
+    override internal func serializeObject(_ object: [String : JSON]) -> String {
         indentLevel += 1
         defer {
             indentLevel -= 1
