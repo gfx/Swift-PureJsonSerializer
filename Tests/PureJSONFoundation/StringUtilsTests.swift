@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import PureJSONFoundation
 
 class StringUtilsTests: XCTestCase {
     func testEscapeNewline() {

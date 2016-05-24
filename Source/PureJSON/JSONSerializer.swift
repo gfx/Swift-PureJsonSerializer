@@ -33,7 +33,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
     }
 
     func serializeNumber(_ n: Double) -> String {
-        if n == Double(Int64(n)) {
+        if n % 1 == 0 {
             return Int64(n).description
         } else {
             return n.description

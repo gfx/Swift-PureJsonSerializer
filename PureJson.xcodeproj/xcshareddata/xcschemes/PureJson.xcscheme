@@ -14,10 +14,38 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "______Target_PureJson"
-               BuildableName = "PureJson.dylib"
-               BlueprintName = "PureJson"
-               ReferencedContainer = "container:PureJson.xcodeproj">
+               BlueprintIdentifier = "______Target_PathIndexable"
+               BuildableName = "PathIndexable.dylib"
+               BlueprintName = "PathIndexable"
+               ReferencedContainer = "container:PureJSON.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "______Target_PureJSON"
+               BuildableName = "PureJSON.dylib"
+               BlueprintName = "PureJSON"
+               ReferencedContainer = "container:PureJSON.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "______Target_PureJSONFoundation"
+               BuildableName = "PureJSONFoundation.dylib"
+               BlueprintName = "PureJSONFoundation"
+               ReferencedContainer = "container:PureJSON.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,6 +56,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "______Target_PureJSONFoundationTestSuite"
+               BuildableName = "PureJSONFoundationTestSuite.xctest"
+               BlueprintName = "PureJSONFoundationTestSuite"
+               ReferencedContainer = "container:PureJSON.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <AdditionalOptions>
       </AdditionalOptions>
@@ -45,10 +83,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "______Target_PureJson"
-            BuildableName = "PureJson.dylib"
-            BlueprintName = "PureJson"
-            ReferencedContainer = "container:PureJson.xcodeproj">
+            BlueprintIdentifier = "______Target_PathIndexable"
+            BuildableName = "PathIndexable.dylib"
+            BlueprintName = "PathIndexable"
+            ReferencedContainer = "container:PureJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
