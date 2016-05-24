@@ -1,6 +1,6 @@
 //
-//  JsonSerializer.swift
-//  JsonSerializer
+//  JSONSerializer.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/11.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -13,7 +13,7 @@
     import Darwin
 #endif
 
-internal final class JsonDeserializer: Parser {
+internal final class JSONDeserializer: Parser {
     internal  typealias ByteSequence = [UInt8]
     internal  typealias Char = UInt8
     
@@ -375,7 +375,7 @@ internal final class JsonDeserializer: Parser {
     }
 }
 
-extension JsonDeserializer.Char {
+extension JSONDeserializer.Char {
     var isWhitespace: Bool {
         let type = self.dynamicType
         switch self {

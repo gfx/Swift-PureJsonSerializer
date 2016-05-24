@@ -1,6 +1,6 @@
 //
-//  JsonParserTests.swift
-//  JsonSerializer
+//  JSONParserTests.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/08.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -10,7 +10,7 @@ import XCTest
 import Foundation
 @testable import PureJSONFoundation
 
-class JsonDeserializerTests: XCTestCase {
+class JSONDeserializerTests: XCTestCase {
 
     let workDir: String = {
         let parent = #file.characters.split(separator: "/").map(String.init).dropLast().joined(separator: "/")
@@ -109,25 +109,25 @@ class JsonDeserializerTests: XCTestCase {
         XCTAssertEqual(json[0]!.string, "\u{0001}5\u{F363}")
     }
 
-    func testTwitterJson() {
-        let json = try! JSON.deserialize(complexJsonExample("tweets"))
+    func testTwitterJSON() {
+        let json = try! JSON.deserialize(complexJSONExample("tweets"))
         XCTAssertEqual(json["statuses"]![0]!["id_str"]!.string, "250075927172759552")
     }
 
-    func testStackexchangeJson() {
-        let json = try! JSON.deserialize(complexJsonExample("stackoverflow-items"))
+    func testStackexchangeJSON() {
+        let json = try! JSON.deserialize(complexJSONExample("stackoverflow-items"))
         XCTAssertEqual(json["items"]![0]!["view_count"]!.int, 18711)
     }
 
     func testPerformanceExampleWithNSData() {
-        let jsonSource = complexJsonExample("tweets")
+        let jsonSource = complexJSONExample("tweets")
             self.measure {
             let _ = try! JSON.deserialize(jsonSource)
         }
     }
 
     func testPerformanceExampleWithString() {
-        let jsonSource = String(data: complexJsonExample("tweets"), encoding: NSUTF8StringEncoding)!
+        let jsonSource = String(data: complexJSONExample("tweets"), encoding: NSUTF8StringEncoding)!
 
         self.measure {
             let _ = try! JSON.deserialize(jsonSource)
@@ -135,14 +135,14 @@ class JsonDeserializerTests: XCTestCase {
     }
 
     func testPerformanceExampleInJSONSerialization() {
-        let jsonSource = complexJsonExample("tweets")
+        let jsonSource = complexJSONExample("tweets")
         self.measure {
             let _: AnyObject? = try! NSJSONSerialization.jsonObject(with: jsonSource,
                                                                     options: .mutableContainers)
         }
     }
 
-    func complexJsonExample(_ name: String) -> NSData {
+    func complexJSONExample(_ name: String) -> NSData {
         let file = workDir + "\(name).json"
 print(file)
         return NSData(contentsOfFile: workDir + "\(name).json")!

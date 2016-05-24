@@ -1,6 +1,6 @@
 //
 //  ParseErrorTests.swift
-//  JsonSerializer
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/11.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -13,7 +13,7 @@ class ParseErrorTests: XCTestCase {
 
     func testEmptyString() {
         do {
-            let _ = try Json.deserialize("")
+            let _ = try JSON.deserialize("")
             XCTFail("not reached")
         } catch let error as InsufficientTokenError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -25,7 +25,7 @@ class ParseErrorTests: XCTestCase {
 
     func testUnexpectedToken() {
         do {
-            let _ = try Json.deserialize("?")
+            let _ = try JSON.deserialize("?")
             XCTFail("not reached")
         } catch let error as UnexpectedTokenError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -37,7 +37,7 @@ class ParseErrorTests: XCTestCase {
 
     func testSourceLocation() {
         do {
-            let _ = try Json.deserialize("[\n   ?")
+            let _ = try JSON.deserialize("[\n   ?")
             XCTFail("not reached")
         } catch let error as UnexpectedTokenError {
             XCTAssertEqual(error.lineNumber, 2, "lineNumbeer")
@@ -49,7 +49,7 @@ class ParseErrorTests: XCTestCase {
 
     func testExtraTokens() {
         do {
-            let _ = try Json.deserialize("[] []")
+            let _ = try JSON.deserialize("[] []")
             XCTFail("not reached")
         } catch let error as ExtraTokenError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -61,7 +61,7 @@ class ParseErrorTests: XCTestCase {
 
     func testInvalidNumber() {
         do {
-            let _ = try Json.deserialize("[ 10. ]")
+            let _ = try JSON.deserialize("[ 10. ]")
             XCTFail("not reached")
         } catch let error as InvalidNumberError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -74,7 +74,7 @@ class ParseErrorTests: XCTestCase {
 
     func testMissingDoubleQuote() {
         do {
-            let _ = try Json.deserialize("[ \"foo, null ]")
+            let _ = try JSON.deserialize("[ \"foo, null ]")
             XCTFail("not reached")
         } catch let error as InvalidStringError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -86,7 +86,7 @@ class ParseErrorTests: XCTestCase {
 
     func testMissingEscapedChar() {
         do {
-            let _ = try Json.deserialize("[ \"foo \\")
+            let _ = try JSON.deserialize("[ \"foo \\")
             XCTFail("not reached")
         } catch let error as InvalidStringError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -98,7 +98,7 @@ class ParseErrorTests: XCTestCase {
 
     func testMissingColon() {
         do {
-            let _ = try Json.deserialize("{ \"foo\" ")
+            let _ = try JSON.deserialize("{ \"foo\" ")
             XCTFail("not reached")
         } catch let error as UnexpectedTokenError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -110,7 +110,7 @@ class ParseErrorTests: XCTestCase {
 
     func testMissingObjecValue() {
         do {
-            let _ = try Json.deserialize("{ \"foo\": ")
+            let _ = try JSON.deserialize("{ \"foo\": ")
             XCTFail("not reached")
         } catch let error as InsufficientTokenError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")
@@ -123,7 +123,7 @@ class ParseErrorTests: XCTestCase {
 
     func testInvalidEscapeSequence() {
         do {
-            let _ = try Json.deserialize("\"\\uFFF\"")
+            let _ = try JSON.deserialize("\"\\uFFF\"")
             XCTFail("not reached")
         } catch let error as InvalidStringError {
             XCTAssertEqual(error.lineNumber, 1, "lineNumbeer")

@@ -1,6 +1,6 @@
 //
 //  StringUtilsTests.swift
-//  JsonSerializer
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/15.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -11,27 +11,27 @@ import XCTest
 
 class StringUtilsTests: XCTestCase {
     func testEscapeNewline() {
-        XCTAssertEqual(escapeAsJsonString("\n \n"), "\"\\n \\n\"", "for \\n")
+        XCTAssertEqual(escapeAsJSONString("\n \n"), "\"\\n \\n\"", "for \\n")
     }
 
     func testEscapeTab() {
-        XCTAssertEqual(escapeAsJsonString("\t \t"), "\"\\t \\t\"", "for \\t")
+        XCTAssertEqual(escapeAsJSONString("\t \t"), "\"\\t \\t\"", "for \\t")
     }
 
     func testEscapeReturn() {
-        XCTAssertEqual(escapeAsJsonString("\r \r"), "\"\\r \\r\"", "for \\r")
+        XCTAssertEqual(escapeAsJSONString("\r \r"), "\"\\r \\r\"", "for \\r")
     }
 
     func testEscapeBackslash() {
-        XCTAssertEqual(escapeAsJsonString("\\ \\"), "\"\\\\ \\\\\"", "for \\")
+        XCTAssertEqual(escapeAsJSONString("\\ \\"), "\"\\\\ \\\\\"", "for \\")
     }
 
     func testEscapeDoublequote() {
-        XCTAssertEqual(escapeAsJsonString("\" \""), "\"\\\" \\\"\"", "for \"")
+        XCTAssertEqual(escapeAsJSONString("\" \""), "\"\\\" \\\"\"", "for \"")
     }
 
     func testEscapeLineSeparator() {
-        XCTAssertEqual(escapeAsJsonString("\" \""), "\"\\\" \\\"\"", "for \"")
+        XCTAssertEqual(escapeAsJSONString("\" \""), "\"\\\" \\\"\"", "for \"")
     }
 
 }

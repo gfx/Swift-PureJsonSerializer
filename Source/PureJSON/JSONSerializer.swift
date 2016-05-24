@@ -1,17 +1,17 @@
 //
-//  JsonSerializer.swift
-//  JsonSerializer
+//  JSONSerializer.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/18.
 //  Copyright (c) 2014年 Fuji Goro. All rights reserved.
 //
 
-public protocol JsonSerializer {
+public protocol JSONSerializer {
     init()
     func serialize(_: JSON) -> String
 }
 
-internal class DefaultJsonSerializer: JsonSerializer {
+internal class DefaultJSONSerializer: JSONSerializer {
     
     required init() {}
     
@@ -24,7 +24,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
         case .number(let n):
             return serializeNumber(n)
         case .string(let s):
-            return escapeAsJsonString(s)
+            return escapeAsJSONString(s)
         case .array(let a):
             return serializeArray(a)
         case .object(let o):
@@ -52,7 +52,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
         var string = "{"
         string += object
             .map { key, val in
-                let escapedKey = escapeAsJsonString(key)
+                let escapedKey = escapeAsJSONString(key)
                 let serializedVal = val.serialize(self)
                 return "\(escapedKey):\(serializedVal)"
             }
@@ -62,7 +62,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
 
 }
 
-internal class PrettyJsonSerializer: DefaultJsonSerializer {
+internal class PrettyJSONSerializer: DefaultJSONSerializer {
     private var indentLevel = 0
 
     required init() {
@@ -98,7 +98,7 @@ internal class PrettyJsonSerializer: DefaultJsonSerializer {
         var string = "{\n"
         string += object
             .map { key, val in
-                let escapedKey = escapeAsJsonString(key)
+                let escapedKey = escapeAsJSONString(key)
                 let serializedValue = val.serialize(self)
                 let serializedLine = "\(escapedKey): \(serializedValue)"
                 return indentString + serializedLine

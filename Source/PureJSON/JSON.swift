@@ -1,6 +1,6 @@
 //
 //  JSON.swift
-//  JsonSerializer
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/15.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -25,8 +25,6 @@ public var typeEnforcementLevel: TypeEnforcementLevel = .fuzzy
 
 @_exported import PathIndexable
 extension JSON: PathIndexable {}
-
-public typealias Json = JSON
 
 // MARK: JSON
 
@@ -80,20 +78,20 @@ extension JSON {
 
 extension JSON {
     public static func deserialize(_ source: String) throws -> JSON {
-        return try JsonDeserializer(source.utf8).deserialize()
+        return try JSONDeserializer(source.utf8).deserialize()
     }
     
     public static func deserialize(_ source: [UInt8]) throws -> JSON {
-        return try JsonDeserializer(source).deserialize()
+        return try JSONDeserializer(source).deserialize()
     }
     
     public static func deserialize<ByteSequence: Collection where ByteSequence.Iterator.Element == UInt8>(_ sequence: ByteSequence) throws -> JSON {
-        return try JsonDeserializer(sequence).deserialize()
+        return try JSONDeserializer(sequence).deserialize()
     }
 }
 
-extension Json {
-    public func serialize(_ serializer: JsonSerializer) -> String {
+extension JSON {
+    public func serialize(_ serializer: JSONSerializer) -> String {
         return serializer.serialize(self)
     }
 }
@@ -103,12 +101,12 @@ extension JSON {
         case Default
         case PrettyPrint
         
-        private var serializer: JsonSerializer.Type {
+        private var serializer: JSONSerializer.Type {
             switch self {
             case .Default:
-                return DefaultJsonSerializer.self
+                return DefaultJSONSerializer.self
             case .PrettyPrint:
-                return PrettyJsonSerializer.self
+                return PrettyJSONSerializer.self
             }
         }
     }
@@ -234,13 +232,13 @@ extension JSON {
 
 extension JSON: CustomStringConvertible {
     public var description: String {
-        return serialize(DefaultJsonSerializer())
+        return serialize(DefaultJSONSerializer())
     }
 }
 
 extension JSON: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return serialize(PrettyJsonSerializer())
+        return serialize(PrettyJSONSerializer())
     }
 }
 

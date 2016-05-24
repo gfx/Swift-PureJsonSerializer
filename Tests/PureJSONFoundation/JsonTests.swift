@@ -1,6 +1,6 @@
 //
-//  JsonTests.swift
-//  JsonSerializer
+//  JSONTests.swift
+//  JSONSerializer
 //
 //  Created by Fuji Goro on 2014/09/15.
 //  Copyright (c) 2014 Fuji Goro. All rights reserved.
@@ -9,11 +9,11 @@
 import XCTest
 @testable import PureJSONFoundation
 
-class JsonTests: XCTestCase {
+class JSONTests: XCTestCase {
 
     func testConvenienceConvertions() {
         do {
-            let json = try Json.deserialize("[\"foo bar\", true, false]")
+            let json = try JSON.deserialize("[\"foo bar\", true, false]")
             XCTAssertEqual(json.description, "[\"foo bar\",true,false]")
             
             XCTAssertEqual(json[0]!.string!, "foo bar")
@@ -31,55 +31,55 @@ class JsonTests: XCTestCase {
 
 
     func testConvertFromNilLiteral() {
-        let value: Json = nil
-        XCTAssertEqual(value, Json.null)
+        let value: JSON = nil
+        XCTAssertEqual(value, JSON.null)
     }
 
     func testConvertFromBooleanLiteral() {
-        let a: Json = true
-        XCTAssertEqual(a, Json(true))
+        let a: JSON = true
+        XCTAssertEqual(a, JSON(true))
 
-        let b: Json = false
-        XCTAssertEqual(b, Json(false))
+        let b: JSON = false
+        XCTAssertEqual(b, JSON(false))
     }
 
     func testConvertFromIntegerLiteral() {
-        let a: Json = 42
-        XCTAssertEqual(a, Json(42))
+        let a: JSON = 42
+        XCTAssertEqual(a, JSON(42))
     }
 
     func testConvertFromFloatLiteral() {
-        let a: Json = 3.14
-        XCTAssertEqual(a, Json(3.14))
+        let a: JSON = 3.14
+        XCTAssertEqual(a, JSON(3.14))
     }
 
     func testConvertFromStringLiteral() {
-        let a: Json = "foo"
-        XCTAssertEqual(a, Json("foo"))
+        let a: JSON = "foo"
+        XCTAssertEqual(a, JSON("foo"))
     }
 
     func testConvertFromArrayLiteral() {
-        let a: Json = [nil, true, 10, "foo"]
+        let a: JSON = [nil, true, 10, "foo"]
 
-        let expected = try! Json.deserialize("[null, true, 10, \"foo\"]")
+        let expected = try! JSON.deserialize("[null, true, 10, \"foo\"]")
         XCTAssertEqual(a, expected)
     }
 
     func testConvertFromDictionaryLiteral() {
-        let array: Json = ["foo": 10, "bar": true]
+        let array: JSON = ["foo": 10, "bar": true]
 
-        let expected = try! Json.deserialize("{ \"foo\": 10, \"bar\": true }")
+        let expected = try! JSON.deserialize("{ \"foo\": 10, \"bar\": true }")
         XCTAssertEqual(array, expected)
     }
 
     func testPrintable() {
-        let x: CustomStringConvertible = Json(true)
+        let x: CustomStringConvertible = JSON(true)
 
         XCTAssertEqual(x.description, "true", "Printable#description")
     }
 
     func testDebugPrintable() {
-        let x: CustomDebugStringConvertible = Json(true)
+        let x: CustomDebugStringConvertible = JSON(true)
 
         XCTAssertEqual(x.debugDescription, "true", "DebugPrintable#debugDescription")
     }
@@ -93,20 +93,20 @@ class JsonTests: XCTestCase {
                 "    \"bar\": 2,\n" +
                 "    \"foo\": 1 },\n" +
             "  false ]",
-            "PrettyJsonSerializer")
+            "PrettyJSONSerializer")
     }
 
-//    let e: Json = nil
-//    let b0: Json = false
-//    let b1: Json = true
-//    let n0: Json = 0
-//    let n1: Json = 10
-//    let s0: Json = ""
-//    let s1: Json = "foo"
-//    let a0: Json = []
-//    let a1: Json = [true, "foo"]
-//    let o0: Json = [:]
-//    let o1: Json = ["foo": [10, false]]
+//    let e: JSON = nil
+//    let b0: JSON = false
+//    let b1: JSON = true
+//    let n0: JSON = 0
+//    let n1: JSON = 10
+//    let s0: JSON = ""
+//    let s1: JSON = "foo"
+//    let a0: JSON = []
+//    let a1: JSON = [true, "foo"]
+//    let o0: JSON = [:]
+//    let o1: JSON = ["foo": [10, false]]
 //
 //
 //    func testNullValueEquality() {
