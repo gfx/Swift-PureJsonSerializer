@@ -11,18 +11,18 @@ protocol Parser {
     var columnNumber: Int { get }
 }
 
-public class ParseError: ErrorProtocol, CustomStringConvertible {
-    public let reason: String
+open class ParseError: Error, CustomStringConvertible {
+    open let reason: String
     let parser: Parser
 
-    public var lineNumber: Int {
+    open var lineNumber: Int {
         return parser.lineNumber
     }
-    public var columnNumber: Int {
+    open var columnNumber: Int {
         return parser.columnNumber
     }
 
-    public var description: String {
+    open var description: String {
         return "\(Mirror(reflecting: self))[\(lineNumber):\(columnNumber)]: \(reason)"
     }
 
@@ -32,14 +32,14 @@ public class ParseError: ErrorProtocol, CustomStringConvertible {
     }
 }
 
-public class UnexpectedTokenError: ParseError { }
+open class UnexpectedTokenError: ParseError { }
 
-public class InsufficientTokenError: ParseError { }
+open class InsufficientTokenError: ParseError { }
 
-public class ExtraTokenError: ParseError { }
+open class ExtraTokenError: ParseError { }
 
-public class NonStringKeyError: ParseError { }
+open class NonStringKeyError: ParseError { }
 
-public class InvalidStringError: ParseError { }
+open class InvalidStringError: ParseError { }
 
-public class InvalidNumberError: ParseError { }
+open class InvalidNumberError: ParseError { }

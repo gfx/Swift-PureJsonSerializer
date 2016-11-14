@@ -17,11 +17,11 @@ internal class DefaultJsonSerializer: JsonSerializer {
     
     internal func serialize(_ json: Json) -> String {
         switch json {
-        case .NullValue:
+        case .nullValue:
             return "null"
-        case .BooleanValue(let b):
+        case .booleanValue(let b):
             return b ? "true" : "false"
-        case .NumberValue(let n):
+        case .numberValue(let n):
             return serializeNumber(n)
         case .StringValue(let s):
             return escapeAsJsonString(s)
@@ -63,7 +63,7 @@ internal class DefaultJsonSerializer: JsonSerializer {
 }
 
 internal class PrettyJsonSerializer: DefaultJsonSerializer {
-    private var indentLevel = 0
+    fileprivate var indentLevel = 0
 
     required init() {
         super.init()
